@@ -37,4 +37,5 @@ captures/
 .idea/workspace.xml
 
 # Keystore files
+KeyStore/
 *.jks

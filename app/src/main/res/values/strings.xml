@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">M3U8Loader</string>
+
+    <string name="file_name">File url:</string>
+    <string name="url_name">Url:</string>
+    <string name="timeout">Timeout:</string>
+    <string name="threads">Threads:</string>
+    <string name="download_path">Download path:</string>
+    <string name="temp_dir">Temp directory:</string>
+
+    <string name="main_btn_start">Start</string>
+    <string name="main_btn_stop">Stop</string>
+
+    <string name="add_add_load">Add Load</string>
+
+    <string name="default_directory_change">Select the default directory</string>
+
+    <string name="settings_label">Settings</string>
+    <string name="clear_label">Clear temp files</string>
+    <string name="selected_folder_label">Selected folder:</string>
+    <string name="up_label">Up &#x2B06;</string>
+
+    <string name="status_load_list">Loading list...</string>
+    <string name="status_load_segments">Loading segments...</string>
+    <string name="status_join_files">Join files...</string>
+    <string name="status_remove_temp">Remove temp...</string>
+    <string name="status_finish">Finish</string>
+    <string name="status_stoped">Stoped</string>
+    <string name="status_loaded">Loaded</string>
+
+    <string name="error_download_dir">Download dir not set</string>
+    <string name="error_dir_perm">Directory permission denied</string>
+    <string name="error_url_empty">Url is empty</string>
+    <string name="error_filename_empty">Filename is empty</string>
+    <string name="error_already_loading">Already loading, please stop or wait current loading</string>
+    <string name="error">Error:</string>
+
+</resources>

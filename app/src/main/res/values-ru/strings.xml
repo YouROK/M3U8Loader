@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">M3U8Loader</string>
+
+    <string name="file_name">Имя файла:</string>
+    <string name="url_name">URL-адрес:</string>
+    <string name="timeout">Время ожидания соединения:</string>
+    <string name="threads">Потоки:</string>
+    <string name="download_path">Папка загрузки:</string>
+    <string name="temp_dir">Временная директория:</string>
+
+    <string name="main_btn_start">Загрузить</string>
+    <string name="main_btn_stop">Остановить</string>
+
+    <string name="add_add_load">Добавить загрузку</string>
+
+    <string name="default_directory_change">Выбрать папку по умолчанию</string>
+
+    <string name="settings_label">Настройки</string>
+    <string name="clear_label">Очистить временную папку</string>
+    <string name="selected_folder_label">Выберите папку:</string>
+    <string name="up_label">Вверх</string>
+
+    <string name="status_load_list">Загрузка листа...</string>
+    <string name="status_load_segments">Загрузка сегментов...</string>
+    <string name="status_join_files">Соединение файлов...</string>
+    <string name="status_remove_temp">Удаление временных файлов...</string>
+    <string name="status_finish">Завершено</string>
+    <string name="status_stoped">Остановлено</string>
+    <string name="status_loaded">Загружено</string>
+
+    <string name="error_download_dir">Папка загрузки не установлена</string>
+    <string name="error_dir_perm">Доступ к папке запрещен</string>
+    <string name="error_url_empty">URL пуст</string>
+    <string name="error_filename_empty">Пустое имя файла</string>
+    <string name="error_already_loading">Уже загружается, пожалуйста, остановите или подождите текущию загрузку</string>
+    <string name="error">Ошибка:</string>
+</resources>
