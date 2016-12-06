@@ -1,40 +1,18 @@
 package m3u8
 
 import (
-	"io/ioutil"
-	"loader"
-	"path/filepath"
-	"strings"
+	"os"
 )
 
-func (l *List) readAll(path string) ([]byte, error) {
-	dir := strings.ToLower(path)
-	if strings.HasPrefix(dir, "http://") || strings.HasPrefix(dir, "https://") {
-		hopt := *l.opts.HttpOpts
-		hopt.Url = path
-		http := loader.NewHttp(&hopt)
-		err := http.Connect()
-		if err != nil {
-			return nil, err
-		}
-		return ioutil.ReadAll(http)
-	} else {
-		if filepath.IsAbs(path) {
-			return ioutil.ReadFile(path)
-		}
-		return ioutil.ReadFile(filepath.Join(l.opts.TempDir, path))
-	}
+func exists(path string) bool {
+	_, err := os.Stat(path)
+	return !os.IsNotExist(err)
 }
 
-func getDir(path string) string {
-	if strings.HasPrefix(strings.ToLower(path), "http") {
-		Url, err := url.Parse(path)
-		if err != nil {
-			return filepath.Dir(path)
-		}
-		Url.Path = filepath.Dir(Url.Path)
-		return Url.String()
-	} else {
-		return filepath.Dir(path)
+func stat(path string) int64 {
+	st, err := os.Stat(path)
+	if err != nil {
+		return 0
 	}
+	return st.Size()
 }

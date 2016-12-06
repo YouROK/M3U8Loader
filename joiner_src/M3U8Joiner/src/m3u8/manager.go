@@ -1,95 +1,75 @@
 package m3u8
 
-/*"errors"
-"loader"
-"net/url"
-"path"
-"strings"
+import (
+	"fmt"
+	"path/filepath"
+)
 
-"github.com/grafov/m3u8"**/
+type M3U8 struct {
+	list *List
+	opt  *Options
 
-/*type List struct {
-	Url       string
-	Content   []string
-	Lists     []*List
-	Bandwidth uint32
+	lastErr error
+
+	isFinish  bool
+	isLoading bool
+	isJoin    bool
+
+	loadIndex int
+	loadCount int
 }
 
-func ParseHttp(http *loader.Http) (*List, error) {
-	if !http.IsConnected() {
-		err := http.Connect()
-		if err != nil {
-			return nil, err
-		}
-		defer http.Close()
-	}
+func NewM3U8(opt *Options) *M3U8 {
+	m := new(M3U8)
+	m.opt = opt
+	return m
+}
 
-	p, ltype, err := m3u8.DecodeFrom(http, false)
+func (m *M3U8) LoadListNet() error {
+	ho := m.opt.HttpOpts
+	list, err := ParseList(ho)
+	m.lastErr = err
 	if err != nil {
-		return nil, err
+		return err
 	}
-
-	retList := new(List)
-	murl := http.GetOpts().Url
-	retList.Url = murl
-	switch ltype {
-	case m3u8.MEDIA:
-		list := p.(*m3u8.MediaPlaylist)
-		if !list.Closed {
-			return nil, errors.New("Error m3u8 is live stream, not support")
-		}
-		for _, s := range list.Segments {
-			if s == nil {
-				continue
-			}
-			segmentUrl, err := joinUrl(murl, s.URI)
-			if err != nil {
-				return nil, err
-			}
-			retList.Content = append(retList.Content, segmentUrl)
-		}
-	case m3u8.MASTER:
-		list := p.(*m3u8.MasterPlaylist)
-		for _, l := range list.Variants {
-			if l == nil {
-				continue
-			}
-			listUrl, err := joinUrl(murl, l.URI)
-			httpOpt := *http.GetOpts()
-			httpOpt.Url = listUrl
-			nHttp := loader.NewHttp(&httpOpt)
-			nlist, err := ParseHttp(nHttp)
-			if err != nil {
-				return nil, err
-			}
-			nlist.Bandwidth = l.Bandwidth
-			retList.Lists = append(retList.Lists, nlist)
-		}
-
-		for i := 0; i < len(retList.Lists)-1; i++ {
-			for j := i + 1; j < len(retList.Lists); j++ {
-				if retList.Lists[i].Bandwidth == retList.Lists[j].Bandwidth {
-					retList.Lists[i].Bandwidth++
-					i--
-					break
-				}
-			}
-		}
-	}
-
-	return retList, nil
+	list.Name = m.opt.Name
+	list.Item.FilePath = filepath.Join(m.opt.TempDir, list.Name)
+	m.loadCount = m.prepareList(list)
+	m.list = list
+	m.isFinish = false
+	m.isLoading = false
+	return nil
 }
 
-func joinUrl(fileUrl, addUrl string) (string, error) {
-	if strings.ToLower(addUrl)[:4] == "http" {
-		return addUrl, nil
+func (m *M3U8) prepareList(l *List) int {
+	count := 0
+	for _, n := range l.items {
+		n.FilePath = filepath.Join(l.FilePath, l.Name, filepath.Base(n.Url))
+		n.IsLoad = true
+		count++
 	}
-
-	Url, err := url.Parse(fileUrl)
-	if err != nil {
-		return "", err
+	for i, sl := range l.lists {
+		sl.Item.FilePath = filepath.Join(l.Item.FilePath, sl.Name)
+		if sl.Name == "" {
+			sl.Name = fmt.Sprintf("%s.%d", l.Name, i+1)
+		}
+		count += m.prepareList(sl)
 	}
-	Url.Path = path.Join(path.Dir(Url.Path), addUrl)
-	return Url.String(), nil
+	return count
 }
-*/
+
+func (m *M3U8) GetCount() int {
+	count := 0
+	var walk func(l *List)
+
+	walk = func(l *List) {
+		count += len(l.items)
+		for _, l := range l.lists {
+			if l.IsLoad {
+				walk(l)
+			}
+		}
+	}
+	walk(m.list)
+	return count
+}
