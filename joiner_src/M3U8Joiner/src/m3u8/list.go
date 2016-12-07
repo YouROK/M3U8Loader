@@ -3,8 +3,7 @@ package m3u8
 type List struct {
 	items []*Item
 	lists []*List
-	Name  string //TODO in funcs get set
-
+	Name  string
 	Item
 }
 
@@ -31,11 +30,19 @@ func (l *List) SetItem(i int, val *Item) {
 	l.items[i].IsLoad = val.IsLoad
 }
 
+func (l *List) ItemsSize() int {
+	return len(l.items)
+}
+
 func (l *List) GetList(i int) *List {
 	if i < 0 || i >= len(l.lists) {
 		return nil
 	}
 	return l.lists[i]
+}
+
+func (l *List) GetListsSize() int {
+	return len(l.lists)
 }
 
 func (l *List) GetListAtr() *Item {

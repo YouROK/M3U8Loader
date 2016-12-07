@@ -38,7 +38,7 @@ func (h *Http) Connect() error {
 		return h.err
 	}
 
-	for v, k := range h.opt.Header {
+	for v, k := range h.opt.header {
 		h.req.Header.Add(v, k)
 	}
 

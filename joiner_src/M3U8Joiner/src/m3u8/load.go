@@ -11,19 +11,19 @@ import (
 	"fmt"
 )
 
-func (m *M3U8) Load() {
+func (m *M3U8) Load() error {
 	m.isLoading = true
-	go func() {
-		err := m.load()
-		m.isLoading = false
-		if err == nil {
-			m.isFinish = true
-		}
-		m.lastErr = err
-	}()
+	err := m.load(m.GetCount())
+	m.isLoading = false
+	if err == nil {
+		m.isFinish = true
+	}
+	m.lastErr = err
+	m.Stop()
+	return err
 }
 
-func (m *M3U8) load() error {
+func (m *M3U8) load(count int) error {
 	var wg sync.WaitGroup
 	var mut sync.Mutex
 	var err error
@@ -37,6 +37,7 @@ func (m *M3U8) load() error {
 				item = m.getItem(pos)
 				if item != nil {
 					pos++
+					m.sendState(pos, count, LoadingContent, item.Url, nil)
 				}
 				m.loadIndex = pos
 				mut.Unlock()
@@ -46,7 +47,7 @@ func (m *M3U8) load() error {
 				e := m.loadItem(item)
 				if e != nil {
 					err = e
-					m.isLoading = false
+					m.Stop()
 					break
 				}
 			}
@@ -75,12 +76,12 @@ func (m *M3U8) loadItem(item *Item) error {
 	if err != nil {
 		return err
 	}
+	defer http.Close()
 	if err == nil {
 		if !exists(filepath.Dir(item.FilePath)) {
 			os.MkdirAll(filepath.Dir(item.FilePath), 0777)
 		}
 
-		defer http.Close()
 		tmpBuf := make([]byte, 1024)
 		n := 0
 		f, err := os.Create(item.FilePath)
@@ -88,27 +89,20 @@ func (m *M3U8) loadItem(item *Item) error {
 			return err
 		}
 		defer f.Close()
-		for err == nil {
+		for err == nil && m.isLoading {
 			n, err = http.Read(tmpBuf)
 			if n > 0 {
-				_, err := f.Write(tmpBuf[:n])
-				if err != nil {
-					break
-				}
-				f.Sync()
-			}
-			if err == io.EOF {
-				err = nil
-				break
-			}
-			if !m.isLoading {
-				os.Remove(item.FilePath)
-				return nil
+				_, err = f.Write(tmpBuf[:n])
 			}
 		}
 	}
-	if err != nil {
+
+	if err != io.EOF && (err != nil || !m.isLoading) {
 		os.Remove(item.FilePath)
+	}
+
+	if err == io.EOF {
+		err = nil
 	}
 
 	return err

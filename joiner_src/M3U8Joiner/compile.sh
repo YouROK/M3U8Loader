@@ -4,4 +4,4 @@ export PATH=$PATH:/usr/local/go/bin/
 export GOPATH=`pwd`
 export ANDROID_HOME=$HOME'/Android/Sdk'
 /usr/local/go/bin/go get golang.org/x/mobile/cmd/gomobile
-./bin/gomobile bind ./src/M3U8Joiner
+./bin/gomobile bind -v ./src/m3u8

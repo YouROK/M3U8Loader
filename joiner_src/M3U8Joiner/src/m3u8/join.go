@@ -5,8 +5,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
-	"fmt"
 )
 
 func (m *M3U8) Join() error {
@@ -14,6 +12,7 @@ func (m *M3U8) Join() error {
 	err := m.join(m.list)
 	m.isJoin = false
 	m.lastErr = err
+	m.Stop()
 	return err
 }
 
@@ -26,12 +25,11 @@ func (m *M3U8) join(l *List) error {
 		}
 		defer file.Close()
 		isTs := false
-		fmt.Println("Join:", filename)
-		for _, i := range l.items {
+		for z, i := range l.items {
 			if !i.IsLoad {
 				continue
 			}
-			fmt.Println("add", i.FilePath)
+			m.sendState(z+1, len(l.items), JoinSegments, filename, nil)
 			if strings.ToLower(filepath.Ext(i.FilePath)) == ".ts" {
 				buf, err := ioutil.ReadFile(i.FilePath)
 				if err != nil {
@@ -44,7 +42,7 @@ func (m *M3U8) join(l *List) error {
 				file.Sync()
 				isTs = true
 			} else {
-				fmt.Println("move", i.FilePath)
+				m.sendState(z+1, len(l.items), JoinSegments, filepath.Base(i.FilePath), nil)
 				err := os.Rename(i.FilePath, filepath.Join(m.opt.OutFileDir, filepath.Base(i.FilePath)))
 				if err != nil {
 					return err

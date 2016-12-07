@@ -7,13 +7,13 @@ import (
 type HttpOpts struct {
 	Url     string
 	Timeout int
-	Header  map[string]string
+	header  map[string]string
 }
 
 func NewHttpOpts(url string) *HttpOpts {
 	o := new(HttpOpts)
-	o.Header = make(map[string]string)
-	o.Timeout = 1500
+	o.header = make(map[string]string)
+	o.Timeout = 5000
 	o.SetHeader("Accept", "*/*")
 	o.SetHeader("UserAgent", "DWL/1.0.0 ("+runtime.GOOS+")")
 	o.Url = url
@@ -21,8 +21,8 @@ func NewHttpOpts(url string) *HttpOpts {
 }
 
 func (o *HttpOpts) SetHeader(key, val string) {
-	if o.Header == nil {
-		o.Header = make(map[string]string)
+	if o.header == nil {
+		o.header = make(map[string]string)
 	}
-	o.Header[key] = val
+	o.header[key] = val
 }
