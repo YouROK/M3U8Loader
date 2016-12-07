@@ -15,9 +15,6 @@ func (m *M3U8) Load() error {
 	m.isLoading = true
 	err := m.load(m.GetCount())
 	m.isLoading = false
-	if err == nil {
-		m.isFinish = true
-	}
 	m.lastErr = err
 	m.Stop()
 	return err
@@ -37,7 +34,7 @@ func (m *M3U8) load(count int) error {
 				item = m.getItem(pos)
 				if item != nil {
 					pos++
-					m.sendState(pos, count, LoadingContent, item.Url, nil)
+					m.sendState(pos, count, Stage_LoadingContent, item.Url, nil)
 				}
 				m.loadIndex = pos
 				mut.Unlock()

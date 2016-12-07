@@ -21,7 +21,7 @@ import android.widget.Toast;
 import java.io.File;
 
 import ru.yourok.directorychooser.DirectoryChooserActivity;
-import ru.yourok.loader.M3U8;
+import ru.yourok.loader.Loader;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -89,7 +89,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     public void clrTempDir(View view) {
         String tmpdir = ((EditText) findViewById(R.id.editTextDirectoryPath)).getText().toString() + "/tmp/";
-        String ret = M3U8.RemoveDir(tmpdir);
+        String ret = Loader.RemoveDir(tmpdir);
         if (ret.isEmpty()) ret = getText(android.R.string.ok).toString();
         Toast.makeText(this, ret, Toast.LENGTH_SHORT).show();
     }

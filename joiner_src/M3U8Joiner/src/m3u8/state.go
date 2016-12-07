@@ -10,15 +10,20 @@ type State struct {
 
 func (m *M3U8) sendState(curr, count, stage int, text string, err error) {
 	m.stateMutext.Lock()
-	defer m.stateMutext.Unlock()
-	if m.stateChan != nil {
-		m.stateChan <- State{curr, count, stage, text, err}
+	if m.stateChan == nil {
+		m.stateChan = make(chan *State, m.opt.Threads*10)
 	}
+	m.stateMutext.Unlock()
+	m.stateChan <- &State{curr, count, stage, text, err}
 }
 
-func (m *M3U8) PollState() State {
-	if m.stateChan == nil {
-		m.stateChan = make(chan State, m.opt.Threads)
+func PollState(m *M3U8) *State {
+	m.stateMutext.Lock()
+	ch := m.stateChan
+	m.stateMutext.Unlock()
+	if ch == nil {
+		return nil
 	}
-	return <-m.stateChan
+	st := <-ch
+	return st
 }

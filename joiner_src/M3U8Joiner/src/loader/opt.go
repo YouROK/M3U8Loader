@@ -26,3 +26,11 @@ func (o *HttpOpts) SetHeader(key, val string) {
 	}
 	o.header[key] = val
 }
+
+func (o *HttpOpts) SetUrl(url string) {
+	o.Url = url
+}
+
+func (o *HttpOpts) SetTimeout(timeout int) {
+	o.Timeout = timeout
+}

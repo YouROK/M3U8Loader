@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"m3u8"
+	"time"
 )
 
 func main() {
@@ -27,23 +28,27 @@ func main() {
 			err = m.Load()
 			if err == nil {
 				fmt.Println("Join")
-				err = m.Join()
+				//				err = m.Join()
 			}
 		}
 		if err != nil {
 			fmt.Println(err)
 		}
 	}()
+	time.Sleep(time.Millisecond * 2000)
+	//	stoped := 0
+	log.Println("receive state")
+	log.Println(m3u8.PollState(m))
 
-	stoped := 0
-	for true {
-		st := m.PollState()
-		log.Println(st)
-		if st.Stage == m3u8.Stoped {
-			stoped++
-			if stoped > 2 {
-				break
-			}
-		}
+	for m.IsLoading() || m.IsJoin() {
+		log.Println(m3u8.PollState(m))
 	}
+	m.Stop()
+	log.Println("1")
+	log.Println(m3u8.PollState(m))
+	log.Println("2")
+	log.Println(m3u8.PollState(m))
+	log.Println("3")
+	log.Println(m3u8.PollState(m))
+	log.Println("4")
 }

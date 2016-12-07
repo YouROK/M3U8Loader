@@ -15,6 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         >
+        <service android:name="ru.yourok.loader.LoaderManager" />
 
         <activity
             android:name=".MainActivity"

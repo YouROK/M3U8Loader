@@ -10,7 +10,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,23 +17,21 @@ import android.widget.Toast;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import ru.yourok.loader.M3U8;
+import ru.yourok.loader.Loader;
 
 public class MainActivity extends AppCompatActivity {
     UpdateTimeTask updateTimeTask;
     String editTextUrl;
     String editTextFileName;
-    static public M3U8 m3u8;
+    static public Loader m3u8;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //Check permission
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-            return;
-        }
         Intent intent = getIntent();
         if (intent.getData() != null) {
             ((EditText) findViewById(R.id.editTextUrl)).setText(intent.getData().toString());
@@ -76,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     public void settingsBtnClick(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
+
     }
 
     public void loadBtnClick(View view) {
@@ -83,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.error_already_loading, Toast.LENGTH_SHORT).show();
             return;
         } else {
-            m3u8 = new M3U8(this);
+            m3u8 = new Loader(this);
         }
         enableStartButton(false);
         Thread th = new Thread(new Runnable() {

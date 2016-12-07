@@ -52,7 +52,7 @@ public class ChangeListActivity extends AppCompatActivity {
     }
 
     private void displayListView() {
-        String[] urls = MainActivity.m3u8.GetListUrls();
+        String[] urls = null;//MainActivity.m3u8.GetListUrls();
         ListChecks = new boolean[urls.length];
         urlList = new ArrayList<>();
         for (String u : urls) {

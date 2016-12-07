@@ -1,1 +1,1 @@
-include ':app', ':M3U8Joiner'
+include ':app', ':m3u8'
