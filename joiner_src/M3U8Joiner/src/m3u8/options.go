@@ -18,3 +18,11 @@ type Options struct {
 	OutFileDir string // Dir to save out files
 	TempDir    string // Temp directories
 }
+
+func (o *Options) GetUrl() string {
+	return o.Url
+}
+
+func (o *Options) GetTimeout() int {
+	return o.Timeout
+}

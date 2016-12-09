@@ -38,17 +38,16 @@ func main() {
 	time.Sleep(time.Millisecond * 2000)
 	//	stoped := 0
 	log.Println("receive state")
-	log.Println(m3u8.PollState(m))
 
 	for m.IsLoading() || m.IsJoin() {
-		log.Println(m3u8.PollState(m))
+		log.Println(m3u8.GetState(m))
 	}
 	m.Stop()
 	log.Println("1")
-	log.Println(m3u8.PollState(m))
+	log.Println(m3u8.GetState(m))
 	log.Println("2")
-	log.Println(m3u8.PollState(m))
+	log.Println(m3u8.GetState(m))
 	log.Println("3")
-	log.Println(m3u8.PollState(m))
+	log.Println(m3u8.GetState(m))
 	log.Println("4")
 }

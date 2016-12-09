@@ -1,45 +1,72 @@
 package ru.yourok.loader;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
+import android.view.LayoutInflater;
+import android.view.WindowManager;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+
+import ru.yourok.m3u8loader.MainActivity;
+import ru.yourok.m3u8loader.R;
 
 /**
  * Created by yourok on 07.12.16.
  */
 
-public class LoaderManager extends IntentService {
-
-    public LoaderManager() {
-        super("LoaderManager");
-    }
+public class LoaderManager {
 
     private boolean isLoading;
-    private Loader loader;
+    private MainActivity mainActivity;
+    private Loader currentLoader;
 
-    @Override
-    protected void onHandleIntent(Intent intent) {
-        int id = intent.getIntExtra("LoaderID", -1);
-//        if (id==-1)
-        //TODO err
-        loader = LoaderHolder.getInstance().GetLoader(id);
-        if (loader != null) {
-            isLoading = true;
-            checkState();
-            loader.Load();
-            isLoading = false;
-        }
+    public LoaderManager(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
+        isLoading = false;
     }
 
-    private void checkState(){
+    public void Start() {
+        if (isLoading)
+            return;
+        isLoading = true;
+        checkState();
+        for (int i = 0; i < LoaderHolder.getInstance().Size(); i++) {
+            if (!isLoading)
+                break;
+            currentLoader = LoaderHolder.getInstance().GetLoader(i);
+            if (currentLoader.IsFinished())
+                continue;
+            if (currentLoader.LoadList().isEmpty())
+                currentLoader.Load();
+        }
+        isLoading = false;
+    }
+
+    public void Stop() {
+        isLoading = false;
+        for (int i = 0; i < LoaderHolder.getInstance().Size(); i++)
+            LoaderHolder.getInstance().GetLoader(i).Stop();
+        mainActivity.UpdateList();
+    }
+
+    private void checkState() {
         Thread th = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (isLoading){
-                    loader.PollState();
+                while (true) {
+                    if (mainActivity != null)
+                        mainActivity.UpdateList();
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
         th.start();
     }
+
 
 }

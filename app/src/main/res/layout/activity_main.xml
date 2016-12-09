@@ -1,112 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/activity_main"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/buttonAdd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onAddClick"
+            android:src="@drawable/ic_add_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/buttonDownload"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onDownloadClick"
+            android:src="@drawable/ic_file_download_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/buttonPause"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onStopClick"
+            android:src="@drawable/ic_pause_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/buttonSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onSettingsClick"
+            android:src="@drawable/ic_more_horiz_black_24dp" />
+    </LinearLayout>
+
+    <ListView
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context="ru.yourok.m3u8loader.MainActivity">
+        android:id="@+id/listViewLoaders"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
+</LinearLayout>
 
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"--><!--xmlns:app="http://schemas.android.com/apk/res-auto"--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content">-->
 
-            <TextView
-                android:id="@+id/textViewUrl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:text="@string/url_name" />
+    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"--><!--xmlns:app="http://schemas.android.com/apk/res-auto"--><!--xmlns:tools="http://schemas.android.com/tools"--><!--android:id="@+id/activity_main"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--android:orientation="vertical"--><!--android:paddingBottom="@dimen/activity_vertical_margin"--><!--android:paddingLeft="@dimen/activity_horizontal_margin"--><!--android:paddingRight="@dimen/activity_horizontal_margin"--><!--android:paddingTop="@dimen/activity_vertical_margin"--><!--tools:context="ru.yourok.m3u8loader.MainActivity">-->
 
-            <EditText
-                android:id="@+id/editTextUrl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/textViewUrl"
-                android:layout_toLeftOf="@+id/imageButtonClearUrl"
-                android:layout_toStartOf="@+id/imageButtonClearUrl"
-                android:ems="10"
-                android:inputType="textUri" />
 
-            <TextView
-                android:id="@+id/textViewFileName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/editTextUrl"
-                android:text="@string/file_name" />
+    <!--<RelativeLayout--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content">-->
 
-            <EditText
-                android:id="@+id/editTextFileName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/textViewFileName"
-                android:layout_toLeftOf="@+id/imageButtonClearUrl"
-                android:layout_toStartOf="@+id/imageButtonClearUrl"
-                android:ems="10"
-                android:inputType="textPersonName" />
+    <!--<TextView--><!--android:id="@+id/textViewUrl"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:layout_alignParentLeft="true"--><!--android:layout_alignParentStart="true"--><!--android:layout_alignParentTop="true"--><!--android:text="@string/url_name" />-->
 
-            <ImageButton
-                android:id="@+id/imageButtonClearUrl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:onClick="urlCleanBtnClick"
-                app:srcCompat="@android:drawable/ic_input_delete" />
-        </RelativeLayout>
+    <!--<EditText--><!--android:id="@+id/editTextUrl"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:layout_alignParentLeft="true"--><!--android:layout_alignParentStart="true"--><!--android:layout_below="@+id/textViewUrl"--><!--android:layout_toLeftOf="@+id/imageButtonClearUrl"--><!--android:layout_toStartOf="@+id/imageButtonClearUrl"--><!--android:ems="10"--><!--android:inputType="textUri" />-->
 
-        <Button
-            android:id="@+id/buttonStart"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/editTextFileName"
-            android:onClick="loadBtnClick"
-            android:text="@string/main_btn_start" />
+    <!--<TextView--><!--android:id="@+id/textViewFileName"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:layout_below="@+id/editTextUrl"--><!--android:text="@string/file_name" />-->
 
-        <Button
-            android:id="@+id/buttonStop"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/buttonStart"
-            android:onClick="stopBtnClick"
-            android:text="@string/main_btn_stop" />
+    <!--<EditText--><!--android:id="@+id/editTextFileName"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:layout_alignParentLeft="true"--><!--android:layout_alignParentStart="true"--><!--android:layout_below="@+id/textViewFileName"--><!--android:layout_toLeftOf="@+id/imageButtonClearUrl"--><!--android:layout_toStartOf="@+id/imageButtonClearUrl"--><!--android:ems="10"--><!--android:inputType="textPersonName" />-->
 
-        <Button
-            android:id="@+id/buttonClearTemp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/buttonStop"
-            android:onClick="settingsBtnClick"
-            android:text="@string/settings_label" />
+    <!--<ImageButton--><!--android:id="@+id/imageButtonClearUrl"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:layout_alignParentEnd="true"--><!--android:layout_alignParentRight="true"--><!--android:layout_alignParentTop="true"--><!--android:onClick="urlCleanBtnClick"--><!--app:srcCompat="@android:drawable/ic_input_delete" />--><!--</RelativeLayout>-->
 
-        <TextView
-            android:id="@+id/textViewStatus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="" />
-    </LinearLayout>
-</ScrollView>
+    <!--<Button--><!--android:id="@+id/buttonStart"--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content"--><!--android:layout_alignParentLeft="true"--><!--android:layout_alignParentStart="true"--><!--android:layout_below="@+id/editTextFileName"--><!--android:onClick="loadBtnClick"--><!--android:text="@string/main_btn_start" />-->
+
+    <!--<Button--><!--android:id="@+id/buttonStop"--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content"--><!--android:layout_alignParentLeft="true"--><!--android:layout_alignParentStart="true"--><!--android:layout_below="@+id/buttonStart"--><!--android:onClick="stopBtnClick"--><!--android:text="@string/main_btn_stop" />-->
+
+    <!--<Button--><!--android:id="@+id/buttonClearTemp"--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content"--><!--android:layout_alignParentLeft="true"--><!--android:layout_alignParentStart="true"--><!--android:layout_below="@+id/buttonStop"--><!--android:onClick="settingsBtnClick"--><!--android:text="@string/settings_label" />-->
+
+    <!--<TextView--><!--android:id="@+id/textViewStatus"--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content"--><!--android:text="" />--><!--</LinearLayout>--><!--</ScrollView>-->

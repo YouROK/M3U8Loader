@@ -53,20 +53,24 @@ public class Loader {
         opts.setName(Name);
     }
 
+    public String GetName() {
+        return opts.getName();
+    }
+
+    public String GetUrl() {
+        return opts.getUrl();
+    }
+
     public boolean IsWorking() {
         if (m3u8 == null)
             return false;
         return m3u8.isLoading() || m3u8.isJoin();
     }
 
-    public State GetState(){
-        return state;
-    }
-
-    public State PollState() {
+    public State GetState() {
         if (m3u8 == null)
             return null;
-        state = M3u8.pollState(m3u8);
+        state = M3u8.getState(m3u8);
         return state;
     }
 
@@ -87,27 +91,35 @@ public class Loader {
         return m3u8.getList();
     }
 
-    public String Load(){
-        try{
+    public String Load() {
+        try {
             m3u8.load();
             m3u8.join();
             m3u8.removeTemp();
             return "";
-        }catch (Exception e){
+        } catch (Exception e) {
             return e.getMessage();
         }
     }
 
-    public void Stop(){
-        if (m3u8!=null)
+    public void Stop() {
+        if (m3u8 != null)
             m3u8.stop();
+    }
+
+    public boolean IsFinished() {
+        if (m3u8 == null)
+            return false;
+        if (GetState() == null)
+            return false;
+        return state.getStage() == M3u8.Stage_Finished;
     }
 
     public static String RemoveDir(String dir) {
         try {
             M3u8.removeAll(dir);
             return "";
-        }catch (Exception e){
+        } catch (Exception e) {
             return e.getMessage();
         }
     }

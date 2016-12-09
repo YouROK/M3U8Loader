@@ -51,12 +51,30 @@
                     app:srcCompat="@android:drawable/ic_menu_search" />
             </RelativeLayout>
 
+            <TextView
+                android:id="@+id/textViewTempDirSplit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/temp_dir" />
+            <TextView
+                android:id="@+id/textViewTempDir"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="" />
+
             <Button
                 android:id="@+id/buttonChangeDir"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="findSDCardDir"
+                android:onClick="findTempDir"
                 android:text="@string/default_directory_change" />
+
+            <Button
+                android:id="@+id/buttonClearTemp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="clrTempDir"
+                android:text="@string/clear_label" />
 
             <TextView
                 android:id="@+id/textViewThreads"
@@ -83,25 +101,6 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="number" />
-
-            <TextView
-                android:id="@+id/textViewTempDirSplit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/temp_dir" />
-
-            <Button
-                android:id="@+id/buttonClearTemp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onClick="clrTempDir"
-                android:text="@string/clear_label" />
-
-            <TextView
-                android:id="@+id/textViewTempDir"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="" />
 
         </LinearLayout>
 

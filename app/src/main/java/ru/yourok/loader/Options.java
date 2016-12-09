@@ -2,6 +2,7 @@ package ru.yourok.loader;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 
 /**
@@ -28,22 +29,22 @@ public class Options {
     }
 
     public String GetTempDir() {
-        return prefs.getString("TempDirectory", "");
+        return prefs.getString("TempDirectory", Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath()+"/tmp/");
     }
 
     public String GetOutDir() {
-        return prefs.getString("OutDirectory", "");
+        return prefs.getString("OutDirectory", Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath());
     }
 
     public void SetThreads(int val) {
         SharedPreferences.Editor ed = prefs.edit();
-        ed.putInt("Threads", 10);
+        ed.putInt("Threads", val);
         ed.apply();
     }
 
     public void SetTimeout(int val) {
         SharedPreferences.Editor ed = prefs.edit();
-        ed.putInt("Timeout", 5000);
+        ed.putInt("Timeout", val);
         ed.apply();
     }
 
@@ -55,7 +56,7 @@ public class Options {
 
     public void SetOutDir(String val) {
         SharedPreferences.Editor ed = prefs.edit();
-        ed.putString("OutDirectory", "");
+        ed.putString("OutDirectory", val);
         ed.apply();
     }
 

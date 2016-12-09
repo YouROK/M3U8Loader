@@ -13,7 +13,7 @@
 
     <string name="add_add_load">Добавить загрузку</string>
 
-    <string name="default_directory_change">Выбрать папку по умолчанию</string>
+    <string name="default_directory_change">Выбрать временную папку</string>
 
     <string name="settings_label">Настройки</string>
     <string name="clear_label">Очистить временную папку</string>
@@ -27,6 +27,7 @@
     <string name="status_finish">Завершено</string>
     <string name="status_stoped">Остановлено</string>
     <string name="status_loaded">Загружено</string>
+    <string name="status_joined">Соединено</string>
 
     <string name="error_download_dir">Папка загрузки не установлена</string>
     <string name="error_dir_perm">Доступ к папке запрещен</string>

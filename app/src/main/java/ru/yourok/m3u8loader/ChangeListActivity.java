@@ -47,7 +47,7 @@ public class ChangeListActivity extends AppCompatActivity {
     }
 
     public void cancelBtnClick(View view) {
-        MainActivity.m3u8.Stop();
+//        MainActivity.m3u8.Stop();
         finish();
     }
 

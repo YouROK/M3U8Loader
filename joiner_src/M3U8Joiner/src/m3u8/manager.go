@@ -9,10 +9,12 @@ import (
 
 const (
 	Stage_Stoped = iota
+	Stage_Error
 	Stage_LoadingList
 	Stage_LoadingContent
 	Stage_JoinSegments
 	Stage_RemoveTemp
+	Stage_Finished
 )
 
 type M3U8 struct {
@@ -27,7 +29,7 @@ type M3U8 struct {
 	loadIndex int
 	loadCount int
 
-	stateChan   chan *State
+	state       *State
 	stateMutext sync.Mutex
 }
 
@@ -112,9 +114,9 @@ func (m *M3U8) IsJoin() bool {
 func (m *M3U8) Stop() {
 	m.isJoin = false
 	m.isLoading = false
-	m.sendState(0, 0, Stage_Stoped, "", m.lastErr)
-	if m.stateChan != nil {
-		close(m.stateChan)
-		m.stateChan = nil
+	if m.lastErr != nil {
+		m.sendState(0, 0, Stage_Error, "", m.lastErr)
+	} else {
+		m.sendState(0, 0, Stage_Stoped, "", nil)
 	}
 }

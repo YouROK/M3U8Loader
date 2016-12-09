@@ -1,0 +1,114 @@
+package ru.yourok.m3u8loader;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import go.m3u8.M3u8;
+import go.m3u8.State;
+import ru.yourok.loader.Loader;
+import ru.yourok.loader.LoaderHolder;
+
+import go.m3u8.M3U8;
+
+/**
+ * Created by yourok on 08.12.16.
+ */
+
+public class AdaptorLoadresList extends BaseAdapter {
+
+    Context ctx;
+
+    public AdaptorLoadresList(Context ctx) {
+        this.ctx = ctx;
+    }
+
+    @Override
+    public int getCount() {
+        int ret = LoaderHolder.getInstance().Size();
+        return ret;
+    }
+
+    @Override
+    public Object getItem(int i) {
+        return LoaderHolder.getInstance().GetLoader(i);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return i;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View view = convertView;
+        if (view == null) {
+            LayoutInflater lInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            view = lInflater.inflate(R.layout.listview_item_loaders, parent, false);
+        }
+        Loader loader = LoaderHolder.getInstance().GetLoader(position);
+        ((TextView) view.findViewById(R.id.itemLoaderName)).setText(loader.GetName());
+        String url = loader.GetUrl();
+        String status = "";
+        State state = loader.GetState();
+        int curr = 0;
+        int all = 0;
+        if (state != null) {
+            curr = (int) state.getCurrent();
+            all = (int) state.getCount();
+            switch ((int) state.getStage()) {
+                case (int) M3u8.Stage_Stoped:
+                    status = ctx.getString(R.string.status_stoped);
+                    break;
+                case (int) M3u8.Stage_Error:
+                    status = ctx.getString(R.string.error);
+                    if (state.getError() != null)
+                        status += state.getError().getMessage();
+                    else
+                        status += "unknown";
+                    break;
+                case (int) M3u8.Stage_LoadingList:
+                    status = ctx.getString(R.string.status_load_list);
+                    break;
+                case (int) M3u8.Stage_LoadingContent: {
+                    if (all == 0)
+                        status = String.format(ctx.getString(R.string.status_loaded) + " %d", curr);
+                    else
+                        status = String.format(ctx.getString(R.string.status_loaded) + " %d / %d", curr, all);
+                    break;
+                }
+                case (int) M3u8.Stage_JoinSegments: {
+                    if (all == 0)
+                        status = String.format(ctx.getString(R.string.status_joined) + " %d", curr);
+                    else
+                        status = String.format(ctx.getString(R.string.status_joined) + " %d / %d", curr, all);
+                    break;
+                }
+                case (int) M3u8.Stage_RemoveTemp: {
+                    status = ctx.getString(R.string.status_remove_temp);
+                    break;
+                }
+                case (int) M3u8.Stage_Finished: {
+                    status = ctx.getString(R.string.status_finish);
+                    break;
+                }
+                default:
+                    status = "";
+            }
+        }
+        if (state != null && state.getText() != null && !state.getText().isEmpty())
+            url = state.getText();
+        ((TextView) view.findViewById(R.id.itemLoaderUrl)).setText(url);
+        ((TextView) view.findViewById(R.id.itemLoaderStatus)).setText(status);
+        if (all > 0)
+            ((ProgressBar) view.findViewById(R.id.itemProgress)).setProgress((curr * 100) / all);
+        else
+            ((ProgressBar) view.findViewById(R.id.itemProgress)).setProgress(0);
+
+        return view;
+    }
+}

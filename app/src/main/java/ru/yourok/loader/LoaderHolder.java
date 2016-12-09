@@ -8,6 +8,7 @@ import java.util.List;
  */
 public class LoaderHolder {
     private static LoaderHolder ourInstance = new LoaderHolder();
+    private static LoaderManager loaderManager;
 
     public static LoaderHolder getInstance() {
         return ourInstance;

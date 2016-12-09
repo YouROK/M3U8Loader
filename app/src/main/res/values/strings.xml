@@ -13,7 +13,7 @@
 
     <string name="add_add_load">Add Load</string>
 
-    <string name="default_directory_change">Select the default directory</string>
+    <string name="default_directory_change">Select the temp directory</string>
 
     <string name="settings_label">Settings</string>
     <string name="clear_label">Clear temp files</string>
@@ -27,6 +27,7 @@
     <string name="status_finish">Finish</string>
     <string name="status_stoped">Stoped</string>
     <string name="status_loaded">Loaded</string>
+    <string name="status_joined">Joined</string>
 
     <string name="error_download_dir">Download dir not set</string>
     <string name="error_dir_perm">Directory permission denied</string>

@@ -22,6 +22,7 @@ import java.io.File;
 
 import ru.yourok.directorychooser.DirectoryChooserActivity;
 import ru.yourok.loader.Loader;
+import ru.yourok.loader.Options;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -53,29 +54,21 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void loadSettings() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String dir = prefs.getString("DownloadDir", "");
-        if (dir.isEmpty())
-            dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
-        String threads = prefs.getString("Threads", "10");
-        String timeout = prefs.getString("Timeout", "15000");
-
-        ((EditText) findViewById(R.id.editTextDirectoryPath)).setText(dir);
-        ((EditText) findViewById(R.id.editTextThreads)).setText(threads);
-        ((EditText) findViewById(R.id.editTextTimeout)).setText(timeout);
-        ((TextView) findViewById(R.id.textViewTempDir)).setText(dir.concat("/tmp/"));
+        ((EditText) findViewById(R.id.editTextDirectoryPath)).setText(Options.getInstance(this).GetOutDir());
+        ((EditText) findViewById(R.id.editTextThreads)).setText(String.valueOf(Options.getInstance(this).GetThreads()));
+        ((EditText) findViewById(R.id.editTextTimeout)).setText(String.valueOf(Options.getInstance(this).GetTimeout()));
+        ((TextView) findViewById(R.id.textViewTempDir)).setText(Options.getInstance(this).GetTempDir());
     }
 
     private void saveSettings() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor ed = prefs.edit();
-        String dir = ((EditText) findViewById(R.id.editTextDirectoryPath)).getText().toString();
+        String dirout = ((EditText) findViewById(R.id.editTextDirectoryPath)).getText().toString();
+        String dirtemp = ((TextView) findViewById(R.id.textViewTempDir)).getText().toString();
         String threads = ((EditText) findViewById(R.id.editTextThreads)).getText().toString();
         String timeout = ((EditText) findViewById(R.id.editTextTimeout)).getText().toString();
-        ed.putString("DownloadDir", dir);
-        ed.putString("Threads", threads);
-        ed.putString("Timeout", timeout);
-        ed.apply();
+        Options.getInstance(this).SetOutDir(dirout);
+        Options.getInstance(this).SetTempDir(dirtemp);
+        Options.getInstance(this).SetTimeout(Integer.parseInt(timeout));
+        Options.getInstance(this).SetThreads(Integer.parseInt(threads));
     }
 
     public void okBtnClick(View view) {
@@ -88,7 +81,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void clrTempDir(View view) {
-        String tmpdir = ((EditText) findViewById(R.id.editTextDirectoryPath)).getText().toString() + "/tmp/";
+        String tmpdir = ((TextView) findViewById(R.id.textViewTempDir)).getText().toString();
         String ret = Loader.RemoveDir(tmpdir);
         if (ret.isEmpty()) ret = getText(android.R.string.ok).toString();
         Toast.makeText(this, ret, Toast.LENGTH_SHORT).show();
@@ -99,12 +92,12 @@ public class SettingsActivity extends AppCompatActivity {
         startActivityForResult(intent, 1202);
     }
 
-    public void findSDCardDir(View view) {
+    public void findTempDir(View view) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         final FileDirsAdapter adapter = new FileDirsAdapter();
         dialogBuilder.setAdapter(adapter, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
-                ((EditText) findViewById(R.id.editTextDirectoryPath)).setText(((File) adapter.getItem(item)).getAbsolutePath());
+                ((TextView) findViewById(R.id.textViewTempDir)).setText(((File) adapter.getItem(item)).getAbsolutePath());
             }
         });
         AlertDialog alertDialogObject = dialogBuilder.create();
@@ -123,7 +116,6 @@ public class SettingsActivity extends AppCompatActivity {
                 return;
             }
             ((EditText) findViewById(R.id.editTextDirectoryPath)).setText(name);
-            ((TextView) findViewById(R.id.textViewTempDir)).setText(name.concat("/tmp/"));
         }
     }
 

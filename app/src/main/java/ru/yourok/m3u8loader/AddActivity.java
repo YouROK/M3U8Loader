@@ -8,6 +8,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import ru.yourok.loader.Loader;
+import ru.yourok.loader.LoaderHolder;
+import ru.yourok.loader.Options;
+
 public class AddActivity extends AppCompatActivity {
 
     private EditText urlEdit;
@@ -20,12 +24,17 @@ public class AddActivity extends AppCompatActivity {
 
         urlEdit = (EditText) findViewById(R.id.editTextUrl);
         fileEdit = (EditText) findViewById(R.id.editTextFileName);
-        fileEdit.requestFocus();
         Intent intent = getIntent();
-        if (intent.getAction().equals(Intent.ACTION_SEND) && intent.getStringExtra(Intent.EXTRA_TEXT) != null)
+        if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_SEND) && intent.getStringExtra(Intent.EXTRA_TEXT) != null) {
             urlEdit.setText(intent.getStringExtra(Intent.EXTRA_TEXT));
+        }
         if (intent.getData() != null)
             urlEdit.setText(intent.getDataString());
+
+        if (urlEdit.getText().toString().isEmpty())
+            urlEdit.requestFocus();
+        else
+            fileEdit.requestFocus();
     }
 
     public void okBtnClick(View view) {
@@ -38,12 +47,14 @@ public class AddActivity extends AppCompatActivity {
             return;
         }
 
-        Intent startIntent = new Intent(this, MainActivity.class);
-        startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startIntent.setData(Uri.parse(urlEdit.getText().toString()));
-        startIntent.putExtra("filename", fileEdit.getText().toString());
-        this.startActivity(startIntent);
-
+        Loader loader = new Loader(this);
+        loader.SetUrl(urlEdit.getText().toString());
+        loader.SetName(fileEdit.getText().toString());
+        loader.SetThreads(Options.getInstance(this).GetThreads());
+        loader.SetTimeout(Options.getInstance(this).GetTimeout());
+        loader.SetTempDir(Options.getInstance(this).GetTempDir());
+        loader.SetOutDir(Options.getInstance(this).GetOutDir());
+        LoaderHolder.getInstance().AddLoader(loader);
         finish();
     }
 
