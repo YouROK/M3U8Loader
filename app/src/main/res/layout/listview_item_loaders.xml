@@ -1,36 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/itemLoaderMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/itemLoaderName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Name"
-        android:textAppearance="@android:style/TextAppearance.Medium" />
-
-    <TextView
-        android:id="@+id/itemLoaderUrl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Url"
-        android:textAppearance="@android:style/TextAppearance.Small" />
-
-    <TextView
-        android:id="@+id/itemLoaderStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Status"
-        android:textAppearance="@android:style/TextAppearance.Small" />
-
-    <ProgressBar
-        android:id="@+id/itemProgress"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="100"
-        android:progress="0" />
+        android:orientation="horizontal"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/itemLoaderName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:textAppearance="@android:style/TextAppearance.Medium" />
+
+            <TextView
+                android:ellipsize="middle"
+                android:lines="1"
+                android:singleLine="true"
+                android:id="@+id/itemLoaderUrl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Url"
+                android:textAppearance="@android:style/TextAppearance.Small" />
+
+            <TextView
+                android:id="@+id/itemLoaderStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Status"
+                android:textAppearance="@android:style/TextAppearance.Small" />
+
+            <ProgressBar
+                android:id="@+id/itemProgress"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:progress="0" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/buttonOpenItemMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:src="@drawable/ic_more_horiz_black_24dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/itemLoaderMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <ImageButton
+            android:id="@+id/buttonItemMenuStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_play_circle_outline_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/buttonItemMenuStop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_pause_circle_outline_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/buttonItemMenuRemove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_remove_circle_outline_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/buttonItemMenuEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_mode_edit_black_24dp" />
+    </LinearLayout>
 
 </LinearLayout>

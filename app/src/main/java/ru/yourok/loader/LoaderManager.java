@@ -7,7 +7,9 @@ import android.view.LayoutInflater;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import go.m3u8.M3u8;
 import ru.yourok.m3u8loader.MainActivity;
 import ru.yourok.m3u8loader.R;
 
@@ -17,56 +19,95 @@ import ru.yourok.m3u8loader.R;
 
 public class LoaderManager {
 
-    private boolean isLoading;
+    private boolean isState, isStoped;
     private MainActivity mainActivity;
     private Loader currentLoader;
 
+    public LoaderManager() {
+        this.mainActivity = null;
+    }
+
     public LoaderManager(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
-        isLoading = false;
     }
 
     public void Start() {
-        if (isLoading)
-            return;
-        isLoading = true;
+        for (int i = 0; i < LoaderHolder.getInstance().Size(); i++)
+            if (LoaderHolder.getInstance().GetLoader(i).IsWorking()) {
+                Toast.makeText(mainActivity, R.string.error_already_loading, Toast.LENGTH_SHORT).show();
+                return;
+            }
+        isStoped = false;
         checkState();
         for (int i = 0; i < LoaderHolder.getInstance().Size(); i++) {
-            if (!isLoading)
-                break;
             currentLoader = LoaderHolder.getInstance().GetLoader(i);
             if (currentLoader.IsFinished())
                 continue;
-            if (currentLoader.LoadList().isEmpty())
+            if (isStoped)
+                break;
+            String ret = "";
+            if (currentLoader.GetList() == null)
+                ret = currentLoader.LoadList();
+            if (ret.isEmpty())
                 currentLoader.Load();
         }
-        isLoading = false;
+        mainActivity.UpdateList();
+    }
+
+    public void Start(int id) {
+        Loader loader = LoaderHolder.getInstance().GetLoader(id);
+        if (loader.IsWorking()) {
+            Toast.makeText(mainActivity, R.string.error_already_loading, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (loader.IsFinished())
+            return;
+        checkState();
+        String ret = "";
+        if (loader.GetList() == null)
+            ret = loader.LoadList();
+        if (ret.isEmpty())
+            loader.Load();
+        mainActivity.UpdateList();
     }
 
     public void Stop() {
-        isLoading = false;
+        isStoped = true;
         for (int i = 0; i < LoaderHolder.getInstance().Size(); i++)
-            LoaderHolder.getInstance().GetLoader(i).Stop();
+            if (LoaderHolder.getInstance().GetLoader(i).IsWorking())
+                LoaderHolder.getInstance().GetLoader(i).Stop();
         mainActivity.UpdateList();
     }
 
     private void checkState() {
+        if (isState)
+            return;
+        isState = true;
         Thread th = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
                     if (mainActivity != null)
                         mainActivity.UpdateList();
+                    else break;
+                    boolean isEnd = true;
+
+                    for (int i = 0; i < LoaderHolder.getInstance().Size(); i++)
+                        if (LoaderHolder.getInstance().GetLoader(i).IsWorking()) {
+                            isEnd = false;
+                            break;
+                        }
+                    if (isEnd || isStoped)
+                        break;
                     try {
                         Thread.sleep(200);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
+                isState = false;
             }
         });
         th.start();
     }
-
-
 }

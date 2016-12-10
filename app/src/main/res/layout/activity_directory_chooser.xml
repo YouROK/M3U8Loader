@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ru.yourok.directorychooser.DirectoryChooserActivity">
+    tools:context=".DirectoryChooserActivity">
 
     <LinearLayout
         android:id="@+id/footer"
@@ -14,23 +14,23 @@
         android:orientation="horizontal">
 
         <Button
-            style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/btnConfirm"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@android:string/ok"
-            android:onClick="confirmBtnClick"/>
+            android:onClick="confirmBtnClick"
+            android:text="@android:string/ok" />
 
         <Button
-            style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/btnCancel"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@android:string/cancel"
             android:onClick="cancelBtnClick"
-            tools:ignore="ButtonOrder"/>
+            android:text="@android:string/cancel"
+            tools:ignore="ButtonOrder" />
     </LinearLayout>
 
     <RelativeLayout
@@ -40,55 +40,69 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true">
 
-        <Button
+        <ImageButton
             android:id="@+id/btnNavUp"
+            style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:contentDescription="@string/up_label"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:text="@string/up_label"
-            android:onClick="upBtnClick"/>
+            android:onClick="upBtnClick"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_folder_up_black_24dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/divider"
+            android:layout_alignParentTop="true"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:layout_toRightOf="@+id/btnNavUp"
+            android:layout_toEndOf="@+id/btnNavUp">
+
+            <TextView
+                android:id="@+id/txtvSelectedFolderLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/btnNavUp"
+                android:layout_toRightOf="@+id/btnNavUp"
+                android:text="@string/selected_folder_label"
+                android:textStyle="bold"></TextView>
+
+            <TextView
+                android:id="@+id/txtvSelectedFolder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/divider"
+                android:layout_toEndOf="@+id/btnNavUp"
+                android:layout_toRightOf="@+id/btnNavUp"
+                android:ellipsize="start"
+                android:lines="1"
+                android:singleLine="true"
+                android:scrollHorizontally="true"
+                android:text="Folder Name" />
+        </LinearLayout>
 
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@id/btnNavUp"
-            />
+            android:background="@android:color/darker_gray" />
 
-        <TextView
-            android:id="@+id/txtvSelectedFolder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="start"
-            android:scrollHorizontally="true"
-            android:maxLines="1"
-            android:text=""
-            android:layout_above="@+id/divider"
-            android:layout_toRightOf="@+id/btnNavUp"
-            android:layout_toEndOf="@+id/btnNavUp" />
-
-        <TextView
-            android:id="@+id/txtvSelectedFolderLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/selected_folder_label"
-            android:textStyle="bold"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/btnNavUp"
-            android:layout_toEndOf="@+id/btnNavUp">
-        </TextView>
     </RelativeLayout>
 
     <ListView
         android:id="@+id/directoryList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/directoryInfo"
+        android:layout_above="@+id/footer"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/footer" />
+        android:layout_below="@+id/directoryInfo" />
+
+
 
 </RelativeLayout>

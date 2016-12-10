@@ -9,14 +9,20 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import ru.yourok.loader.Loader;
+import ru.yourok.loader.LoaderHolder;
 import ru.yourok.loader.LoaderManager;
+import ru.yourok.loader.Options;
 
 
 public class MainActivity extends AppCompatActivity {
     public static AdaptorLoadresList loadresList;
-    private static LoaderManager loaderManager;
+    public static LoaderManager loaderManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
         }else{
             UpdateList();
         }
-        ((ListView) findViewById(R.id.listViewLoaders)).setAdapter(loadresList);
+        ListView listView = ((ListView) findViewById(R.id.listViewLoaders));
+        listView.setAdapter(loadresList);
 
         //Check permission
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
@@ -82,4 +89,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this,SettingsActivity.class);
         startActivity(intent);
     }
+
+
 }

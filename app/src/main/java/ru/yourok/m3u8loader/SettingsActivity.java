@@ -3,10 +3,7 @@ package ru.yourok.m3u8loader;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
-import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,7 +17,6 @@ import android.widget.Toast;
 
 import java.io.File;
 
-import ru.yourok.directorychooser.DirectoryChooserActivity;
 import ru.yourok.loader.Loader;
 import ru.yourok.loader.Options;
 
@@ -30,10 +26,6 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        if (Build.VERSION.SDK_INT < 19) {
-            findViewById(R.id.buttonChangeDir).setVisibility(View.INVISIBLE);
-            findViewById(R.id.buttonChangeDir).setVisibility(View.GONE);
-        }
         loadSettings();
     }
 
@@ -93,15 +85,20 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void findTempDir(View view) {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        final FileDirsAdapter adapter = new FileDirsAdapter();
-        dialogBuilder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int item) {
-                ((TextView) findViewById(R.id.textViewTempDir)).setText(((File) adapter.getItem(item)).getAbsolutePath());
-            }
-        });
-        AlertDialog alertDialogObject = dialogBuilder.create();
-        alertDialogObject.show();
+        if (Build.VERSION.SDK_INT < 19) {
+            Intent intent = new Intent(this, DirectoryChooserActivity.class);
+            startActivityForResult(intent, 1203);
+        }else {
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+            final FileDirsAdapter adapter = new FileDirsAdapter();
+            dialogBuilder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int item) {
+                    ((TextView) findViewById(R.id.textViewTempDir)).setText(((File) adapter.getItem(item)).getAbsolutePath());
+                }
+            });
+            AlertDialog alertDialogObject = dialogBuilder.create();
+            alertDialogObject.show();
+        }
     }
 
     @Override
@@ -109,13 +106,16 @@ public class SettingsActivity extends AppCompatActivity {
         if (data == null) {
             return;
         }
+        String name = data.getStringExtra("filename");
+        if (name.equals("/")) {
+            Toast.makeText(this, getText(R.string.error) + " wrong directory", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (requestCode == 1202) {
-            String name = data.getStringExtra("filename");
-            if (name.equals("/")) {
-                Toast.makeText(this, getText(R.string.error) + " wrong directory", Toast.LENGTH_SHORT).show();
-                return;
-            }
             ((EditText) findViewById(R.id.editTextDirectoryPath)).setText(name);
+        }else if(requestCode == 1203){
+            ((TextView) findViewById(R.id.textViewTempDir)).setText(name);
         }
     }
 

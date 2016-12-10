@@ -57,6 +57,9 @@
                 android:layout_height="wrap_content"
                 android:text="@string/temp_dir" />
             <TextView
+                android:ellipsize="marquee"
+                android:lines="1"
+                android:singleLine="true"
                 android:id="@+id/textViewTempDir"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -19,6 +19,7 @@ public class Loader {
     private State state;
 
     private Context context;
+    private boolean isStoped;
 
     public Loader(Context context) {
         opts = M3u8.newOptions();
@@ -64,7 +65,18 @@ public class Loader {
     public boolean IsWorking() {
         if (m3u8 == null)
             return false;
-        return m3u8.isLoading() || m3u8.isJoin();
+        if (m3u8.isLoading() || m3u8.isJoin())
+            return true;
+        if (GetState() == null)
+            return false;
+        switch ((int) state.getStage()) {
+            case (int) M3u8.Stage_JoinSegments:
+            case (int) M3u8.Stage_LoadingList:
+            case (int) M3u8.Stage_LoadingContent:
+            case (int) M3u8.Stage_RemoveTemp:
+                return true;
+        }
+        return false;
     }
 
     public State GetState() {
@@ -93,18 +105,34 @@ public class Loader {
 
     public String Load() {
         try {
-            m3u8.load();
-            m3u8.join();
-            m3u8.removeTemp();
+            isStoped = false;
+            if (!isStoped)
+                m3u8.load();
+            if (!isStoped)
+                m3u8.join();
+            if (!isStoped)
+                m3u8.removeTemp();
+            isStoped = true;
             return "";
         } catch (Exception e) {
+            isStoped = true;
             return e.getMessage();
         }
     }
 
     public void Stop() {
+        isStoped = true;
         if (m3u8 != null)
             m3u8.stop();
+    }
+
+    public void RemoveTemp() {
+        try {
+            if (m3u8 != null)
+                m3u8.removeTemp();
+        } catch (Exception e) {
+
+        }
     }
 
     public boolean IsFinished() {

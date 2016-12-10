@@ -20,6 +20,17 @@ func NewHttpOpts(url string) *HttpOpts {
 	return o
 }
 
+func (o *HttpOpts) CleanHeader() {
+	o.header = nil
+}
+
+func (o *HttpOpts) GetHeader(key string) string {
+	if val, ok := o.header[key]; ok {
+		return val
+	}
+	return ""
+}
+
 func (o *HttpOpts) SetHeader(key, val string) {
 	if o.header == nil {
 		o.header = make(map[string]string)

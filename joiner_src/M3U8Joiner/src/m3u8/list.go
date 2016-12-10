@@ -1,9 +1,10 @@
 package m3u8
 
 type List struct {
-	items []*Item
-	lists []*List
-	Name  string
+	items    []*Item
+	lists    []*List
+	Name     string
+	bandwidt int
 	Item
 }
 
@@ -34,6 +35,10 @@ func (l *List) ItemsSize() int {
 	return len(l.items)
 }
 
+func (l *List) ListsSize() int {
+	return len(l.lists)
+}
+
 func (l *List) GetList(i int) *List {
 	if i < 0 || i >= len(l.lists) {
 		return nil
@@ -41,17 +46,10 @@ func (l *List) GetList(i int) *List {
 	return l.lists[i]
 }
 
-func (l *List) GetListsSize() int {
-	return len(l.lists)
+func (l *List) IsLoadList() bool {
+	return l.Item.IsLoad
 }
 
-func (l *List) GetListAtr() *Item {
-	return &l.Item
-}
-
-func (l *List) SetListAtr(val *Item) {
-
-	l.FilePath = val.FilePath
-	l.Url = val.Url
-	l.IsLoad = val.IsLoad
+func (l *List) SetLoadList(val bool) {
+	l.Item.IsLoad = val
 }

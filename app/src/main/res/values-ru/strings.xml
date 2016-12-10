@@ -33,6 +33,6 @@
     <string name="error_dir_perm">Доступ к папке запрещен</string>
     <string name="error_url_empty">URL пуст</string>
     <string name="error_filename_empty">Пустое имя файла</string>
-    <string name="error_already_loading">Уже загружается, пожалуйста, остановите или подождите текущию загрузку</string>
+    <string name="error_already_loading">Уже загружается</string>
     <string name="error">Ошибка:</string>
 </resources>

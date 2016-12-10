@@ -33,7 +33,7 @@
     <string name="error_dir_perm">Directory permission denied</string>
     <string name="error_url_empty">Url is empty</string>
     <string name="error_filename_empty">Filename is empty</string>
-    <string name="error_already_loading">Already loading, please stop or wait current loading</string>
+    <string name="error_already_loading">Already loading</string>
     <string name="error">Error:</string>
 
 </resources>

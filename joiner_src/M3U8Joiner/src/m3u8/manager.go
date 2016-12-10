@@ -54,7 +54,7 @@ func (m *M3U8) LoadList() error {
 	}
 	m.lastErr = err
 	if err != nil {
-		m.sendState(0, 0, Stage_Stoped, ho.Url, err)
+		m.sendState(0, 0, Stage_Error, ho.Url, err)
 		return err
 	}
 	list.Name = m.opt.Name
@@ -75,7 +75,7 @@ func (m *M3U8) prepareList(l *List) int {
 	for i, sl := range l.lists {
 		sl.IsLoad = true
 		if sl.Name == "" {
-			sl.Name = fmt.Sprintf("%s.%d", l.Name, i+1)
+			sl.Name = fmt.Sprintf("%s.%d.%d", l.Name, i+1, sl.bandwidt)
 		}
 		sl.Item.FilePath = filepath.Join(l.Item.FilePath, sl.Name)
 		count += m.prepareList(sl)

@@ -147,6 +147,7 @@ func ParseList(opt *loader.HttpOpts) (*List, error) {
 			if err != nil {
 				return nil, err
 			}
+			subList.bandwidt = int(i.Bandwidth)
 			list.lists = append(list.lists, subList)
 		}
 	}
