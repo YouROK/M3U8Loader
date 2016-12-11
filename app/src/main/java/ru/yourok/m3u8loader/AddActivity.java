@@ -38,22 +38,31 @@ public class AddActivity extends AppCompatActivity {
     }
 
     public void okBtnClick(View view) {
-        if (urlEdit.getText().toString().isEmpty()) {
+        String Name = fileEdit.getText().toString().trim();
+        String Url = urlEdit.getText().toString().trim();
+
+
+        if (Url.isEmpty()) {
             Toast.makeText(this, R.string.error_url_empty, Toast.LENGTH_SHORT).show();
             return;
         }
-        if (fileEdit.getText().toString().isEmpty()) {
+        if (Name.isEmpty()) {
             Toast.makeText(this, R.string.error_filename_empty, Toast.LENGTH_SHORT).show();
             return;
         }
 
+        for (int i = 0; i < LoaderHolder.getInstance().Size(); i++)
+            if (LoaderHolder.getInstance().GetLoader(i).GetName().equals(Name)) {
+                Toast.makeText(this, R.string.error_double_name, Toast.LENGTH_SHORT).show();
+                return;
+            } else if (LoaderHolder.getInstance().GetLoader(i).GetUrl().equals(Url)) {
+                Toast.makeText(this, R.string.error_double_url, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
         Loader loader = new Loader(this);
-        loader.SetUrl(urlEdit.getText().toString());
-        loader.SetName(fileEdit.getText().toString());
-        loader.SetThreads(Options.getInstance(this).GetThreads());
-        loader.SetTimeout(Options.getInstance(this).GetTimeout());
-        loader.SetTempDir(Options.getInstance(this).GetTempDir());
-        loader.SetOutDir(Options.getInstance(this).GetOutDir());
+        loader.SetUrl(Url);
+        loader.SetName(Name);
         LoaderHolder.getInstance().AddLoader(loader);
         finish();
     }

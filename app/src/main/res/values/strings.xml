@@ -35,5 +35,7 @@
     <string name="error_filename_empty">Filename is empty</string>
     <string name="error_already_loading">Already loading</string>
     <string name="error">Error:</string>
+    <string name="error_double_name">Loading with the same name already exists</string>
+    <string name="error_double_url">Loading with the same url already exists</string>
 
 </resources>

@@ -1,6 +1,7 @@
 package ru.yourok.loader;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import go.m3u8.M3u8;
 import ru.yourok.m3u8loader.MainActivity;
 import ru.yourok.m3u8loader.R;
+import ru.yourok.m3u8loader.utils.Notifications;
 
 /**
  * Created by yourok on 07.12.16.
@@ -22,13 +24,16 @@ public class LoaderManager {
     private boolean isState, isStoped;
     private MainActivity mainActivity;
     private Loader currentLoader;
+    private Notifications notifications;
 
     public LoaderManager() {
         this.mainActivity = null;
+        this.notifications = null;
     }
 
     public LoaderManager(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
+        this.notifications = new Notifications(mainActivity);
     }
 
     public void Start() {
@@ -45,13 +50,9 @@ public class LoaderManager {
                 continue;
             if (isStoped)
                 break;
-            String ret = "";
-            if (currentLoader.GetList() == null)
-                ret = currentLoader.LoadList();
-            if (ret.isEmpty())
-                currentLoader.Load();
+            sendNotif(i);
+            load(currentLoader);
         }
-        mainActivity.UpdateList();
     }
 
     public void Start(int id) {
@@ -63,12 +64,22 @@ public class LoaderManager {
         if (loader.IsFinished())
             return;
         checkState();
+        sendNotif(id);
+        load(loader);
+    }
+
+    private void load(Loader loader) {
+        loader.SetThreads(Options.getInstance(mainActivity).GetThreads());
+        loader.SetTimeout(Options.getInstance(mainActivity).GetTimeout());
+        loader.SetTempDir(Options.getInstance(mainActivity).GetTempDir());
+        loader.SetOutDir(Options.getInstance(mainActivity).GetOutDir());
         String ret = "";
         if (loader.GetList() == null)
             ret = loader.LoadList();
         if (ret.isEmpty())
             loader.Load();
         mainActivity.UpdateList();
+        updateNotif();
     }
 
     public void Stop() {
@@ -77,6 +88,17 @@ public class LoaderManager {
             if (LoaderHolder.getInstance().GetLoader(i).IsWorking())
                 LoaderHolder.getInstance().GetLoader(i).Stop();
         mainActivity.UpdateList();
+        updateNotif();
+    }
+
+    void updateNotif() {
+        if (notifications != null)
+            notifications.update();
+    }
+
+    void sendNotif(int id) {
+        if (notifications != null)
+            notifications.createNotification(id);
     }
 
     private void checkState() {
@@ -86,12 +108,17 @@ public class LoaderManager {
         Thread th = new Thread(new Runnable() {
             @Override
             public void run() {
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 while (true) {
+                    updateNotif();
                     if (mainActivity != null)
                         mainActivity.UpdateList();
                     else break;
                     boolean isEnd = true;
-
                     for (int i = 0; i < LoaderHolder.getInstance().Size(); i++)
                         if (LoaderHolder.getInstance().GetLoader(i).IsWorking()) {
                             isEnd = false;
@@ -105,6 +132,7 @@ public class LoaderManager {
                         e.printStackTrace();
                     }
                 }
+                updateNotif();
                 isState = false;
             }
         });

@@ -67,8 +67,12 @@ func (m *M3U8) LoadList() error {
 
 func (m *M3U8) prepareList(l *List) int {
 	count := 0
-	for _, n := range l.items {
-		n.FilePath = filepath.Join(l.FilePath, filepath.Base(n.Url))
+	for i, n := range l.items {
+		filename := filepath.Base(n.Url)
+		if len(filename)+len(l.FilePath) > 260 {
+			filename = fmt.Sprintf("segment_%d.ts", i)
+		}
+		n.FilePath = filepath.Join(l.FilePath, filename)
 		n.IsLoad = true
 		count++
 	}

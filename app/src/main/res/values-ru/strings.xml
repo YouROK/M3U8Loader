@@ -18,7 +18,7 @@
     <string name="settings_label">Настройки</string>
     <string name="clear_label">Очистить временную папку</string>
     <string name="selected_folder_label">Выберите папку:</string>
-    <string name="up_label">Вверх</string>
+    <string name="up_label">Вверх &#x2B06;</string>
 
     <string name="status_load_list">Загрузка листа...</string>
     <string name="status_load_segments">Загрузка сегментов...</string>
@@ -31,8 +31,10 @@
 
     <string name="error_download_dir">Папка загрузки не установлена</string>
     <string name="error_dir_perm">Доступ к папке запрещен</string>
-    <string name="error_url_empty">URL пуст</string>
+    <string name="error_url_empty">URL адрес пуст</string>
     <string name="error_filename_empty">Пустое имя файла</string>
     <string name="error_already_loading">Уже загружается</string>
     <string name="error">Ошибка:</string>
+    <string name="error_double_name">Загрузка с таким именем уже существует</string>
+    <string name="error_double_url">Загрузка с такой ссылкой уже существует</string>
 </resources>

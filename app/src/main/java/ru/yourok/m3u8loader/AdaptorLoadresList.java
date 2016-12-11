@@ -18,6 +18,7 @@ import ru.yourok.loader.LoaderHolder;
 
 import go.m3u8.M3U8;
 import ru.yourok.loader.LoaderManager;
+import ru.yourok.m3u8loader.utils.Status;
 
 /**
  * Created by yourok on 08.12.16.
@@ -69,62 +70,9 @@ public class AdaptorLoadresList extends BaseAdapter {
 
         Loader loader = LoaderHolder.getInstance().GetLoader(position);
         ((TextView) view.findViewById(R.id.itemLoaderName)).setText(loader.GetName());
-        String url = loader.GetUrl();
-        String status = "";
-        State state = loader.GetState();
-        int curr = 0;
-        int all = 0;
-        if (state != null) {
-            curr = (int) state.getCurrent();
-            all = (int) state.getCount();
-            switch ((int) state.getStage()) {
-                case (int) M3u8.Stage_Stoped:
-                    status = ctx.getString(R.string.status_stoped);
-                    break;
-                case (int) M3u8.Stage_Error:
-                    status = ctx.getString(R.string.error);
-                    if (state.getError() != null)
-                        status += state.getError().getMessage();
-                    else
-                        status += "unknown";
-                    break;
-                case (int) M3u8.Stage_LoadingList:
-                    status = ctx.getString(R.string.status_load_list);
-                    break;
-                case (int) M3u8.Stage_LoadingContent: {
-                    if (all == 0)
-                        status = String.format(ctx.getString(R.string.status_loaded) + " %d", curr);
-                    else
-                        status = String.format(ctx.getString(R.string.status_loaded) + " %d / %d", curr, all);
-                    break;
-                }
-                case (int) M3u8.Stage_JoinSegments: {
-                    if (all == 0)
-                        status = String.format(ctx.getString(R.string.status_joined) + " %d", curr);
-                    else
-                        status = String.format(ctx.getString(R.string.status_joined) + " %d / %d", curr, all);
-                    break;
-                }
-                case (int) M3u8.Stage_RemoveTemp: {
-                    status = ctx.getString(R.string.status_remove_temp);
-                    break;
-                }
-                case (int) M3u8.Stage_Finished: {
-                    status = ctx.getString(R.string.status_finish);
-                    break;
-                }
-                default:
-                    status = "";
-            }
-        }
-        if (state != null && state.getText() != null && !state.getText().isEmpty())
-            url = state.getText();
-        ((TextView) view.findViewById(R.id.itemLoaderUrl)).setText(url);
-        ((TextView) view.findViewById(R.id.itemLoaderStatus)).setText(status);
-        if (all > 0)
-            ((ProgressBar) view.findViewById(R.id.itemProgress)).setProgress((curr * 100) / all);
-        else
-            ((ProgressBar) view.findViewById(R.id.itemProgress)).setProgress(0);
+        ((TextView) view.findViewById(R.id.itemLoaderUrl)).setText(Status.GetUrl(loader));
+        ((TextView) view.findViewById(R.id.itemLoaderStatus)).setText(Status.GetStatus(ctx, loader));
+        ((ProgressBar) view.findViewById(R.id.itemProgress)).setProgress(Status.GetProgress(loader));
 
         //Menu
         final int pos = position;
@@ -132,6 +80,10 @@ public class AdaptorLoadresList extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 Loader loader = LoaderHolder.getInstance().GetLoader(pos);
+                if (loader == null) {
+                    AdaptorLoadresList.this.notifyDataSetChanged();
+                    return;
+                }
                 switch (view.getId()) {
                     case R.id.buttonItemMenuStart:
                         new Thread(new Runnable() {
