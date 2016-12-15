@@ -89,19 +89,21 @@ public class AdaptorLoadresList extends BaseAdapter {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                MainActivity.loaderManager.Start(pos);
+                                MainActivity.loaderManager.Add(pos);
+                                if (!MainActivity.loaderManager.IsLoading())
+                                    MainActivity.loaderManager.Start();
                             }
                         }).start();
                         break;
                     case R.id.buttonItemMenuStop:
+                        MainActivity.loaderManager.Remove(pos);
                         if (loader.IsWorking())
                             loader.Stop();
                         break;
                     case R.id.buttonItemMenuRemove:
-                        loader.Stop();
+                        MainActivity.loaderManager.Stop();
                         loader.RemoveTemp();
                         LoaderHolder.getInstance().Remove(pos);
-                        notifyDataSetChanged();
                         break;
                     case R.id.buttonItemMenuEdit:
                         Intent intent = new Intent(ctx, ListEditActivity.class);
@@ -109,6 +111,7 @@ public class AdaptorLoadresList extends BaseAdapter {
                         ctx.startActivity(intent);
                         break;
                 }
+                notifyDataSetChanged();
             }
         };
 

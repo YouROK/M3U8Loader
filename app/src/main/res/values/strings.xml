@@ -15,6 +15,8 @@
 
     <string name="default_directory_change">Select the temp directory</string>
 
+    <string name="add_label">Add</string>
+    <string name="download_label">Download</string>
     <string name="settings_label">Settings</string>
     <string name="clear_label">Clear temp files</string>
     <string name="selected_folder_label">Selected folder:</string>

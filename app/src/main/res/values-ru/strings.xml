@@ -26,8 +26,8 @@
     <string name="status_remove_temp">Удаление временных файлов...</string>
     <string name="status_finish">Завершено</string>
     <string name="status_stoped">Остановлено</string>
-    <string name="status_loaded">Загружено</string>
-    <string name="status_joined">Соединено</string>
+    <string name="status_loaded">Загружается</string>
+    <string name="status_joined">Соединяется</string>
 
     <string name="error_download_dir">Папка загрузки не установлена</string>
     <string name="error_dir_perm">Доступ к папке запрещен</string>
@@ -37,4 +37,6 @@
     <string name="error">Ошибка:</string>
     <string name="error_double_name">Загрузка с таким именем уже существует</string>
     <string name="error_double_url">Загрузка с такой ссылкой уже существует</string>
+    <string name="add_label">Добавить</string>
+    <string name="download_label">Загрузить</string>
 </resources>

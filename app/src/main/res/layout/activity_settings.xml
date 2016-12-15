@@ -116,7 +116,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/buttonOk"
+            android:id="@+id/buttonAdd"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0px"
             android:layout_height="wrap_content"

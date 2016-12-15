@@ -37,10 +37,9 @@ public class AddActivity extends AppCompatActivity {
             fileEdit.requestFocus();
     }
 
-    public void okBtnClick(View view) {
+    public void addBtnClick(View view) {
         String Name = fileEdit.getText().toString().trim();
         String Url = urlEdit.getText().toString().trim();
-
 
         if (Url.isEmpty()) {
             Toast.makeText(this, R.string.error_url_empty, Toast.LENGTH_SHORT).show();
@@ -64,6 +63,45 @@ public class AddActivity extends AppCompatActivity {
         loader.SetUrl(Url);
         loader.SetName(Name);
         LoaderHolder.getInstance().AddLoader(loader);
+        finish();
+    }
+
+    public void downloadBtnClick(View view) {
+        String Name = fileEdit.getText().toString().trim();
+        String Url = urlEdit.getText().toString().trim();
+
+        if (Url.isEmpty()) {
+            Toast.makeText(this, R.string.error_url_empty, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (Name.isEmpty()) {
+            Toast.makeText(this, R.string.error_filename_empty, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        for (int i = 0; i < LoaderHolder.getInstance().Size(); i++)
+            if (LoaderHolder.getInstance().GetLoader(i).GetName().equals(Name)) {
+                Toast.makeText(this, R.string.error_double_name, Toast.LENGTH_SHORT).show();
+                return;
+            } else if (LoaderHolder.getInstance().GetLoader(i).GetUrl().equals(Url)) {
+                Toast.makeText(this, R.string.error_double_url, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+        Loader loader = new Loader(this);
+        loader.SetUrl(Url);
+        loader.SetName(Name);
+        LoaderHolder.getInstance().AddLoader(loader);
+        if (MainActivity.loaderManager != null) {
+            MainActivity.loaderManager.Add(LoaderHolder.getInstance().Size() - 1);
+            if (!MainActivity.loaderManager.IsLoading())
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        MainActivity.loaderManager.Start();
+                    }
+                }).start();
+        }
         finish();
     }
 

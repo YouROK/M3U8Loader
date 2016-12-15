@@ -1,29 +1,24 @@
 package m3u8
 
 import (
-	//	"io/ioutil"
 	"io"
+	"io/ioutil"
 	"loader"
 	"os"
 	"path/filepath"
 	"sync"
-
-	"fmt"
 )
 
 func (m *M3U8) Load() error {
 	m.isLoading = true
-	err := m.load(m.GetCount())
+	m.load(m.GetCount())
 	m.isLoading = false
-	m.lastErr = err
-	m.Stop()
-	return err
+	return m.lastErr
 }
 
-func (m *M3U8) load(count int) error {
+func (m *M3U8) load(count int) {
 	var wg sync.WaitGroup
 	var mut sync.Mutex
-	var err error
 	pos := 0
 	for i := 0; i < m.opt.Threads; i++ {
 		wg.Add(1)
@@ -43,8 +38,7 @@ func (m *M3U8) load(count int) error {
 				}
 				e := m.loadItem(item)
 				if e != nil {
-					err = e
-					m.Stop()
+					m.errors(e)
 					break
 				}
 			}
@@ -52,7 +46,6 @@ func (m *M3U8) load(count int) error {
 		}()
 	}
 	wg.Wait()
-	return err
 }
 
 func (m *M3U8) loadItem(item *Item) error {
@@ -60,7 +53,6 @@ func (m *M3U8) loadItem(item *Item) error {
 		return nil
 	}
 	if item == nil {
-		fmt.Println("*** Warn item is nil ***")
 		return nil
 	}
 	if stat(item.FilePath) > 0 {
@@ -74,6 +66,7 @@ func (m *M3U8) loadItem(item *Item) error {
 		return err
 	}
 	defer http.Close()
+	buffer := make([]byte, 0)
 	if err == nil {
 		if !exists(filepath.Dir(item.FilePath)) {
 			os.MkdirAll(filepath.Dir(item.FilePath), 0777)
@@ -81,27 +74,20 @@ func (m *M3U8) loadItem(item *Item) error {
 
 		tmpBuf := make([]byte, 1024)
 		n := 0
-		f, err := os.Create(item.FilePath)
-		if err != nil {
-			return err
-		}
-		defer f.Close()
 		for err == nil && m.isLoading {
 			n, err = http.Read(tmpBuf)
 			if n > 0 {
-				_, err = f.Write(tmpBuf[:n])
+				buffer = append(buffer, tmpBuf[:n]...)
 			}
 		}
 	}
-
-	if err != io.EOF && (err != nil || !m.isLoading) {
-		os.Remove(item.FilePath)
-	}
-
 	if err == io.EOF {
 		err = nil
 	}
 
+	if err == nil && m.isLoading {
+		ioutil.WriteFile(item.FilePath, buffer, 0666)
+	}
 	return err
 }
 

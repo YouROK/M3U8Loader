@@ -10,11 +10,11 @@ import (
 const (
 	Stage_Stoped = iota
 	Stage_Error
+	Stage_Finished
 	Stage_LoadingList
 	Stage_LoadingContent
 	Stage_JoinSegments
 	Stage_RemoveTemp
-	Stage_Finished
 )
 
 type M3U8 struct {
@@ -29,7 +29,7 @@ type M3U8 struct {
 	loadIndex int
 	loadCount int
 
-	state       *State
+	state       chan *State
 	stateMutext sync.Mutex
 }
 
@@ -40,11 +40,11 @@ func NewM3U8(opt *Options) *M3U8 {
 }
 
 func (m *M3U8) LoadList() error {
+	m.sendState(0, 0, Stage_LoadingList, m.opt.Url, nil)
 	m.isLoading = true
 	defer func() { m.isLoading = false }()
 	local := strings.HasPrefix(strings.ToLower(m.opt.Url), "file://")
 	ho := m.opt.HttpOpts
-	m.sendState(0, 0, Stage_LoadingList, ho.Url, nil)
 	var list *List
 	var err error
 	if local {
@@ -52,16 +52,14 @@ func (m *M3U8) LoadList() error {
 	} else {
 		list, err = ParseList(ho)
 	}
-	m.lastErr = err
+	m.errors(err)
 	if err != nil {
-		m.sendState(0, 0, Stage_Error, ho.Url, err)
 		return err
 	}
 	list.Name = m.opt.Name
 	list.Item.FilePath = filepath.Join(m.opt.TempDir, list.Name)
 	m.loadCount = m.prepareList(list)
 	m.list = list
-	m.Stop()
 	return nil
 }
 
@@ -118,9 +116,18 @@ func (m *M3U8) IsJoin() bool {
 func (m *M3U8) Stop() {
 	m.isJoin = false
 	m.isLoading = false
-	if m.lastErr != nil {
-		m.sendState(0, 0, Stage_Error, "", m.lastErr)
-	} else {
-		m.sendState(0, 0, Stage_Stoped, "", nil)
-	}
+	m.sendState(0, 0, Stage_Stoped, "", m.lastErr)
+}
+
+func (m *M3U8) errors(err error) {
+	m.isJoin = false
+	m.isLoading = false
+	m.lastErr = err
+	m.sendState(0, 0, Stage_Error, "", m.lastErr)
+}
+
+func (m *M3U8) Finish() {
+	m.isJoin = false
+	m.isLoading = false
+	m.sendState(0, 0, Stage_Finished, "", m.lastErr)
 }

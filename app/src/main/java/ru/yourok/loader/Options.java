@@ -25,7 +25,7 @@ public class Options {
     }
 
     public int GetTimeout() {
-        return prefs.getInt("Timeout", 5000);
+        return prefs.getInt("Timeout", 15000);
     }
 
     public String GetTempDir() {

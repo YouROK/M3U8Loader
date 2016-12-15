@@ -1,5 +1,9 @@
 package m3u8
 
+import (
+	"time"
+)
+
 type State struct {
 	Current int
 	Count   int
@@ -9,14 +13,22 @@ type State struct {
 }
 
 func (m *M3U8) sendState(curr, count, stage int, text string, err error) {
-	m.stateMutext.Lock()
-	m.state = &State{curr, count, stage, text, err}
-	m.stateMutext.Unlock()
+	if m.state != nil {
+		m.state <- &State{curr, count, stage, text, err}
+	}
 }
 
 func GetState(m *M3U8) *State {
 	m.stateMutext.Lock()
-	st := m.state
+	if m.state == nil && m.opt.Threads > 0 {
+		m.state = make(chan *State, m.opt.Threads*500)
+	}
 	m.stateMutext.Unlock()
-	return st
+	timer := time.NewTimer(time.Second * 2)
+	select {
+	case st := <-m.state:
+		return st
+	case <-timer.C:
+		return nil
+	}
 }

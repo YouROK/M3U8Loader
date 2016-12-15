@@ -79,10 +79,16 @@ public class Loader {
         return false;
     }
 
-    public State GetState() {
+    public State PollState() {
         if (m3u8 == null)
             return null;
-        state = M3u8.getState(m3u8);
+        State st = M3u8.getState(m3u8);
+        if (st != null)
+            state = st;
+        return st;
+    }
+
+    public State GetState() {
         return state;
     }
 
@@ -112,6 +118,8 @@ public class Loader {
                 m3u8.join();
             if (!isStoped)
                 m3u8.removeTemp();
+            if (!isStoped)
+                m3u8.finish();
             isStoped = true;
             return "";
         } catch (Exception e) {
@@ -133,6 +141,14 @@ public class Loader {
         } catch (Exception e) {
 
         }
+    }
+
+    public boolean isStoped() {
+        if (m3u8 == null)
+            return false;
+        if (GetState() == null)
+            return false;
+        return state.getStage() == M3u8.Stage_Stoped || isStoped;
     }
 
     public boolean IsFinished() {

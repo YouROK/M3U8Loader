@@ -6,9 +6,12 @@ import (
 )
 
 func (m *M3U8) RemoveTemp() error {
-	m.sendState(0, 0, Stage_RemoveTemp, m.opt.TempDir, nil)
-	err := os.RemoveAll(filepath.Join(m.opt.TempDir, m.opt.Name))
-	m.sendState(0, 0, Stage_Finished, "", err)
+	remDir := filepath.Join(m.opt.TempDir, m.opt.Name)
+	m.sendState(0, 0, Stage_RemoveTemp, remDir, nil)
+	err := os.RemoveAll(remDir)
+	if err != nil {
+		m.errors(err)
+	}
 	return err
 }
 

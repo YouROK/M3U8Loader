@@ -14,6 +14,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import go.m3u8.M3u8;
+import go.m3u8.State;
 import ru.yourok.loader.Loader;
 import ru.yourok.loader.LoaderHolder;
 import ru.yourok.loader.LoaderManager;
@@ -23,6 +25,7 @@ import ru.yourok.loader.Options;
 public class MainActivity extends AppCompatActivity {
     public static AdaptorLoadresList loadresList;
     public static LoaderManager loaderManager;
+    public static boolean isRunning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,17 +33,29 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         if (loaderManager == null)
             loaderManager = new LoaderManager(this);
-        if (loadresList==null) {
+        if (loadresList == null) {
             loadresList = new AdaptorLoadresList(this);
-        }else{
+        } else {
             UpdateList();
         }
         ListView listView = ((ListView) findViewById(R.id.listViewLoaders));
         listView.setAdapter(loadresList);
-
+        isRunning = true;
         //Check permission
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        isRunning = true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isRunning = false;
     }
 
     @Override
@@ -72,12 +87,24 @@ public class MainActivity extends AppCompatActivity {
         view.setEnabled(false);
         view.invalidate();
         view.refreshDrawableState();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                loaderManager.Start();
+        if (loaderManager.IsLoading()) {
+            Toast.makeText(this, R.string.error_already_loading, Toast.LENGTH_SHORT).show();
+        } else {
+            loaderManager.Stop();
+            for (int i = 0; i < LoaderHolder.getInstance().Size(); i++) {
+                State st = LoaderHolder.getInstance().GetLoader(i).GetState();
+                if (st == null)
+                    loaderManager.Add(i);
+                else if (st.getStage() != M3u8.Stage_Finished)
+                    loaderManager.Add(i);
             }
-        }).start();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    loaderManager.Start();
+                }
+            }).start();
+        }
         view.setEnabled(true);
     }
 
@@ -86,9 +113,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onSettingsClick(View view) {
-        Intent intent = new Intent(this,SettingsActivity.class);
+        Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
-
-
 }

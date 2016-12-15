@@ -38,6 +38,8 @@ public class Notifications {
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Loader loader = LoaderHolder.getInstance().GetLoader(id);
+        if (loader == null)
+            return;
         int progress = Status.GetProgress(loader);
         String name = loader.GetName();
         String status = Status.GetStatus(context, loader);

@@ -11,8 +11,9 @@ func (m *M3U8) Join() error {
 	m.isJoin = true
 	err := m.join(m.list)
 	m.isJoin = false
-	m.lastErr = err
-	m.Stop()
+	if err != nil {
+		m.errors(err)
+	}
 	return err
 }
 

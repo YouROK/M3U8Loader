@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"m3u8"
-	"time"
 )
 
 func main() {
@@ -12,11 +11,11 @@ func main() {
 	opt := m3u8.NewOptions()
 	opt.TempDir = "/home/yourok/tmp/"
 	//	opt.Url = "file:///home/yourok/test.m3u"
-	opt.Url = "http://atv-vod.ercdn.net/eskiya_dunyaya_hukumdar_olmaz/050/eskiya_dunyaya_hukumdar_olmaz_050.smil/chunklist_b400000_t64NDAwa2Jwcw==.m3u8?st=BcClLVYdRNCZwxdFnh7TEw&e=1481524980&SessionID=5fmkqtl3v42jtuw4pipfxacm&StreamGroup=eskiya-dunyaya-hukumdar-olmaz&Site=atv&DeviceGroup=web"
+	opt.Url = "https://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear1/prog_index.m3u8"
 	opt.Name = "test"
 	opt.OutFileDir = opt.TempDir
 	opt.Threads = 30
-	opt.Timeout = 20000
+	opt.Timeout = 300000
 
 	m := m3u8.NewM3U8(opt)
 	go func() {
@@ -27,18 +26,35 @@ func main() {
 			if err == nil {
 				fmt.Println("Join")
 				err = m.Join()
+				if err == nil {
+					err = m.RemoveTemp()
+					if err != nil {
+						m.Finish()
+					}
+				}
 			}
 		}
-		if err != nil {
-			fmt.Println(err)
-		}
 	}()
-	time.Sleep(time.Millisecond * 2000)
 	//	stoped := 0
 	log.Println("receive state")
-
-	for m.IsLoading() || m.IsJoin() {
-		log.Println(m3u8.GetState(m))
-		time.Sleep(time.Millisecond * 1000)
+	sg := m3u8.Stage_LoadingList
+	for true {
+		st := m3u8.GetState(m)
+		if st == nil {
+			continue
+		}
+		sg = st.Stage
+		log.Println(st)
+		if sg < m3u8.Stage_LoadingList {
+			break
+		}
 	}
+
+	log.Println(sg, sg != m3u8.Stage_Error && sg != m3u8.Stage_Stoped && sg != m3u8.Stage_Finished)
+	return
+
+	for st := m3u8.GetState(m); st != nil; {
+		log.Println(st)
+	}
+	log.Println(sg)
 }

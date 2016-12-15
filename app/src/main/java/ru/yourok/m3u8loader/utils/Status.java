@@ -15,6 +15,8 @@ import ru.yourok.m3u8loader.R;
 
 public class Status {
     static public String GetStatus(Context ctx, Loader loader) {
+        if (loader == null || ctx == null)
+            return "";
         String status = "";
         State state = loader.GetState();
         int curr = 0;
@@ -66,6 +68,8 @@ public class Status {
     }
 
     static public String GetUrl(Loader loader) {
+        if (loader == null)
+            return "";
         State state = loader.GetState();
         if (state != null && state.getText() != null && !state.getText().isEmpty())
             return state.getText();
@@ -73,6 +77,8 @@ public class Status {
     }
 
     static public int GetCount(Loader loader) {
+        if (loader == null)
+            return 0;
         State state = loader.GetState();
         if (state != null)
             return (int) state.getCount();
@@ -80,6 +86,8 @@ public class Status {
     }
 
     static public int GetCurrent(Loader loader) {
+        if (loader == null)
+            return 0;
         State state = loader.GetState();
         if (state != null)
             return (int) state.getCurrent();
@@ -87,6 +95,8 @@ public class Status {
     }
 
     static public int GetProgress(Loader loader) {
+        if (loader == null)
+            return 0;
         int count = GetCount(loader);
         int curr = GetCurrent(loader);
         if (count == 0)
