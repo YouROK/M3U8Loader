@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">M3U8Loader</string>
 
-    <string name="file_name">File url:</string>
-    <string name="url_name">Url:</string>
+    <string name="file_name">File name (without ext):</string>
+    <string name="url_name">Url link:</string>
     <string name="timeout">Timeout:</string>
     <string name="threads">Threads:</string>
     <string name="download_path">Download path:</string>
@@ -10,8 +10,6 @@
 
     <string name="main_btn_start">Start</string>
     <string name="main_btn_stop">Stop</string>
-
-    <string name="add_add_load">Add Load</string>
 
     <string name="default_directory_change">Select the temp directory</string>
 

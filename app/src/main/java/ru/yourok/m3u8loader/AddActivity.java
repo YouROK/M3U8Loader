@@ -9,7 +9,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import ru.yourok.loader.Loader;
-import ru.yourok.loader.LoaderHolder;
+import ru.yourok.loader.LoaderService;
+import ru.yourok.loader.LoaderServiceHandler;
 import ru.yourok.loader.Options;
 
 public class AddActivity extends AppCompatActivity {
@@ -22,6 +23,7 @@ public class AddActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
 
+        LoaderService.startService(this);
         urlEdit = (EditText) findViewById(R.id.editTextUrl);
         fileEdit = (EditText) findViewById(R.id.editTextFileName);
         Intent intent = getIntent();
@@ -50,19 +52,23 @@ public class AddActivity extends AppCompatActivity {
             return;
         }
 
-        for (int i = 0; i < LoaderHolder.getInstance().Size(); i++)
-            if (LoaderHolder.getInstance().GetLoader(i).GetName().equals(Name)) {
+        for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++)
+            if (LoaderServiceHandler.GetLoader(i).GetName().equals(Name)) {
                 Toast.makeText(this, R.string.error_double_name, Toast.LENGTH_SHORT).show();
                 return;
-            } else if (LoaderHolder.getInstance().GetLoader(i).GetUrl().equals(Url)) {
+            } else if (LoaderServiceHandler.GetLoader(i).GetUrl().equals(Url)) {
                 Toast.makeText(this, R.string.error_double_url, Toast.LENGTH_SHORT).show();
                 return;
             }
 
-        Loader loader = new Loader(this);
+        Loader loader = new Loader();
         loader.SetUrl(Url);
         loader.SetName(Name);
-        LoaderHolder.getInstance().AddLoader(loader);
+        LoaderService.registerOnUpdateLoader(null);
+        LoaderServiceHandler.AddLoader(loader);
+        Options.getInstance(this).SaveList();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
         finish();
     }
 
@@ -79,29 +85,24 @@ public class AddActivity extends AppCompatActivity {
             return;
         }
 
-        for (int i = 0; i < LoaderHolder.getInstance().Size(); i++)
-            if (LoaderHolder.getInstance().GetLoader(i).GetName().equals(Name)) {
+        for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++)
+            if (LoaderServiceHandler.GetLoader(i).GetName().equals(Name)) {
                 Toast.makeText(this, R.string.error_double_name, Toast.LENGTH_SHORT).show();
                 return;
-            } else if (LoaderHolder.getInstance().GetLoader(i).GetUrl().equals(Url)) {
+            } else if (LoaderServiceHandler.GetLoader(i).GetUrl().equals(Url)) {
                 Toast.makeText(this, R.string.error_double_url, Toast.LENGTH_SHORT).show();
                 return;
             }
 
-        Loader loader = new Loader(this);
+        Loader loader = new Loader();
         loader.SetUrl(Url);
         loader.SetName(Name);
-        LoaderHolder.getInstance().AddLoader(loader);
-        if (MainActivity.loaderManager != null) {
-            MainActivity.loaderManager.Add(LoaderHolder.getInstance().Size() - 1);
-            if (!MainActivity.loaderManager.IsLoading())
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        MainActivity.loaderManager.Start();
-                    }
-                }).start();
-        }
+
+        LoaderServiceHandler.AddLoader(loader);
+        Options.getInstance(this).SaveList();
+        LoaderServiceHandler.AddQueue(LoaderServiceHandler.SizeLoaders() - 1);
+        LoaderService.registerOnUpdateLoader(null);
+        LoaderService.load(this);
         finish();
     }
 

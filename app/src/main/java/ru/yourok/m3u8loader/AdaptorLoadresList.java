@@ -9,15 +9,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import go.m3u8.M3u8;
-import go.m3u8.State;
 import ru.yourok.loader.Loader;
-import ru.yourok.loader.LoaderHolder;
-
-import go.m3u8.M3U8;
-import ru.yourok.loader.LoaderManager;
+import ru.yourok.loader.LoaderService;
+import ru.yourok.loader.LoaderServiceHandler;
+import ru.yourok.loader.Options;
 import ru.yourok.m3u8loader.utils.Status;
 
 /**
@@ -34,13 +30,13 @@ public class AdaptorLoadresList extends BaseAdapter {
 
     @Override
     public int getCount() {
-        int ret = LoaderHolder.getInstance().Size();
+        int ret = LoaderServiceHandler.SizeLoaders();
         return ret;
     }
 
     @Override
     public Object getItem(int i) {
-        return LoaderHolder.getInstance().GetLoader(i);
+        return LoaderServiceHandler.GetLoader(i);
     }
 
     @Override
@@ -68,7 +64,7 @@ public class AdaptorLoadresList extends BaseAdapter {
             }
         });
 
-        Loader loader = LoaderHolder.getInstance().GetLoader(position);
+        Loader loader = LoaderServiceHandler.GetLoader(position);
         ((TextView) view.findViewById(R.id.itemLoaderName)).setText(loader.GetName());
         ((TextView) view.findViewById(R.id.itemLoaderUrl)).setText(Status.GetUrl(loader));
         ((TextView) view.findViewById(R.id.itemLoaderStatus)).setText(Status.GetStatus(ctx, loader));
@@ -79,31 +75,25 @@ public class AdaptorLoadresList extends BaseAdapter {
         View.OnClickListener clickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Loader loader = LoaderHolder.getInstance().GetLoader(pos);
+                Loader loader = LoaderServiceHandler.GetLoader(pos);
                 if (loader == null) {
                     AdaptorLoadresList.this.notifyDataSetChanged();
                     return;
                 }
                 switch (view.getId()) {
                     case R.id.buttonItemMenuStart:
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                MainActivity.loaderManager.Add(pos);
-                                if (!MainActivity.loaderManager.IsLoading())
-                                    MainActivity.loaderManager.Start();
-                            }
-                        }).start();
+                        LoaderServiceHandler.AddQueue(pos);
+                        LoaderService.load(ctx);
                         break;
                     case R.id.buttonItemMenuStop:
-                        MainActivity.loaderManager.Remove(pos);
                         if (loader.IsWorking())
                             loader.Stop();
                         break;
                     case R.id.buttonItemMenuRemove:
-                        MainActivity.loaderManager.Stop();
+                        LoaderService.stop(ctx);
                         loader.RemoveTemp();
-                        LoaderHolder.getInstance().Remove(pos);
+                        LoaderServiceHandler.RemoveLoader(pos);
+                        Options.getInstance(ctx).SaveList();
                         break;
                     case R.id.buttonItemMenuEdit:
                         Intent intent = new Intent(ctx, ListEditActivity.class);

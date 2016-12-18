@@ -9,30 +9,26 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import go.m3u8.M3u8;
 import go.m3u8.State;
-import ru.yourok.loader.Loader;
-import ru.yourok.loader.LoaderHolder;
-import ru.yourok.loader.LoaderManager;
+import ru.yourok.loader.LoaderService;
+import ru.yourok.loader.LoaderServiceHandler;
 import ru.yourok.loader.Options;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderService.LoaderServiceCallbackUpdate {
     public static AdaptorLoadresList loadresList;
-    public static LoaderManager loaderManager;
-    public static boolean isRunning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (loaderManager == null)
-            loaderManager = new LoaderManager(this);
+
+        LoaderService.registerOnUpdateLoader(this);
+        LoaderService.startService(this);
         if (loadresList == null) {
             loadresList = new AdaptorLoadresList(this);
         } else {
@@ -40,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
         }
         ListView listView = ((ListView) findViewById(R.id.listViewLoaders));
         listView.setAdapter(loadresList);
-        isRunning = true;
         //Check permission
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
@@ -49,18 +44,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        isRunning = true;
+        LoaderService.registerOnUpdateLoader(this);
     }
 
     @Override
     protected void onStop() {
+        LoaderService.registerOnUpdateLoader(null);
         super.onStop();
-        isRunning = false;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        LoaderService.registerOnUpdateLoader(this);
         UpdateList();
     }
 
@@ -87,33 +83,33 @@ public class MainActivity extends AppCompatActivity {
         view.setEnabled(false);
         view.invalidate();
         view.refreshDrawableState();
-        if (loaderManager.IsLoading()) {
-            Toast.makeText(this, R.string.error_already_loading, Toast.LENGTH_SHORT).show();
-        } else {
-            loaderManager.Stop();
-            for (int i = 0; i < LoaderHolder.getInstance().Size(); i++) {
-                State st = LoaderHolder.getInstance().GetLoader(i).GetState();
-                if (st == null)
-                    loaderManager.Add(i);
-                else if (st.getStage() != M3u8.Stage_Finished)
-                    loaderManager.Add(i);
-            }
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    loaderManager.Start();
-                }
-            }).start();
+
+        LoaderServiceHandler.loadersQueue.clear();
+        for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++) {
+            State st = LoaderServiceHandler.GetLoader(i).GetState();
+            if (st == null)
+                LoaderServiceHandler.AddQueue(i);
+            else if (st.getStage() != M3u8.Stage_Finished)
+                LoaderServiceHandler.AddQueue(i);
         }
+        LoaderService.load(this);
+
         view.setEnabled(true);
     }
 
     public void onStopClick(View view) {
-        loaderManager.Stop();
+        LoaderService.stop(this);
     }
 
     public void onSettingsClick(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onUpdateLoader(int id) {
+        if (id == -1)
+            return;
+        UpdateList();
     }
 }

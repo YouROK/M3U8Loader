@@ -7,6 +7,10 @@
     android:layout_height="match_parent"
     tools:context="ru.yourok.m3u8loader.SettingsActivity">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -56,13 +60,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/temp_dir" />
+
             <TextView
-                android:ellipsize="marquee"
-                android:lines="1"
-                android:singleLine="true"
                 android:id="@+id/textViewTempDir"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:lines="1"
+                android:singleLine="true"
                 android:text="" />
 
             <Button
@@ -106,6 +111,7 @@
                 android:inputType="number" />
 
         </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/footer"

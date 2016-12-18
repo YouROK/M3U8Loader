@@ -18,12 +18,10 @@ public class Loader {
     private M3U8 m3u8;
     private State state;
 
-    private Context context;
     private boolean isStoped;
 
-    public Loader(Context context) {
+    public Loader() {
         opts = M3u8.newOptions();
-        this.context = context;
     }
 
     public void SetUrl(String url) {

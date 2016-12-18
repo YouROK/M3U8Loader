@@ -4,14 +4,17 @@ package ru.yourok.m3u8loader.utils;
  * Created by yourok on 11.12.16.
  */
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.NotificationCompat;
 
 import ru.yourok.loader.Loader;
-import ru.yourok.loader.LoaderHolder;
+import ru.yourok.loader.LoaderServiceHandler;
 import ru.yourok.m3u8loader.MainActivity;
 import ru.yourok.m3u8loader.R;
 
@@ -22,29 +25,32 @@ import ru.yourok.m3u8loader.R;
  * Time: 11:35
  */
 public class Notifications {
+    private static final int NOTIFY_ID = 1;
+
     private NotificationManager manager;
     private Context context;
-    private int currentId;
 
     public Notifications(Context context) {
-        currentId = -1;
         this.context = context;
-        manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     public void createNotification(int id) {
-        currentId = id;
-        Intent notificationIntent = new Intent(context, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        if (context == null)
+            return;
+        if (manager == null)
+            manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Loader loader = LoaderHolder.getInstance().GetLoader(id);
+        Intent notificationIntent = new Intent(context, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, NOTIFY_ID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Loader loader = LoaderServiceHandler.GetLoader(id);
         if (loader == null)
             return;
         int progress = Status.GetProgress(loader);
         String name = loader.GetName();
         String status = Status.GetStatus(context, loader);
 
-        android.support.v4.app.NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+        final android.support.v4.app.NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.mipmap.m3u8)
                 .setContentTitle(name)
                 .setContentText(status)
@@ -52,17 +58,16 @@ public class Notifications {
                 .setAutoCancel(true);
         if (progress > 0)
             builder.setProgress(100, progress, false);
-
-        manager.notify(0, builder.build());
-    }
-
-    public void update() {
-        if (currentId != -1)
-            createNotification(currentId);
+        final Notification notification = builder.build();
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                manager.notify(NOTIFY_ID, notification);
+            }
+        });
     }
 
     public void removeNotification(int id) {
-        manager.cancel(0);
-        currentId = -1;
+        manager.cancel(NOTIFY_ID);
     }
 }

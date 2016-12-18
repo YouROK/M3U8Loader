@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">M3U8Loader</string>
 
-    <string name="file_name">Имя файла:</string>
+    <string name="file_name">Имя файла (без расширения):</string>
     <string name="url_name">URL-адрес:</string>
     <string name="timeout">Время ожидания соединения:</string>
     <string name="threads">Потоки:</string>
@@ -10,8 +10,6 @@
 
     <string name="main_btn_start">Загрузить</string>
     <string name="main_btn_stop">Остановить</string>
-
-    <string name="add_add_load">Добавить загрузку</string>
 
     <string name="default_directory_change">Выбрать временную папку</string>
 

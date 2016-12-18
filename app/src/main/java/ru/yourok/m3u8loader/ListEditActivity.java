@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import go.m3u8.Item;
 import go.m3u8.List;
 import ru.yourok.loader.Loader;
-import ru.yourok.loader.LoaderHolder;
+import ru.yourok.loader.LoaderServiceHandler;
 
 public class ListEditActivity extends AppCompatActivity {
     private Loader loader;
@@ -40,7 +40,7 @@ public class ListEditActivity extends AppCompatActivity {
         int id = intent.getIntExtra("LoaderID", -1);
         if (id == -1)
             return;
-        loader = LoaderHolder.getInstance().GetLoader(id);
+        loader = LoaderServiceHandler.GetLoader(id);
         loader.Stop();
         list = loader.GetList();
         if (list == null) {
@@ -64,21 +64,6 @@ public class ListEditActivity extends AppCompatActivity {
                 }
             }).start();
         }
-
-
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-//                if (position < list.listsSize()) {
-//                    path.add(position);
-//                    findList();
-//                    listviewadapter.notifyDataSetChanged();
-//                } else {
-//                    CheckBox cb = ((CheckBox) view.findViewById(R.id.checkBoxEditItem));
-//                    cb.setChecked(cb.isChecked());
-//                }
-//            }
-//        });
     }
 
     private void findList() {

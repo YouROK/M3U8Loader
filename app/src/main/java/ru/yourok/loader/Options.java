@@ -12,8 +12,8 @@ public class Options {
     private static Options ourInstance = new Options();
     private SharedPreferences prefs;
 
-    public static Options getInstance(Context ctx) {
-        ourInstance.prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+    public static Options getInstance(Context context) {
+        ourInstance.prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return ourInstance;
     }
 
@@ -25,11 +25,11 @@ public class Options {
     }
 
     public int GetTimeout() {
-        return prefs.getInt("Timeout", 15000);
+        return prefs.getInt("Timeout", 60000);
     }
 
     public String GetTempDir() {
-        return prefs.getString("TempDirectory", Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath()+"/tmp/");
+        return prefs.getString("TempDirectory", Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/tmp/");
     }
 
     public String GetOutDir() {
@@ -60,4 +60,27 @@ public class Options {
         ed.apply();
     }
 
+    public void SaveList() {
+        SharedPreferences.Editor ed = prefs.edit();
+        ed.putInt("List_Size", LoaderServiceHandler.SizeLoaders());
+        for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++) {
+            ed.putString("List_Url_" + String.valueOf(i), LoaderServiceHandler.GetLoader(i).GetUrl());
+            ed.putString("List_Name_" + String.valueOf(i), LoaderServiceHandler.GetLoader(i).GetName());
+        }
+        ed.apply();
+    }
+
+    public void LoadList() {
+        int lSize = prefs.getInt("List_Size", 0);
+        for (int i = 0; i < lSize; i++) {
+            String url = prefs.getString("List_Url_" + String.valueOf(i), "");
+            String name = prefs.getString("List_Name_" + String.valueOf(i), "");
+            if (name.isEmpty() || url.isEmpty())
+                continue;
+            Loader loader = new Loader();
+            loader.SetUrl(url);
+            loader.SetName(name);
+            LoaderServiceHandler.AddLoader(loader);
+        }
+    }
 }

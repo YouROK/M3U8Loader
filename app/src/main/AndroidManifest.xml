@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name="ru.yourok.loader.LoaderManager" />
+        <service android:name="ru.yourok.loader.LoaderService" />
 
         <activity
             android:name=".MainActivity"
@@ -26,9 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DirectoryChooserActivity">
-            <action android:name="android.intent.action.VIEW" />
-        </activity>
+        <activity android:name=".DirectoryChooserActivity" />
         <activity android:name=".SettingsActivity" />
         <activity
             android:name=".AddActivity"

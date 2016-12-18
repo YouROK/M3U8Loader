@@ -88,7 +88,7 @@ public class SettingsActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT < 19) {
             Intent intent = new Intent(this, DirectoryChooserActivity.class);
             startActivityForResult(intent, 1203);
-        }else {
+        } else {
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
             final FileDirsAdapter adapter = new FileDirsAdapter();
             dialogBuilder.setAdapter(adapter, new DialogInterface.OnClickListener() {
@@ -114,7 +114,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         if (requestCode == 1202) {
             ((EditText) findViewById(R.id.editTextDirectoryPath)).setText(name);
-        }else if(requestCode == 1203){
+        } else if (requestCode == 1203) {
             ((TextView) findViewById(R.id.textViewTempDir)).setText(name);
         }
     }
