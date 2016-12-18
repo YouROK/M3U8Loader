@@ -7,7 +7,9 @@
 
     <LinearLayout
         android:id="@+id/footer"
-        style="@android:style/ButtonBar"
+        style="@android:style/DeviceDefault.ButtonBar"
+        android:divider="?android:attr/dividerVertical"
+        android:showDividers="middle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

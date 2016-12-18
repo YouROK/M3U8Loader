@@ -9,12 +9,13 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_above="@id/footer"
+        android:layout_alignParentTop="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_horizontal_margin"
             android:orientation="vertical"
             android:paddingBottom="@dimen/activity_vertical_margin"
             android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -45,14 +46,14 @@
 
                 <ImageButton
                     android:id="@+id/imageButton"
-                    android:layout_width="wrap_content"
+                    android:layout_width="36dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignTop="@+id/editTextDirectoryPath"
-                    android:background="@null"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:onClick="srchBtnClick"
-                    app:srcCompat="@android:drawable/ic_menu_search" />
+                    app:srcCompat="@android:drawable/ic_menu_search"
+                    android:layout_alignBottom="@+id/editTextDirectoryPath"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true" />
             </RelativeLayout>
 
             <TextView
@@ -72,6 +73,7 @@
 
             <Button
                 android:id="@+id/buttonChangeDir"
+                style="@style/Widget.AppCompat.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:onClick="findTempDir"
@@ -79,6 +81,7 @@
 
             <Button
                 android:id="@+id/buttonClearTemp"
+                style="@style/Widget.AppCompat.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:onClick="clrTempDir"
@@ -115,11 +118,14 @@
 
     <LinearLayout
         android:id="@+id/footer"
-        style="@android:style/ButtonBar"
+        style="@android:style/DeviceDefault.ButtonBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:background="@android:drawable/screen_background_light"
+        android:divider="?android:attr/dividerVertical"
+        android:orientation="horizontal"
+        android:showDividers="middle">
 
         <Button
             android:id="@+id/buttonAdd"

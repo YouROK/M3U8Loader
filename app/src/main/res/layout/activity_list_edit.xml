@@ -7,7 +7,6 @@
     android:orientation="vertical"
     tools:context="ru.yourok.m3u8loader.ListEditActivity">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,12 +22,12 @@
             android:src="@drawable/ic_folder_up_black_24dp" />
 
         <ProgressBar
-            android:visibility="gone"
             android:id="@+id/progressBar"
             style="@android:style/Widget.DeviceDefault.Light.ProgressBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:indeterminate="true" />
+            android:indeterminate="true"
+            android:visibility="gone" />
     </LinearLayout>
 
 
