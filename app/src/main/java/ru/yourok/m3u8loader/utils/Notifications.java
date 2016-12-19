@@ -51,7 +51,7 @@ public class Notifications {
         String status = Status.GetStatus(context, loader);
 
         final android.support.v4.app.NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.mipmap.m3u8)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(name)
                 .setContentText(status)
                 .setContentIntent(contentIntent)

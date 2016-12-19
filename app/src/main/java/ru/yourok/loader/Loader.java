@@ -1,13 +1,10 @@
 package ru.yourok.loader;
 
-import android.content.Context;
-
 import go.m3u8.List;
 import go.m3u8.M3U8;
 import go.m3u8.M3u8;
 import go.m3u8.Options;
 import go.m3u8.State;
-import ru.yourok.m3u8loader.R;
 
 /**
  * Created by yourok on 24.11.16.

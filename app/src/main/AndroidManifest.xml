@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="ru.yourok.m3u8loader">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -9,7 +8,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/m3u8"
+        android:icon="@mipmap/ic_launcher"
         android:installLocation="auto"
         android:label="@string/app_name"
         android:supportsRtl="true"

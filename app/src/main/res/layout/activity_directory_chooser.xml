@@ -8,12 +8,12 @@
     <LinearLayout
         android:id="@+id/footer"
         style="@android:style/DeviceDefault.ButtonBar"
-        android:divider="?android:attr/dividerVertical"
-        android:showDividers="middle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:divider="?android:attr/dividerVertical"
+        android:orientation="horizontal"
+        android:showDividers="middle">
 
         <Button
             android:id="@+id/btnConfirm"
@@ -35,33 +35,45 @@
             tools:ignore="ButtonOrder" />
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/directoryInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/btnNavUp"
-            style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
-            android:layout_width="wrap_content"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
             android:onClick="upBtnClick"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_folder_up_black_24dp" />
 
+        <ImageButton
+            android:id="@+id/btnNavHome"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:onClick="homeBtnClick"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_home_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/btnCreateDir"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:onClick="createDirBtnClick"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_create_new_folder_black_24dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/divider"
-            android:layout_alignParentTop="true"
+            android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:layout_toRightOf="@+id/btnNavUp"
-            android:layout_toEndOf="@+id/btnNavUp">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/txtvSelectedFolderLabel"
@@ -82,8 +94,8 @@
                 android:layout_toRightOf="@+id/btnNavUp"
                 android:ellipsize="start"
                 android:lines="1"
-                android:singleLine="true"
                 android:scrollHorizontally="true"
+                android:singleLine="true"
                 android:text="Folder Name" />
         </LinearLayout>
 
@@ -94,7 +106,7 @@
             android:layout_below="@id/btnNavUp"
             android:background="@android:color/darker_gray" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <ListView
         android:id="@+id/directoryList"
@@ -104,7 +116,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/directoryInfo" />
-
 
 
 </RelativeLayout>

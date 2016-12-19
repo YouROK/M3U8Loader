@@ -18,16 +18,20 @@
     <string name="settings_label">Settings</string>
     <string name="clear_label">Clear temp files</string>
     <string name="selected_folder_label">Selected folder:</string>
-    <string name="up_label">Up &#x2B06;</string>
+    <string name="new_directory_title">New folder</string>
+    <string name="new_directory_name_label">Name of new folder:</string>
 
-    <string name="status_load_list">Loading list...</string>
-    <string name="status_load_segments">Loading segments...</string>
-    <string name="status_join_files">Join files...</string>
-    <string name="status_remove_temp">Remove temp...</string>
+    <string name="status_load_list">Loading list…</string>
+    <string name="status_load_segments">Loading segments…</string>
+    <string name="status_join_files">Join files…</string>
+    <string name="status_remove_temp">Remove temp…</string>
     <string name="status_finish">Finish</string>
     <string name="status_stoped">Stoped</string>
     <string name="status_loaded">Loaded</string>
     <string name="status_joined">Joined</string>
+
+    <string name="permission_msg">Storage permission is needed to download and write files</string>
+    <string name="permission_btn">GRANT</string>
 
     <string name="error_download_dir">Download dir not set</string>
     <string name="error_dir_perm">Directory permission denied</string>
@@ -37,5 +41,6 @@
     <string name="error">Error:</string>
     <string name="error_double_name">Loading with the same name already exists</string>
     <string name="error_double_url">Loading with the same url already exists</string>
+    <string name="error_create_folder">Error create folder</string>
 
 </resources>

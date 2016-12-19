@@ -1,7 +1,5 @@
 package ru.yourok.loader;
 
-import android.content.Context;
-
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingDeque;
 

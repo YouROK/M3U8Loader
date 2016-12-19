@@ -99,6 +99,7 @@ public class LoaderService extends Service {
 /// Wroking funcs
 
     private Boolean isLoading = false;
+    private Boolean isChecked = false;
     private int id = -1;
 
     public void Start() {
@@ -178,27 +179,31 @@ public class LoaderService extends Service {
     }
 
     private void checkState(final int id) {
+
+        synchronized (isChecked) {
+            if (isChecked) return;
+            isChecked = true;
+        }
+
         Thread th = new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 int countNil = 0;
                 while (true) {
                     Loader loader = LoaderServiceHandler.GetLoader(id);
                     if (loader == null)
-                        return;
+                        break;
                     if (loader.PollState() == null)
                         countNil++;
                     else
                         countNil = 0;
                     updateNotif();
 
-                    if (!isLoading || loaderServiceCallback == null || countNil > 30)
+                    if (!isLoading || countNil > 30)
                         break;
+                }
+                synchronized (isChecked) {
+                    isChecked = false;
                 }
             }
         });

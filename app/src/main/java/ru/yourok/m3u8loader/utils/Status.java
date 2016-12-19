@@ -1,8 +1,6 @@
 package ru.yourok.m3u8loader.utils;
 
 import android.content.Context;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import go.m3u8.M3u8;
 import go.m3u8.State;

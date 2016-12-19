@@ -7,8 +7,8 @@ android {
         applicationId "ru.yourok.m3u8loader"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 14
-        versionName "0.14"
+        versionCode 100
+        versionName "1.00"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -36,4 +36,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.0.1'
     testCompile 'junit:junit:4.12'
     compile project(':m3u8')
+    compile 'com.android.support:design:25.1.0'
 }

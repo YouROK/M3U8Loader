@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,12 +85,13 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void findTempDir(View view) {
-        if (Build.VERSION.SDK_INT < 19) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             Intent intent = new Intent(this, DirectoryChooserActivity.class);
             startActivityForResult(intent, 1203);
         } else {
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-            final FileDirsAdapter adapter = new FileDirsAdapter();
+            final HomeDirsAdapter adapter = new HomeDirsAdapter(this);
+            dialogBuilder.setTitle(R.string.selected_folder_label);
             dialogBuilder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
                     ((TextView) findViewById(R.id.textViewTempDir)).setText(((File) adapter.getItem(item)).getAbsolutePath());
@@ -119,52 +120,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    public class FileDirsAdapter extends BaseAdapter {
 
-        File[] list;
 
-        @Override
-        public int getCount() {
-            list = getExternalFilesDirs(null);
-            return list.length;
-        }
 
-        @Override
-        public Object getItem(int position) {
-
-            return list[position];
-        }
-
-        @Override
-        public long getItemId(int position) {
-
-            return position;
-
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            if (convertView == null) {
-                LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = layoutInflater.inflate(android.R.layout.two_line_list_item, null);
-            }
-
-            ((TextView) convertView.findViewById(android.R.id.text1)).setText(list[position].getAbsolutePath());
-            String Space = humanReadableByteCount(list[position].getFreeSpace(), true) + "/" + humanReadableByteCount(list[position].getTotalSpace(), true);
-            ((TextView) convertView.findViewById(android.R.id.text2)).setText(Space);
-
-            return convertView;
-
-        }
-
-    }
-
-    public static String humanReadableByteCount(long bytes, boolean si) {
-        int unit = si ? 1000 : 1024;
-        if (bytes < unit) return bytes + " B";
-        int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
-        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
-    }
 }
