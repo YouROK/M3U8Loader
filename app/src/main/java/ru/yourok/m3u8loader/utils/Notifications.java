@@ -67,7 +67,7 @@ public class Notifications {
         });
     }
 
-    public void removeNotification(int id) {
+    public void removeNotification() {
         manager.cancel(NOTIFY_ID);
     }
 }

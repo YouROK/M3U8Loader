@@ -46,7 +46,9 @@ public class LoaderService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        int cmd = intent.getIntExtra("command", 0);
+        int cmd = 0;
+        if (intent != null && intent.hasExtra("command"))
+            cmd = intent.getIntExtra("command", 0);
         switch (cmd) {
             case CMD_NONE:
                 break;
@@ -69,6 +71,7 @@ public class LoaderService extends Service {
                 instance = null;
             }
         Options.getInstance(this).SaveList();
+        notifications.removeNotification();
         super.onDestroy();
     }
 
