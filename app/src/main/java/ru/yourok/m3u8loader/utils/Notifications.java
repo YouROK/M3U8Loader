@@ -9,6 +9,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.NotificationCompat;
@@ -51,13 +52,20 @@ public class Notifications {
         String status = Status.GetStatus(context, loader);
 
         final android.support.v4.app.NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(name)
                 .setContentText(status)
+                .setColor(context.getResources().getColor(R.color.colorImageButtons))
                 .setContentIntent(contentIntent)
-                .setOngoing(true);
+                .setAutoCancel(true);
         if (progress > 0)
             builder.setProgress(100, progress, false);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            builder.setSmallIcon(R.drawable.ic_file_download_black_24dp);
+        } else {
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+        }
+
         Notification notification = builder.build();
         manager.notify(NOTIFY_ID, notification);
     }
