@@ -126,13 +126,11 @@ public class LoaderService extends Service {
                         continue;
                     checkState();
                     load(loader);
-
-                    while (LoaderServiceHandler.GetLoader(id).PollState() != null) ;
-                    updateNotif();
                 }
 
                 for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++)
-                    LoaderServiceHandler.GetLoader(i).PollState();
+                    if (LoaderServiceHandler.GetLoader(id) != null)
+                        LoaderServiceHandler.GetLoader(i).PollState();
                 if (loaderServiceCallback != null)
                     loaderServiceCallback.onUpdateLoader(0);
 
