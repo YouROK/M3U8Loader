@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
 
     <ImageView
+        android:id="@+id/imageViewEditItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_play_arrow_black_24dp"
-        android:id="@+id/imageViewEditItem" />
+        app:srcCompat="@drawable/ic_play_arrow_black_24dp" />
 
     <TextView
+        android:id="@+id/textViewEditItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:ellipsize="start"
         android:lines="1"
         android:singleLine="true"
-        android:text="Some item"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textViewEditItem"
-        android:layout_weight="1" />
+        android:text="Some item" />
+
     <CheckBox
-        android:text=""
+        android:id="@+id/checkBoxEditItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/checkBoxEditItem" />
+        android:text="" />
 </LinearLayout>

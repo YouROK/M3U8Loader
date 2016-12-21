@@ -13,9 +13,12 @@ type State struct {
 }
 
 func (m *M3U8) sendState(curr, count, stage int, text string, err error) {
-	if m.state != nil {
-		m.state <- &State{curr, count, stage, text, err}
+	m.stateMutext.Lock()
+	if m.state == nil && m.opt.Threads > 0 {
+		m.state = make(chan *State, m.opt.Threads*500)
 	}
+	m.stateMutext.Unlock()
+	m.state <- &State{curr, count, stage, text, err}
 }
 
 func GetState(m *M3U8) *State {
@@ -24,7 +27,7 @@ func GetState(m *M3U8) *State {
 		m.state = make(chan *State, m.opt.Threads*500)
 	}
 	m.stateMutext.Unlock()
-	timer := time.NewTimer(time.Second * 2)
+	timer := time.NewTimer(time.Second)
 	select {
 	case st := <-m.state:
 		return st

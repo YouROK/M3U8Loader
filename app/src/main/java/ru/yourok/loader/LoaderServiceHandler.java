@@ -37,7 +37,17 @@ public class LoaderServiceHandler {
         loadersQueue.add(id);
     }
 
-    public void RemoveQueue(int id) {
+    public static int PollQueue() {
+        if (loadersQueue.size() > 0)
+            return loadersQueue.poll();
+        return -1;
+    }
+
+    public static void RemoveQueue(int id) {
         loadersQueue.remove(id);
+    }
+
+    public static int SizeQueue() {
+        return loadersQueue.size();
     }
 }

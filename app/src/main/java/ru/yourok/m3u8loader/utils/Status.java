@@ -31,7 +31,7 @@ public class Status {
                     if (state.getError() != null)
                         status += state.getError().getMessage();
                     else
-                        status += "unknown";
+                        status = "";
                     break;
                 case (int) M3u8.Stage_LoadingList:
                     status = ctx.getString(R.string.status_load_list);

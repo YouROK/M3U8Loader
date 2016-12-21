@@ -25,7 +25,7 @@ import ru.yourok.m3u8loader.R;
  * Time: 11:35
  */
 public class Notifications {
-    private static final int NOTIFY_ID = 1;
+    private static final int NOTIFY_ID = 0;
 
     private NotificationManager manager;
     private Context context;
@@ -55,19 +55,15 @@ public class Notifications {
                 .setContentTitle(name)
                 .setContentText(status)
                 .setContentIntent(contentIntent)
-                .setAutoCancel(true);
+                .setOngoing(true);
         if (progress > 0)
             builder.setProgress(100, progress, false);
-        final Notification notification = builder.build();
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                manager.notify(NOTIFY_ID, notification);
-            }
-        });
+        Notification notification = builder.build();
+        manager.notify(NOTIFY_ID, notification);
     }
 
     public void removeNotification() {
-        manager.cancel(NOTIFY_ID);
+        if (manager != null)
+            manager.cancel(NOTIFY_ID);
     }
 }

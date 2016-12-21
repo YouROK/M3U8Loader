@@ -3,6 +3,7 @@
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:divider="?android:attr/dividerVertical"
     android:orientation="vertical"
     android:showDividers="middle">
@@ -11,8 +12,7 @@
         style="@android:style/DeviceDefault.ButtonBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="?android:attr/dividerVertical"
-        android:showDividers="middle">
+        android:layout_weight="0">
 
         <ImageButton
             android:id="@+id/buttonAdd"
@@ -55,6 +55,47 @@
         android:id="@+id/listViewLoaders"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp" />
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:id="@+id/itemLoaderMenu"
+        style="@android:style/DeviceDefault.ButtonBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <ImageButton
+            android:id="@+id/buttonItemMenuStart"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_play_circle_outline_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/buttonItemMenuStop"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_pause_circle_outline_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/buttonItemMenuRemove"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_remove_circle_outline_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/buttonItemMenuEdit"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_mode_edit_black_24dp" />
+    </LinearLayout>
 </LinearLayout>

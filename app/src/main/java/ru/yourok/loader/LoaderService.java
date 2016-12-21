@@ -4,8 +4,10 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
+import android.widget.Toast;
 
 import go.m3u8.M3u8;
+import go.m3u8.State;
 import ru.yourok.m3u8loader.utils.Notifications;
 
 import static ru.yourok.loader.LoaderServiceHandler.loadersQueue;
@@ -78,7 +80,7 @@ public class LoaderService extends Service {
     public static void registerOnUpdateLoader(LoaderServiceCallbackUpdate onUpdate) {
         loaderServiceCallback = onUpdate;
         if (instance != null && instance.id != -1)
-            instance.checkState(instance.id);
+            instance.checkState();
     }
 
     public static void startService(Context context) {
@@ -110,20 +112,30 @@ public class LoaderService extends Service {
             @Override
             public void run() {
                 synchronized (isLoading) {
-                    if (isLoading) return;
+                    if (isLoading)
+                        return;
                     isLoading = true;
                 }
-                for (int id : loadersQueue) {
-                    if (!isLoading) break;
+                while (LoaderServiceHandler.SizeQueue() > 0) {
+                    id = LoaderServiceHandler.PollQueue();
+                    if (!isLoading || id == -1) break;
                     Loader loader = LoaderServiceHandler.GetLoader(id);
                     if (loader == null)
                         continue;
                     if (loader.GetState() != null && loader.GetState().getStage() == M3u8.Stage_Finished)
                         continue;
-                    sendNotif(id);
-                    checkState(id);
+                    checkState();
                     load(loader);
+
+                    while (LoaderServiceHandler.GetLoader(id).PollState() != null) ;
+                    updateNotif();
                 }
+
+                for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++)
+                    LoaderServiceHandler.GetLoader(i).PollState();
+                if (loaderServiceCallback != null)
+                    loaderServiceCallback.onUpdateLoader(0);
+
                 synchronized (isLoading) {
                     isLoading = false;
                 }
@@ -140,12 +152,12 @@ public class LoaderService extends Service {
                     if (!isLoading) return;
                     isLoading = false;
                 }
-                for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++)
-                    if (LoaderServiceHandler.GetLoader(i).IsWorking())
-                        LoaderServiceHandler.GetLoader(i).Stop();
-
-                for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++)
+                for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++) {
                     LoaderServiceHandler.GetLoader(i).PollState();
+                    State state = LoaderServiceHandler.GetLoader(i).GetState();
+                    if (state != null && state.getStage() == M3u8.Stage_LoadingContent)
+                        LoaderServiceHandler.GetLoader(i).Stop();
+                }
                 updateNotif();
             }
         }).start();
@@ -161,53 +173,51 @@ public class LoaderService extends Service {
             ret = loader.LoadList();
         if (ret.isEmpty())
             loader.Load();
-        updateNotif();
     }
 
     void updateNotif() {
-        if (id != -1)
-            sendNotif(id);
-    }
-
-    void sendNotif(final int id) {
-        this.id = id;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (loaderServiceCallback != null)
-                    loaderServiceCallback.onUpdateLoader(id);
-                notifications.createNotification(id);
-            }
-        }).start();
-    }
-
-    private void checkState(final int id) {
-
-        synchronized (isChecked) {
-            if (isChecked) return;
-            isChecked = true;
+        if (id != -1) {
+            if (loaderServiceCallback != null)
+                loaderServiceCallback.onUpdateLoader(id);
+            notifications.createNotification(id);
         }
+    }
 
+    private void checkState() {
         Thread th = new Thread(new Runnable() {
             @Override
             public void run() {
+                synchronized (isChecked) {
+                    if (isChecked)
+                        return;
+                    isChecked = true;
+                }
+
                 int countNil = 0;
+                long time = System.currentTimeMillis();
+                int timeout = Options.getInstance(LoaderService.this).GetTimeout() / 1000;
                 while (true) {
                     Loader loader = LoaderServiceHandler.GetLoader(id);
                     if (loader == null)
                         break;
-                    if (loader.PollState() == null)
-                        countNil++;
-                    else
+                    if (loader.PollState() == null) {
+                        if (System.currentTimeMillis() - time > 1000) {
+                            countNil++;
+                            time = System.currentTimeMillis();
+                        }
+                    } else
                         countNil = 0;
+
                     updateNotif();
 
-                    if (!isLoading || countNil > 30)
+                    if (countNil > timeout + 60)
                         break;
                 }
+
                 synchronized (isChecked) {
                     isChecked = false;
                 }
+                updateNotif();
             }
         });
         th.start();

@@ -80,7 +80,12 @@ public class Options {
             Loader loader = new Loader();
             loader.SetUrl(url);
             loader.SetName(name);
-            LoaderServiceHandler.AddLoader(loader);
+            boolean isEqual = false;
+            for (int n = 0; n < LoaderServiceHandler.SizeLoaders(); n++)
+                if (LoaderServiceHandler.GetLoader(n).equals(loader))
+                    isEqual = true;
+            if (!isEqual)
+                LoaderServiceHandler.AddLoader(loader);
         }
     }
 }

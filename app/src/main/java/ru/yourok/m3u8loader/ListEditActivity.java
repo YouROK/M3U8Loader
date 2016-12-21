@@ -47,17 +47,18 @@ public class ListEditActivity extends AppCompatActivity {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    String ret = loader.LoadList();
-                    if (!ret.isEmpty()) {
-                        Toast.makeText(ListEditActivity.this, ret, Toast.LENGTH_SHORT).show();
-                        ListEditActivity.this.finish();
-                    } else
-                        list = loader.GetList();
+                    final String ret = loader.LoadList();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            findViewById(R.id.progressBar).setVisibility(View.GONE);
-                            listviewadapter.notifyDataSetChanged();
+                            if (!ret.isEmpty()) {
+                                Toast.makeText(ListEditActivity.this, ret, Toast.LENGTH_SHORT).show();
+                                ListEditActivity.this.finish();
+                            } else {
+                                list = loader.GetList();
+                                findViewById(R.id.progressBar).setVisibility(View.GONE);
+                                listviewadapter.notifyDataSetChanged();
+                            }
                         }
                     });
                 }

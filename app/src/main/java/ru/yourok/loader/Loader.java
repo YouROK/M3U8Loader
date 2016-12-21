@@ -119,6 +119,7 @@ public class Loader {
             return "";
         } catch (Exception e) {
             isStoped = true;
+            PollState();
             return e.getMessage();
         }
     }
@@ -161,5 +162,9 @@ public class Loader {
         } catch (Exception e) {
             return e.getMessage();
         }
+    }
+
+    public boolean equals(Loader obj) {
+        return this.GetUrl().equals(obj.GetUrl()) && this.GetName().equals(obj.GetName());
     }
 }
