@@ -1,5 +1,8 @@
 package ru.yourok.loader;
 
+import java.io.File;
+import java.util.ArrayList;
+
 import go.m3u8.List;
 import go.m3u8.M3U8;
 import go.m3u8.M3u8;
@@ -43,6 +46,37 @@ public class Loader {
 
     public void SetOutDir(String out) {
         opts.setOutFileDir(out);
+    }
+
+    private ArrayList<String> getOutFiles(List list) {
+        if (!list.isLoadList())
+            return null;
+        ArrayList<String> outs = new ArrayList<>();
+        String tmp = opts.getOutFileDir() + "/" + list.getName() + ".mp4";
+        if (list.itemsSize() > 0 && new File(tmp).exists())
+            outs.add(tmp);
+        for (int i = 0; i < list.listsSize(); i++) {
+            ArrayList<String> tmps = getOutFiles(list.getList(i));
+            if (tmps != null)
+                outs.addAll(tmps);
+        }
+        if (outs.size() > 0)
+            return outs;
+        return null;
+    }
+
+    public String[] GetOutFiles() {
+        if (m3u8 == null)
+            return null;
+        List list = GetList();
+        if (list == null)
+            return null;
+
+        ArrayList<String> outs = getOutFiles(list);
+        if (outs == null)
+            return null;
+
+        return outs.toArray(new String[]{});
     }
 
     public void SetName(String Name) {

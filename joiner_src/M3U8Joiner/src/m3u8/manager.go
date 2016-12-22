@@ -52,12 +52,13 @@ func (m *M3U8) LoadList() error {
 	} else {
 		list, err = ParseList(ho)
 	}
-	m.errors(err)
 	if err != nil {
+		m.errors(err)
 		return err
 	}
 	list.Name = m.opt.Name
 	list.Item.FilePath = filepath.Join(m.opt.TempDir, list.Name)
+	list.IsLoad = true
 	m.loadCount = m.prepareList(list)
 	m.list = list
 	return nil

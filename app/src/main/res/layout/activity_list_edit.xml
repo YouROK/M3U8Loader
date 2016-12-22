@@ -10,24 +10,67 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <ImageButton
-            android:id="@+id/btnLoaderListNavUp"
-            style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:onClick="upBtnClick"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_folder_up_black_24dp" />
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="@android:style/Widget.DeviceDefault.Light.ProgressBar"
+        <LinearLayout
+            android:id="@+id/loaderListProgressBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:visibility="gone" />
+            android:orientation="horizontal">
+
+            <ProgressBar
+                style="@android:style/Widget.DeviceDefault.Light.ProgressBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/loaderListMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnLoaderListNavUp"
+                style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="upBtnClick"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_folder_up_black_24dp" />
+
+            <ImageButton
+                android:id="@+id/btnLoaderListSelAll"
+                style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="allSelBtnClick"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_radio_button_checked_black_24dp" />
+
+            <ImageButton
+                android:id="@+id/btnLoaderListSelNone"
+                style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="noneSelBtnClick"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_radio_button_unchecked_black_24dp" />
+
+            <ImageButton
+                android:id="@+id/btnLoaderListSelReverse"
+                style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="reversSelBtnClick"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_radio_button_reverse_black_24dp" />
+        </LinearLayout>
     </LinearLayout>
 
 
@@ -35,6 +78,8 @@
         android:id="@+id/loaderEditList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fadeScrollbars="true"
+        android:fastScrollEnabled="true"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin">

@@ -198,6 +198,8 @@ public class LoaderService extends Service {
                     Loader loader = LoaderServiceHandler.GetLoader(id);
                     if (loader == null)
                         break;
+                    while (loader.PollState() == null) ;
+
                     if (loader.PollState() == null) {
                         if (System.currentTimeMillis() - time > 1000) {
                             countNil++;

@@ -1,18 +1,25 @@
 package ru.yourok.m3u8loader;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import java.io.File;
 
 import go.m3u8.M3u8;
 import go.m3u8.State;
@@ -152,8 +159,14 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
                     return;
                 switch (view.getId()) {
                     case R.id.buttonItemMenuStart:
-                        LoaderServiceHandler.AddQueue(sel);
-                        LoaderService.load(MainActivity.this);
+                        if (loader != null &&
+                                loader.GetState() != null &&
+                                loader.GetState().getStage() == M3u8.Stage_Finished) {
+                            openFile(loader);
+                        } else {
+                            LoaderServiceHandler.AddQueue(sel);
+                            LoaderService.load(MainActivity.this);
+                        }
                         break;
                     case R.id.buttonItemMenuStop:
                         if (loader.IsWorking())
@@ -182,5 +195,35 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
         findViewById(R.id.buttonItemMenuStop).setOnClickListener(clickListener);
         findViewById(R.id.buttonItemMenuRemove).setOnClickListener(clickListener);
         findViewById(R.id.buttonItemMenuEdit).setOnClickListener(clickListener);
+    }
+
+
+    private void openFile(Loader loader) {
+        if (loader == null)
+            return;
+        final String[] names = loader.GetOutFiles();
+        if (names == null || names.length == 0)
+            return;
+        if (names.length == 1) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.fromFile(new File(names[0])), "video/*");
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Intent chooser = Intent.createChooser(intent, "   ");
+            startActivity(chooser);
+        } else {
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
+            dialogBuilder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int item) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.fromFile(new File(names[item])), "video/*");
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    Intent chooser = Intent.createChooser(intent, "   ");
+                    startActivity(chooser);
+                }
+            });
+            AlertDialog alertDialogObject = dialogBuilder.create();
+            alertDialogObject.show();
+        }
     }
 }

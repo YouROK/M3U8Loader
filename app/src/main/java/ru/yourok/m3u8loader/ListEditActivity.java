@@ -21,6 +21,7 @@ import go.m3u8.Item;
 import go.m3u8.List;
 import ru.yourok.loader.Loader;
 import ru.yourok.loader.LoaderServiceHandler;
+import ru.yourok.loader.Options;
 
 public class ListEditActivity extends AppCompatActivity {
     private Loader loader;
@@ -32,6 +33,9 @@ public class ListEditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_edit);
+        findViewById(R.id.loaderListProgressBar).setVisibility(View.GONE);
+        findViewById(R.id.loaderListMenu).setVisibility(View.VISIBLE);
+        findViewById(R.id.btnLoaderListNavUp).setVisibility(View.GONE);
         final ListView listView = (ListView) findViewById(R.id.loaderEditList);
         listviewadapter = new AdaptorEditList();
         listView.setAdapter(listviewadapter);
@@ -43,10 +47,15 @@ public class ListEditActivity extends AppCompatActivity {
         loader.Stop();
         list = loader.GetList();
         if (list == null) {
-            findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+            findViewById(R.id.loaderListProgressBar).setVisibility(View.VISIBLE);
+            findViewById(R.id.loaderListMenu).setVisibility(View.GONE);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    loader.SetThreads(Options.getInstance(ListEditActivity.this).GetThreads());
+                    loader.SetTimeout(Options.getInstance(ListEditActivity.this).GetTimeout());
+                    loader.SetTempDir(Options.getInstance(ListEditActivity.this).GetTempDir());
+                    loader.SetOutDir(Options.getInstance(ListEditActivity.this).GetOutDir());
                     final String ret = loader.LoadList();
                     runOnUiThread(new Runnable() {
                         @Override
@@ -56,7 +65,8 @@ public class ListEditActivity extends AppCompatActivity {
                                 ListEditActivity.this.finish();
                             } else {
                                 list = loader.GetList();
-                                findViewById(R.id.progressBar).setVisibility(View.GONE);
+                                findViewById(R.id.loaderListProgressBar).setVisibility(View.GONE);
+                                findViewById(R.id.loaderListMenu).setVisibility(View.VISIBLE);
                                 listviewadapter.notifyDataSetChanged();
                             }
                         }
@@ -71,8 +81,11 @@ public class ListEditActivity extends AppCompatActivity {
         listviewadapter.notifyDataSetChanged();
         if (list == null)
             return;
-        if (path.size() == 0)
+        if (path.size() == 0) {
+            findViewById(R.id.btnLoaderListNavUp).setVisibility(View.GONE);
             return;
+        } else
+            findViewById(R.id.btnLoaderListNavUp).setVisibility(View.VISIBLE);
         for (int i : path)
             list = list.getList(i);
         listviewadapter.notifyDataSetChanged();
@@ -82,6 +95,33 @@ public class ListEditActivity extends AppCompatActivity {
         if (path.size() > 0)
             path.remove(path.size() - 1);
         findList();
+    }
+
+    public void allSelBtnClick(View view) {
+        list = loader.GetList();
+        for (int i = 0; i < list.itemsSize(); i++)
+            list.getItem(i).setIsLoad(true);
+        for (int i = 0; i < list.listsSize(); i++)
+            list.getList(i).setLoadList(true);
+        listviewadapter.notifyDataSetChanged();
+    }
+
+    public void noneSelBtnClick(View view) {
+        list = loader.GetList();
+        for (int i = 0; i < list.itemsSize(); i++)
+            list.getItem(i).setIsLoad(false);
+        for (int i = 0; i < list.listsSize(); i++)
+            list.getList(i).setLoadList(false);
+        listviewadapter.notifyDataSetChanged();
+    }
+
+    public void reversSelBtnClick(View view) {
+        list = loader.GetList();
+        for (int i = 0; i < list.itemsSize(); i++)
+            list.getItem(i).setIsLoad(!list.getItem(i).getIsLoad());
+        for (int i = 0; i < list.listsSize(); i++)
+            list.getList(i).setLoadList(!list.getList(i).isLoadList());
+        listviewadapter.notifyDataSetChanged();
     }
 
     public class AdaptorEditList extends BaseAdapter {
@@ -117,7 +157,7 @@ public class ListEditActivity extends AppCompatActivity {
                 //List
                 List subList = list.getList(position);
                 ((ImageView) v.findViewById(R.id.imageViewEditItem)).setImageResource(R.drawable.ic_format_list_bulleted_black_24dp);
-                ((TextView) v.findViewById(R.id.textViewEditItem)).setText(subList.getName());
+                ((CheckBox) v.findViewById(R.id.checkBoxEditItem)).setText(subList.getName());
                 ((CheckBox) v.findViewById(R.id.checkBoxEditItem)).setChecked(subList.isLoadList());
                 ((CheckBox) v.findViewById(R.id.checkBoxEditItem)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
@@ -139,13 +179,14 @@ public class ListEditActivity extends AppCompatActivity {
                 //Item
                 Item item = list.getItem(position - list.listsSize());
                 ((ImageView) v.findViewById(R.id.imageViewEditItem)).setImageResource(R.drawable.ic_play_arrow_black_24dp);
-                ((TextView) v.findViewById(R.id.textViewEditItem)).setText(item.getUrl());
+                ((CheckBox) v.findViewById(R.id.checkBoxEditItem)).setText(item.getUrl());
                 ((CheckBox) v.findViewById(R.id.checkBoxEditItem)).setChecked(item.getIsLoad());
                 ((CheckBox) v.findViewById(R.id.checkBoxEditItem)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        if (list != null && list.getItem(position - list.listsSize()) != null)
-                            list.getItem(position - list.listsSize()).setIsLoad(b);
+                        long pos = position - list.listsSize();
+                        if (list != null && list.getItem(pos) != null)
+                            list.getItem(pos).setIsLoad(b);
                     }
                 });
             }

@@ -12,19 +12,9 @@
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/ic_play_arrow_black_24dp" />
 
-    <TextView
-        android:id="@+id/textViewEditItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:ellipsize="start"
-        android:lines="1"
-        android:singleLine="true"
-        android:text="Some item" />
-
     <CheckBox
         android:id="@+id/checkBoxEditItem"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="" />
 </LinearLayout>

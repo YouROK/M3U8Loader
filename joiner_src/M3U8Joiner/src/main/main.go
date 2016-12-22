@@ -14,8 +14,8 @@ func main() {
 	opt.Url = "https://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear1/prog_index.m3u8"
 	opt.Name = "test"
 	opt.OutFileDir = opt.TempDir
-	opt.Threads = 30
-	opt.Timeout = 300000
+	opt.Threads = 10
+	opt.Timeout = 60000
 
 	m := m3u8.NewM3U8(opt)
 	go func() {
@@ -27,12 +27,16 @@ func main() {
 				fmt.Println("Join")
 				err = m.Join()
 				if err == nil {
+					fmt.Println("Remove temp")
 					err = m.RemoveTemp()
-					if err != nil {
+					if err == nil {
 						m.Finish()
 					}
 				}
 			}
+		}
+		if err != nil {
+			fmt.Println("Error work", err)
 		}
 	}()
 	//	stoped := 0
@@ -49,12 +53,4 @@ func main() {
 			break
 		}
 	}
-
-	log.Println(sg, sg != m3u8.Stage_Error && sg != m3u8.Stage_Stoped && sg != m3u8.Stage_Finished)
-	return
-
-	for st := m3u8.GetState(m); st != nil; {
-		log.Println(st)
-	}
-	log.Println(sg)
 }

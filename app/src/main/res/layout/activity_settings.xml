@@ -46,14 +46,14 @@
 
                 <ImageButton
                     android:id="@+id/imageButton"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="36dp"
                     android:layout_height="wrap_content"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:onClick="srchBtnClick"
-                    app:srcCompat="@drawable/ic_folder_open_black_24dp"
                     android:layout_alignBottom="@+id/editTextDirectoryPath"
+                    android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true" />
+                    android:onClick="srchBtnClick"
+                    app:srcCompat="@drawable/ic_folder_open_black_24dp" />
             </RelativeLayout>
 
             <TextView
@@ -66,7 +66,7 @@
                 android:id="@+id/textViewTempDir"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="marquee"
+                android:ellipsize="middle"
                 android:lines="1"
                 android:singleLine="true"
                 android:text="" />
@@ -113,6 +113,12 @@
                 android:ems="10"
                 android:inputType="number" />
 
+            <TextView
+                android:id="@+id/textViewVersion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="" />
         </LinearLayout>
     </ScrollView>
 
@@ -126,6 +132,7 @@
         android:divider="?android:attr/dividerVertical"
         android:orientation="horizontal"
         android:showDividers="middle">
+
 
         <Button
             android:id="@+id/buttonAdd"

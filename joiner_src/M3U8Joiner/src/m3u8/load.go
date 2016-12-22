@@ -88,6 +88,7 @@ func (m *M3U8) loadItem(item *Item) error {
 	if err == nil && m.isLoading {
 		ioutil.WriteFile(item.FilePath, buffer, 0666)
 	}
+
 	return err
 }
 

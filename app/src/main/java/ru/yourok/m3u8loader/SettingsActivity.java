@@ -3,6 +3,8 @@ package ru.yourok.m3u8loader;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -26,6 +28,16 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        try {
+            PackageInfo pInfo = null;
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            String version = pInfo.versionName;
+            ((TextView) findViewById(R.id.textViewVersion)).setText(version);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
         loadSettings();
     }
 
@@ -94,7 +106,7 @@ public class SettingsActivity extends AppCompatActivity {
             dialogBuilder.setTitle(R.string.selected_folder_label);
             dialogBuilder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
-                    ((TextView) findViewById(R.id.textViewTempDir)).setText(((File) adapter.getItem(item)).getAbsolutePath());
+                    ((TextView) findViewById(R.id.textViewTempDir)).setText(((File) adapter.getItem(item)).getAbsolutePath() + "/tmp");
                 }
             });
             AlertDialog alertDialogObject = dialogBuilder.create();
@@ -119,8 +131,6 @@ public class SettingsActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.textViewTempDir)).setText(name);
         }
     }
-
-
 
 
 }
