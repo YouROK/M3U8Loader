@@ -113,6 +113,12 @@
                 android:ems="10"
                 android:inputType="number" />
 
+            <CheckBox
+                android:id="@+id/checkBoxChangeTheme"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/use_dark_theme" />
+
             <TextView
                 android:id="@+id/textViewVersion"
                 android:layout_width="wrap_content"
@@ -128,7 +134,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@android:drawable/screen_background_light"
         android:divider="?android:attr/dividerVertical"
         android:orientation="horizontal"
         android:showDividers="middle">

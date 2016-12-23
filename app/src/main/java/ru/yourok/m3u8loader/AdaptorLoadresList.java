@@ -1,6 +1,9 @@
 package ru.yourok.m3u8loader;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,7 +91,11 @@ public class AdaptorLoadresList extends BaseAdapter {
         }
 
         if (selected == position) {
-            view.setBackgroundResource(R.color.colorListSelect);
+            TypedValue typedValue = new TypedValue();
+            Resources.Theme theme = context.getTheme();
+            theme.resolveAttribute(R.attr.colorItemSelectMenu, typedValue, true);
+            String str = Integer.toHexString(typedValue.data);
+            view.setBackgroundColor(typedValue.data);
             view.getBackground().setAlpha(100);
         } else
             view.setBackgroundResource(android.R.color.transparent);

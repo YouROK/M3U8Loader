@@ -12,6 +12,7 @@
     <string name="main_btn_stop">Остановить</string>
 
     <string name="default_directory_change">Выбрать временную папку</string>
+    <string name="use_dark_theme">Использовать темную тему</string>
 
     <string name="add_label">Добавить</string>
     <string name="download_label">Загрузить</string>

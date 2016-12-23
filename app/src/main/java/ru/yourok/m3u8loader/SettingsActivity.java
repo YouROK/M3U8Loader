@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,14 +23,15 @@ import java.io.File;
 
 import ru.yourok.loader.Loader;
 import ru.yourok.loader.Options;
+import ru.yourok.m3u8loader.utils.ThemeChanger;
 
 public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ThemeChanger.SetTheme(this);
         setContentView(R.layout.activity_settings);
-
         try {
             PackageInfo pInfo = null;
             pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -62,6 +65,7 @@ public class SettingsActivity extends AppCompatActivity {
         ((EditText) findViewById(R.id.editTextThreads)).setText(String.valueOf(Options.getInstance(this).GetThreads()));
         ((EditText) findViewById(R.id.editTextTimeout)).setText(String.valueOf(Options.getInstance(this).GetTimeout()));
         ((TextView) findViewById(R.id.textViewTempDir)).setText(Options.getInstance(this).GetTempDir());
+        ((CheckBox) findViewById(R.id.checkBoxChangeTheme)).setChecked(Options.getInstance(this).IsUseDarkTheme());
     }
 
     private void saveSettings() {
@@ -69,18 +73,24 @@ public class SettingsActivity extends AppCompatActivity {
         String dirtemp = ((TextView) findViewById(R.id.textViewTempDir)).getText().toString();
         String threads = ((EditText) findViewById(R.id.editTextThreads)).getText().toString();
         String timeout = ((EditText) findViewById(R.id.editTextTimeout)).getText().toString();
+        boolean usedark = ((CheckBox) findViewById(R.id.checkBoxChangeTheme)).isChecked();
         Options.getInstance(this).SetOutDir(dirout);
         Options.getInstance(this).SetTempDir(dirtemp);
         Options.getInstance(this).SetTimeout(Integer.parseInt(timeout));
         Options.getInstance(this).SetThreads(Integer.parseInt(threads));
+        Options.getInstance(this).SetDarkTheme(usedark);
     }
 
     public void okBtnClick(View view) {
         saveSettings();
+        Intent intent = new Intent();
+        setResult(RESULT_OK, intent);
         finish();
     }
 
     public void cancelBtnClick(View view) {
+        Intent intent = new Intent();
+        setResult(RESULT_CANCELED, intent);
         finish();
     }
 

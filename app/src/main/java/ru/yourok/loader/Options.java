@@ -36,6 +36,10 @@ public class Options {
         return prefs.getString("OutDirectory", Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath());
     }
 
+    public boolean IsUseDarkTheme() {
+        return prefs.getBoolean("UseDarkTheme", false);
+    }
+
     public void SetThreads(int val) {
         SharedPreferences.Editor ed = prefs.edit();
         ed.putInt("Threads", val);
@@ -57,6 +61,12 @@ public class Options {
     public void SetOutDir(String val) {
         SharedPreferences.Editor ed = prefs.edit();
         ed.putString("OutDirectory", val);
+        ed.apply();
+    }
+
+    public void SetDarkTheme(boolean val) {
+        SharedPreferences.Editor ed = prefs.edit();
+        ed.putBoolean("UseDarkTheme", val);
         ed.apply();
     }
 

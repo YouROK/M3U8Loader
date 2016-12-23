@@ -2,8 +2,9 @@
 <resources>
     <color name="colorPrimary">#607D8B</color>
     <color name="colorPrimaryDark">#455A64</color>
-    <color name="colorAccent">#78909C</color>
+    <color name="colorAccent">#78909c</color>
 
-    <color name="colorListSelect">#CFD8DC</color>
+    <color name="colorListSelectLight">#CFD8DC</color>
+    <color name="colorListSelectDark">#11171a</color>
     <color name="colorImageButtons">@color/colorPrimaryDark</color>
 </resources>

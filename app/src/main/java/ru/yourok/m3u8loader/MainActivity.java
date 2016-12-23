@@ -27,6 +27,7 @@ import ru.yourok.loader.Loader;
 import ru.yourok.loader.LoaderService;
 import ru.yourok.loader.LoaderServiceHandler;
 import ru.yourok.loader.Options;
+import ru.yourok.m3u8loader.utils.ThemeChanger;
 
 
 public class MainActivity extends AppCompatActivity implements LoaderService.LoaderServiceCallbackUpdate {
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ThemeChanger.SetTheme(this);
         setContentView(R.layout.activity_main);
 
         LoaderService.registerOnUpdateLoader(this);
@@ -119,7 +121,14 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
 
     public void onSettingsClick(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 1202);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1202 && resultCode == RESULT_OK)
+            this.recreate();
     }
 
     @Override

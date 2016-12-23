@@ -22,6 +22,7 @@ import go.m3u8.List;
 import ru.yourok.loader.Loader;
 import ru.yourok.loader.LoaderServiceHandler;
 import ru.yourok.loader.Options;
+import ru.yourok.m3u8loader.utils.ThemeChanger;
 
 public class ListEditActivity extends AppCompatActivity {
     private Loader loader;
@@ -32,6 +33,7 @@ public class ListEditActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ThemeChanger.SetTheme(this);
         setContentView(R.layout.activity_list_edit);
         findViewById(R.id.loaderListProgressBar).setVisibility(View.GONE);
         findViewById(R.id.loaderListMenu).setVisibility(View.VISIBLE);

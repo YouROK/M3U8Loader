@@ -13,6 +13,7 @@
     <string name="main_btn_stop">Stopp</string>
 
     <string name="default_directory_change">Temporären Ordner ändern</string>
+    <string name="use_dark_theme">Verwenden Sie dunkle Thema</string>
 
     <string name="add_label">Hinzufügen</string>
     <string name="download_label">Download</string>

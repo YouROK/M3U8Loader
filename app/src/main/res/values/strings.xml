@@ -12,6 +12,7 @@
     <string name="main_btn_stop">Stop</string>
 
     <string name="default_directory_change">Select the temp directory</string>
+    <string name="use_dark_theme">Use dark theme</string>
 
     <string name="add_label">Add</string>
     <string name="download_label">Download</string>

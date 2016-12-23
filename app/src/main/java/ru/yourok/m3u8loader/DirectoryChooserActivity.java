@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import ru.yourok.loader.Options;
+import ru.yourok.m3u8loader.utils.ThemeChanger;
 
 public class DirectoryChooserActivity extends AppCompatActivity {
 
@@ -34,6 +35,7 @@ public class DirectoryChooserActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ThemeChanger.SetTheme(this);
         setContentView(R.layout.activity_directory_chooser);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)

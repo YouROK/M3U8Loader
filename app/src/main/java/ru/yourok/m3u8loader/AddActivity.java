@@ -11,6 +11,7 @@ import ru.yourok.loader.Loader;
 import ru.yourok.loader.LoaderService;
 import ru.yourok.loader.LoaderServiceHandler;
 import ru.yourok.loader.Options;
+import ru.yourok.m3u8loader.utils.ThemeChanger;
 
 public class AddActivity extends AppCompatActivity {
 
@@ -20,6 +21,7 @@ public class AddActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ThemeChanger.SetTheme(this);
         setContentView(R.layout.activity_add);
 
         LoaderService.startService(this);
