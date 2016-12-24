@@ -5,12 +5,14 @@
     <string name="url_name">Url link:</string>
     <string name="timeout">Timeout:</string>
     <string name="threads">Threads:</string>
+    <string name="useragent">User agent:</string>
     <string name="download_path">Download path:</string>
     <string name="temp_dir">Temp directory:</string>
 
     <string name="main_btn_start">Start</string>
     <string name="main_btn_stop">Stop</string>
 
+    <string name="set_def_options">Set the default settings</string>
     <string name="default_directory_change">Select the temp directory</string>
     <string name="use_dark_theme">Use dark theme</string>
 
@@ -21,6 +23,9 @@
     <string name="selected_folder_label">Selected folder:</string>
     <string name="new_directory_title">New folder</string>
     <string name="new_directory_name_label">Name of new folder:</string>
+    <string name="delete_label">Delete</string>
+    <string name="remove_from_list">Remove from list</string>
+    <string name="delete_with_files">Delete with files</string>
 
     <string name="status_load_list">Loading list…</string>
     <string name="status_load_segments">Loading segments…</string>

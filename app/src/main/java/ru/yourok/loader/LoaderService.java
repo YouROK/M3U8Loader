@@ -162,13 +162,9 @@ public class LoaderService extends Service {
     }
 
     private void load(Loader loader) {
-        loader.SetThreads(Options.getInstance(this).GetThreads());
-        loader.SetTimeout(Options.getInstance(this).GetTimeout());
-        loader.SetTempDir(Options.getInstance(this).GetTempDir());
-        loader.SetOutDir(Options.getInstance(this).GetOutDir());
         String ret = "";
         if (loader.GetList() == null)
-            ret = loader.LoadList();
+            ret = loader.LoadListOpts(this);
         if (ret.isEmpty())
             loader.Load();
     }

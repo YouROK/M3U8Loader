@@ -54,11 +54,7 @@ public class ListEditActivity extends AppCompatActivity {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    loader.SetThreads(Options.getInstance(ListEditActivity.this).GetThreads());
-                    loader.SetTimeout(Options.getInstance(ListEditActivity.this).GetTimeout());
-                    loader.SetTempDir(Options.getInstance(ListEditActivity.this).GetTempDir());
-                    loader.SetOutDir(Options.getInstance(ListEditActivity.this).GetOutDir());
-                    final String ret = loader.LoadList();
+                    final String ret = loader.LoadListOpts(ListEditActivity.this);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

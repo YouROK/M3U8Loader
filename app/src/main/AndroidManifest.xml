@@ -143,6 +143,9 @@
         <activity
             android:name=".ListEditActivity"
             android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".RemoveDialogActivity"
+            android:theme="@style/MyDialog" />
     </application>
 
 </manifest>

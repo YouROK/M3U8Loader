@@ -1,5 +1,7 @@
 package ru.yourok.loader;
 
+import android.content.Context;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -46,6 +48,10 @@ public class Loader {
 
     public void SetOutDir(String out) {
         opts.setOutFileDir(out);
+    }
+
+    public void SetUserAgent(String val) {
+        opts.setHeader("User-Agent", val);
     }
 
     private ArrayList<String> getOutFiles(List list) {
@@ -119,6 +125,15 @@ public class Loader {
 
     public State GetState() {
         return state;
+    }
+
+    public String LoadListOpts(Context ctx) {
+        SetThreads(ru.yourok.loader.Options.getInstance(ctx).GetThreads());
+        SetTimeout(ru.yourok.loader.Options.getInstance(ctx).GetTimeout());
+        SetTempDir(ru.yourok.loader.Options.getInstance(ctx).GetTempDir());
+        SetOutDir(ru.yourok.loader.Options.getInstance(ctx).GetOutDir());
+        SetUserAgent(ru.yourok.loader.Options.getInstance(ctx).GetUseragent());
+        return LoadList();
     }
 
     public String LoadList() {

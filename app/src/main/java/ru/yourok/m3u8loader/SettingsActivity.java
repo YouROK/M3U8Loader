@@ -7,6 +7,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -26,6 +27,8 @@ import ru.yourok.loader.Options;
 import ru.yourok.m3u8loader.utils.ThemeChanger;
 
 public class SettingsActivity extends AppCompatActivity {
+
+    public static final int REQUEST_CODE = 1202;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +68,7 @@ public class SettingsActivity extends AppCompatActivity {
         ((EditText) findViewById(R.id.editTextThreads)).setText(String.valueOf(Options.getInstance(this).GetThreads()));
         ((EditText) findViewById(R.id.editTextTimeout)).setText(String.valueOf(Options.getInstance(this).GetTimeout()));
         ((TextView) findViewById(R.id.textViewTempDir)).setText(Options.getInstance(this).GetTempDir());
+        ((EditText) findViewById(R.id.editTextUseragent)).setText(Options.getInstance(this).GetUseragent());
         ((CheckBox) findViewById(R.id.checkBoxChangeTheme)).setChecked(Options.getInstance(this).IsUseDarkTheme());
     }
 
@@ -73,12 +77,14 @@ public class SettingsActivity extends AppCompatActivity {
         String dirtemp = ((TextView) findViewById(R.id.textViewTempDir)).getText().toString();
         String threads = ((EditText) findViewById(R.id.editTextThreads)).getText().toString();
         String timeout = ((EditText) findViewById(R.id.editTextTimeout)).getText().toString();
+        String useragent = ((EditText) findViewById(R.id.editTextUseragent)).getText().toString();
         boolean usedark = ((CheckBox) findViewById(R.id.checkBoxChangeTheme)).isChecked();
         Options.getInstance(this).SetOutDir(dirout);
         Options.getInstance(this).SetTempDir(dirtemp);
         Options.getInstance(this).SetTimeout(Integer.parseInt(timeout));
         Options.getInstance(this).SetThreads(Integer.parseInt(threads));
         Options.getInstance(this).SetDarkTheme(usedark);
+        Options.getInstance(this).SetUseragent(useragent);
     }
 
     public void okBtnClick(View view) {
@@ -143,4 +149,12 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
 
+    public void defOptions(View view) {
+        ((EditText) findViewById(R.id.editTextDirectoryPath)).setText(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath());
+        ((EditText) findViewById(R.id.editTextThreads)).setText("10");
+        ((EditText) findViewById(R.id.editTextTimeout)).setText("60000");
+        ((TextView) findViewById(R.id.textViewTempDir)).setText(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/tmp/");
+        ((EditText) findViewById(R.id.editTextUseragent)).setText("DWL/1.0.0 (linux)");
+        ((CheckBox) findViewById(R.id.checkBoxChangeTheme)).setChecked(false);
+    }
 }

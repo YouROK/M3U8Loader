@@ -5,12 +5,14 @@
     <string name="url_name">URL-адрес:</string>
     <string name="timeout">Время ожидания соединения:</string>
     <string name="threads">Потоки:</string>
+    <string name="useragent">User agent:</string>
     <string name="download_path">Папка загрузки:</string>
     <string name="temp_dir">Временная директория:</string>
 
     <string name="main_btn_start">Загрузить</string>
     <string name="main_btn_stop">Остановить</string>
 
+    <string name="set_def_options">Установить настройки по умолчанию</string>
     <string name="default_directory_change">Выбрать временную папку</string>
     <string name="use_dark_theme">Использовать темную тему</string>
 
@@ -21,6 +23,9 @@
     <string name="selected_folder_label">Выберите папку:</string>
     <string name="new_directory_title">Создать папку</string>
     <string name="new_directory_name_label">Название новой папки:</string>
+    <string name="delete_label">Удалить</string>
+    <string name="remove_from_list">Удалить из списка</string>
+    <string name="delete_with_files">Удалить с файлами</string>
 
     <string name="status_load_list">Загрузка листа…</string>
     <string name="status_load_segments">Загрузка сегментов…</string>

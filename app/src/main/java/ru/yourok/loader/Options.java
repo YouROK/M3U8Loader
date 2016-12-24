@@ -36,6 +36,10 @@ public class Options {
         return prefs.getString("OutDirectory", Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath());
     }
 
+    public String GetUseragent() {
+        return prefs.getString("Useragent", "DWL/1.0.0 (linux)");
+    }
+
     public boolean IsUseDarkTheme() {
         return prefs.getBoolean("UseDarkTheme", false);
     }
@@ -61,6 +65,12 @@ public class Options {
     public void SetOutDir(String val) {
         SharedPreferences.Editor ed = prefs.edit();
         ed.putString("OutDirectory", val);
+        ed.apply();
+    }
+
+    public void SetUseragent(String val) {
+        SharedPreferences.Editor ed = prefs.edit();
+        ed.putString("Useragent", val);
         ed.apply();
     }
 

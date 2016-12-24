@@ -57,7 +57,6 @@
             </RelativeLayout>
 
             <TextView
-                android:id="@+id/textViewTempDirSplit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/temp_dir" />
@@ -88,7 +87,6 @@
                 android:text="@string/clear_label" />
 
             <TextView
-                android:id="@+id/textViewThreads"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/threads" />
@@ -101,7 +99,6 @@
                 android:inputType="number" />
 
             <TextView
-                android:id="@+id/textViewTimeout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/timeout" />
@@ -113,11 +110,30 @@
                 android:ems="10"
                 android:inputType="number" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/useragent" />
+
+            <EditText
+                android:id="@+id/editTextUseragent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textUri" />
+
             <CheckBox
                 android:id="@+id/checkBoxChangeTheme"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/use_dark_theme" />
+
+            <Button
+                android:id="@+id/buttonDefOptions"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="defOptions"
+                android:text="@string/set_def_options" />
 
             <TextView
                 android:id="@+id/textViewVersion"
@@ -137,7 +153,6 @@
         android:divider="?android:attr/dividerVertical"
         android:orientation="horizontal"
         android:showDividers="middle">
-
 
         <Button
             android:id="@+id/buttonAdd"

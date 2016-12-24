@@ -5,19 +5,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 
@@ -26,7 +21,6 @@ import go.m3u8.State;
 import ru.yourok.loader.Loader;
 import ru.yourok.loader.LoaderService;
 import ru.yourok.loader.LoaderServiceHandler;
-import ru.yourok.loader.Options;
 import ru.yourok.m3u8loader.utils.ThemeChanger;
 
 
@@ -121,14 +115,18 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
 
     public void onSettingsClick(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
-        startActivityForResult(intent, 1202);
+        startActivityForResult(intent, SettingsActivity.REQUEST_CODE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1202 && resultCode == RESULT_OK)
+        if (requestCode == SettingsActivity.REQUEST_CODE && resultCode == RESULT_OK)
             this.recreate();
+        if (requestCode == RemoveDialogActivity.REQUEST_CODE && resultCode == RESULT_OK) {
+            loadersList.setSelected(loadersList.getSelected() - 1);
+            loadersList.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -158,8 +156,8 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
         View.OnClickListener clickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int sel = loadersList.getSelected();
-                Loader loader = LoaderServiceHandler.GetLoader(sel);
+                final int sel = loadersList.getSelected();
+                final Loader loader = LoaderServiceHandler.GetLoader(sel);
                 if (loader == null) {
                     loadersList.setSelected(-1);
                     return;
@@ -167,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
                 if (sel == -1)
                     return;
                 switch (view.getId()) {
-                    case R.id.buttonItemMenuStart:
+                    case R.id.buttonItemMenuStart: {
                         if (loader != null &&
                                 loader.GetState() != null &&
                                 loader.GetState().getStage() == M3u8.Stage_Finished) {
@@ -177,24 +175,24 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
                             LoaderService.load(MainActivity.this);
                         }
                         break;
-                    case R.id.buttonItemMenuStop:
+                    }
+                    case R.id.buttonItemMenuStop: {
                         if (loader.IsWorking())
                             loader.Stop();
                         break;
-                    case R.id.buttonItemMenuRemove:
-                        LoaderService.stop(MainActivity.this);
-                        loader.RemoveTemp();
-                        LoaderServiceHandler.RemoveLoader(sel);
-                        if (sel >= LoaderServiceHandler.SizeLoaders())
-                            sel--;
-                        loadersList.setSelected(sel);
-                        Options.getInstance(MainActivity.this).SaveList();
+                    }
+                    case R.id.buttonItemMenuRemove: {
+                        Intent intent = new Intent(MainActivity.this, RemoveDialogActivity.class);
+                        intent.putExtra("index", sel);
+                        MainActivity.this.startActivityForResult(intent, RemoveDialogActivity.REQUEST_CODE);
                         break;
-                    case R.id.buttonItemMenuEdit:
+                    }
+                    case R.id.buttonItemMenuEdit: {
                         Intent intent = new Intent(MainActivity.this, ListEditActivity.class);
                         intent.putExtra("LoaderID", sel);
                         MainActivity.this.startActivity(intent);
                         break;
+                    }
                 }
                 UpdateList();
             }

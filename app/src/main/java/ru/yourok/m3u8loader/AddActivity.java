@@ -3,9 +3,13 @@ package ru.yourok.m3u8loader;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.IOException;
 
 import ru.yourok.loader.Loader;
 import ru.yourok.loader.LoaderService;
@@ -28,6 +32,17 @@ public class AddActivity extends AppCompatActivity {
         urlEdit = (EditText) findViewById(R.id.editTextUrl);
         fileEdit = (EditText) findViewById(R.id.editTextFileName);
         Intent intent = getIntent();
+        if (intent.getExtras() != null) {
+            Bundle bundle = intent.getExtras();
+            for (String key : bundle.keySet())
+                if (key.toLowerCase().contains("name") || key.toLowerCase().contains("title")) {
+                    Object value = bundle.get(key);
+                    String name = cleanFileName(value.toString().trim());
+                    if (!name.isEmpty())
+                        fileEdit.setText(name);
+                }
+        }
+
         if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_SEND) && intent.getStringExtra(Intent.EXTRA_TEXT) != null) {
             urlEdit.setText(intent.getStringExtra(Intent.EXTRA_TEXT));
         }
@@ -41,8 +56,13 @@ public class AddActivity extends AppCompatActivity {
     }
 
     public void addBtnClick(View view) {
-        String Name = fileEdit.getText().toString().trim();
+        String Name = cleanFileName(fileEdit.getText().toString().trim());
         String Url = urlEdit.getText().toString().trim();
+        String err = isFilenameValid(Name);
+        if (err != null) {
+            Toast.makeText(this, err, Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         if (Url.isEmpty()) {
             Toast.makeText(this, R.string.error_url_empty, Toast.LENGTH_SHORT).show();
@@ -72,8 +92,13 @@ public class AddActivity extends AppCompatActivity {
     }
 
     public void downloadBtnClick(View view) {
-        String Name = fileEdit.getText().toString().trim();
+        String Name = cleanFileName(fileEdit.getText().toString().trim());
         String Url = urlEdit.getText().toString().trim();
+        String err = isFilenameValid(Name);
+        if (err != null) {
+            Toast.makeText(this, err, Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         if (Url.isEmpty()) {
             Toast.makeText(this, R.string.error_url_empty, Toast.LENGTH_SHORT).show();
@@ -121,5 +146,21 @@ public class AddActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         urlEdit.setText(savedInstanceState.getString("UrlString"));
         fileEdit.setText(savedInstanceState.getString("FileNameString"));
+    }
+
+    public static String isFilenameValid(String file) {
+        File f = new File(file);
+        try {
+            f.getCanonicalPath();
+            return null;
+        } catch (IOException e) {
+            return e.getLocalizedMessage();
+        }
+    }
+
+    private static final String ReservedCharsReg = "[|\\\\?*<\\\":>+/']";
+
+    public static String cleanFileName(String file) {
+        return file.replaceAll(ReservedCharsReg, "_").replaceAll("_+", "_");
     }
 }

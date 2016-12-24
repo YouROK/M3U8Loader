@@ -18,4 +18,8 @@
         <item name="android:colorForeground">@color/colorAccent</item>
     </style>
 
+    <style name="MyDialog" parent="Theme.AppCompat.Dialog">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+    </style>
 </resources>

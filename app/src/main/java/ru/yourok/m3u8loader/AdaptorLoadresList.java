@@ -94,7 +94,6 @@ public class AdaptorLoadresList extends BaseAdapter {
             TypedValue typedValue = new TypedValue();
             Resources.Theme theme = context.getTheme();
             theme.resolveAttribute(R.attr.colorItemSelectMenu, typedValue, true);
-            String str = Integer.toHexString(typedValue.data);
             view.setBackgroundColor(typedValue.data);
             view.getBackground().setAlpha(100);
         } else

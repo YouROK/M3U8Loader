@@ -6,12 +6,14 @@
     <string name="url_name">Downloadlink:</string>
     <string name="timeout">Zeit überschritten:</string>
     <string name="threads">Abschnitte:</string>
+    <string name="useragent">User agent:</string>
     <string name="download_path">Zielordner:</string>
     <string name="temp_dir">Temporärer Ordner:</string>
 
     <string name="main_btn_start">Start</string>
     <string name="main_btn_stop">Stopp</string>
 
+    <string name="set_def_options">Legen Sie die Standardeinstellungen fest</string>
     <string name="default_directory_change">Temporären Ordner ändern</string>
     <string name="use_dark_theme">Verwenden Sie dunkle Thema</string>
 
@@ -22,6 +24,9 @@
     <string name="selected_folder_label">Ordner durchsuchen:</string>
     <string name="new_directory_title">Ordner erstellen</string>
     <string name="new_directory_name_label">Ordner umbenennen:</string>
+    <string name="delete_label">Löschen</string>
+    <string name="remove_from_list">Aus Liste entfernen</string>
+    <string name="delete_with_files">Löschen mit Dateien</string>
 
     <string name="status_load_list">Liste wird geladen…</string>
     <string name="status_load_segments">Abschnitte werden geladen…</string>
