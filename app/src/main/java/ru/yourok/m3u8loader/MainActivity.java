@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
         //Menu
         View.OnClickListener clickListener = new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 final int sel = loadersList.getSelected();
                 final Loader loader = LoaderServiceHandler.GetLoader(sel);
                 if (loader == null) {
@@ -166,13 +166,34 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
                     return;
                 switch (view.getId()) {
                     case R.id.buttonItemMenuStart: {
-                        if (loader != null &&
-                                loader.GetState() != null &&
-                                loader.GetState().getStage() == M3u8.Stage_Finished) {
-                            openFile(loader);
+                        if (loader.GetList() == null) {
+                            view.setEnabled(false);
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    loader.LoadListOpts(MainActivity.this);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            view.setEnabled(true);
+                                        }
+                                    });
+                                    if (loader.GetOutFiles() != null)
+                                        openFile(loader);
+                                    else {
+                                        LoaderServiceHandler.AddQueue(sel);
+                                        LoaderService.load(MainActivity.this);
+                                    }
+                                }
+                            }).start();
+                            LoaderService.startService(MainActivity.this);
                         } else {
-                            LoaderServiceHandler.AddQueue(sel);
-                            LoaderService.load(MainActivity.this);
+                            if (loader.GetOutFiles() != null)
+                                openFile(loader);
+                            else {
+                                LoaderServiceHandler.AddQueue(sel);
+                                LoaderService.load(MainActivity.this);
+                            }
                         }
                         break;
                     }
