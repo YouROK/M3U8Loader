@@ -12,7 +12,7 @@ func main() {
 	opt.TempDir = "/home/yourok/tmp/"
 	//	opt.Url = "file:///home/yourok/test.m3u"
 	opt.Url = "https://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear1/prog_index.m3u8"
-	opt.Name = "test|*?123"
+	opt.Name = "test"
 	opt.OutFileDir = opt.TempDir
 	opt.Threads = 10
 	opt.Timeout = 60000
@@ -21,6 +21,9 @@ func main() {
 	go func() {
 		err := m.LoadList()
 		if err == nil {
+			for i := 1; i < m.GetList().ItemsSize(); i++ {
+				m.GetList().GetItem(i).IsLoad = false
+			}
 			fmt.Println("Load")
 			err = m.Load()
 			if err == nil {
