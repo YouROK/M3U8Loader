@@ -50,7 +50,7 @@ func GetState(m *M3U8) *State {
 		m.state = make(chan *State, m.opt.Threads*10)
 	}
 	m.stateMutext.Unlock()
-	timer := time.NewTimer(time.Second)
+	timer := time.NewTimer(time.Millisecond * 100)
 	select {
 	case st := <-m.state:
 		return st
