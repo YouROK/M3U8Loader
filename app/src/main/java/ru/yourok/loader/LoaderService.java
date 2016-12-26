@@ -3,11 +3,14 @@ package ru.yourok.loader;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.widget.Toast;
 
 import go.m3u8.M3u8;
 import go.m3u8.State;
+import ru.yourok.m3u8loader.R;
 import ru.yourok.m3u8loader.utils.Notifications;
 
 import static ru.yourok.loader.LoaderServiceHandler.loadersQueue;
@@ -53,6 +56,7 @@ public class LoaderService extends Service {
             cmd = intent.getIntExtra("command", 0);
         switch (cmd) {
             case CMD_NONE:
+                checkState();
                 break;
             case CMD_START: {
                 Start();
@@ -161,12 +165,23 @@ public class LoaderService extends Service {
         }).start();
     }
 
-    private void load(Loader loader) {
+    private void load(final Loader loader) {
         String ret = "";
         if (loader.GetList() == null)
             ret = loader.LoadListOpts(this);
         if (ret.isEmpty())
-            loader.Load();
+            ret = loader.Load();
+        Handler handler = new Handler(Looper.getMainLooper());
+        final String finalRet = ret;
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (finalRet.isEmpty())
+                    Toast.makeText(LoaderService.this, getString(R.string.status_finish) + ": " + loader.GetName(), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(LoaderService.this, getString(R.string.error) + finalRet, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     void updateNotif() {
@@ -194,19 +209,27 @@ public class LoaderService extends Service {
                     Loader loader = LoaderServiceHandler.GetLoader(id);
                     if (loader == null)
                         break;
-                    while (loader.PollState() == null) ;
 
-                    if (loader.PollState() == null) {
-                        if (System.currentTimeMillis() - time > 1000) {
-                            countNil++;
-                            time = System.currentTimeMillis();
-                        }
-                    } else
+                    State state = loader.PollState();
+                    if (state == null && System.currentTimeMillis() - time > 1000) {
+                        countNil++;
+                        time = System.currentTimeMillis();
+                    } else if (state != null)
                         countNil = 0;
+
+                    while (state != null) {
+                        state = loader.PollState();
+                        if (state != null && System.currentTimeMillis() - time > 1000) {
+                            time = System.currentTimeMillis();
+                            updateNotif();
+                        }
+                    }
 
                     updateNotif();
 
-                    if (countNil > timeout + 60)
+                    //countNil what time poll is null, timeout conn + 3000(60 sec,30 * 100ms timeout poll, and 2 invoke)
+                    //100 timeout poll is in m3u8 bin lib
+                    if (countNil > timeout + 3000)
                         break;
                 }
 
