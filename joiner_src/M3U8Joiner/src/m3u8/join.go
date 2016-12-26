@@ -5,6 +5,9 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"syscall"
+	"time"
 )
 
 func (m *M3U8) Join() error {
@@ -34,7 +37,20 @@ func (m *M3U8) join(l *List) error {
 			if strings.ToLower(filepath.Ext(i.FilePath)) == ".ts" {
 				buf, err := ioutil.ReadFile(i.FilePath)
 				if err != nil {
-					return err
+					//Issue: on open eintr
+					if isEintrErr(err) {
+						for k := 0; k < 50; k++ {
+							buf, err = ioutil.ReadFile(i.FilePath)
+							if !isEintrErr(err) {
+								break
+							}
+							time.Sleep(time.Microsecond * 100)
+						}
+					}
+
+					if err != nil {
+						return err
+					}
 				}
 				_, err = file.Write(buf)
 				if err != nil {
@@ -71,4 +87,19 @@ func (m *M3U8) join(l *List) error {
 		}
 	}
 	return nil
+}
+
+func isEintrErr(err error) bool {
+	if err == nil {
+		return false
+	}
+	if e, ok := err.(*os.PathError); ok && e.Err == syscall.EINTR {
+		return true
+	}
+
+	if e, ok := err.(syscall.Errno); ok && e == syscall.EINTR {
+		return true
+	}
+
+	return false
 }
