@@ -17,8 +17,8 @@ public class Status {
             return "";
         String status = "";
         State state = loader.GetState();
-        int curr = 0;
-        int all = 0;
+        int curr;
+        int all;
         if (state != null) {
             curr = (int) state.getCurrent();
             all = (int) state.getCount();

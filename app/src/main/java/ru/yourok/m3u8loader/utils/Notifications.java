@@ -66,7 +66,12 @@ public class Notifications {
             builder.setSmallIcon(R.mipmap.ic_launcher);
         }
 
-        Notification notification = builder.build();
+        Notification notification;
+        if (android.os.Build.VERSION.SDK_INT <= 15) {
+            notification = builder.getNotification(); // API-15 and lower
+        } else {
+            notification = builder.build();
+        }
         manager.notify(NOTIFY_ID, notification);
     }
 

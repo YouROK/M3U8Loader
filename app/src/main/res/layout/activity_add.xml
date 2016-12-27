@@ -30,6 +30,7 @@
                 android:text="@string/url_name" />
 
             <EditText
+                android:selectAllOnFocus="true"
                 android:id="@+id/editTextUrl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -49,6 +50,7 @@
                 android:text="@string/file_name" />
 
             <EditText
+                android:selectAllOnFocus="true"
                 android:id="@+id/editTextFileName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

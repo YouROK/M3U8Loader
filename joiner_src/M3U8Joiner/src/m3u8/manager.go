@@ -123,7 +123,9 @@ func (m *M3U8) Stop() {
 func (m *M3U8) errors(err error) {
 	m.isJoin = false
 	m.isLoading = false
-	m.lastErr = err
+	if err != nil {
+		m.lastErr = err
+	}
 	m.sendState(0, 0, Stage_Error, "", m.lastErr)
 }
 

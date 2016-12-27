@@ -7,12 +7,17 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+
+	"fmt"
 )
 
 func (m *M3U8) Load() error {
 	m.isLoading = true
 	m.load(m.GetCount())
 	m.isLoading = false
+	if m.lastErr != nil {
+		m.errors(m.lastErr)
+	}
 	return m.lastErr
 }
 
@@ -36,9 +41,11 @@ func (m *M3U8) load(count int) {
 				if item == nil {
 					break
 				}
-				e := m.loadItem(item)
-				if e != nil {
-					m.errors(e)
+				err := m.loadItem(item)
+				if err != nil {
+					fmt.Println("Error", err, item)
+					m.isLoading = false
+					m.lastErr = err
 					break
 				}
 			}

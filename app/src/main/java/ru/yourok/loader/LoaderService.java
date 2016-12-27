@@ -157,7 +157,8 @@ public class LoaderService extends Service {
                 for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++) {
                     LoaderServiceHandler.GetLoader(i).PollState();
                     State state = LoaderServiceHandler.GetLoader(i).GetState();
-                    if (state != null && state.getStage() == M3u8.Stage_LoadingContent)
+                    if (state != null && (state.getStage() == M3u8.Stage_LoadingContent ||
+                            state.getStage() == M3u8.Stage_JoinSegments))
                         LoaderServiceHandler.GetLoader(i).Stop();
                 }
                 updateNotif();
@@ -173,15 +174,22 @@ public class LoaderService extends Service {
             ret = loader.Load();
         Handler handler = new Handler(Looper.getMainLooper());
         final String finalRet = ret;
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (finalRet.isEmpty())
-                    Toast.makeText(LoaderService.this, getString(R.string.status_finish) + ": " + loader.GetName(), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(LoaderService.this, getString(R.string.error) + finalRet, Toast.LENGTH_SHORT).show();
-            }
-        });
+        if (isLoading)
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (finalRet.isEmpty())
+                        Toast.makeText(LoaderService.this, getString(R.string.status_finish) + ": " + loader.GetName(), Toast.LENGTH_SHORT).show();
+                    else {
+                        Toast.makeText(LoaderService.this, getString(R.string.error) + finalRet, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        if (!ret.isEmpty()) {
+            isLoading = false;
+            loader.PollState();
+            updateNotif();
+        }
     }
 
     void updateNotif() {
@@ -205,6 +213,8 @@ public class LoaderService extends Service {
                 int countNil = 0;
                 long time = System.currentTimeMillis();
                 int timeout = Options.getInstance(LoaderService.this).GetTimeout() / 1000;
+                if (timeout == 0)
+                    timeout = 30;
                 while (true) {
                     Loader loader = LoaderServiceHandler.GetLoader(id);
                     if (loader == null)
@@ -227,9 +237,7 @@ public class LoaderService extends Service {
 
                     updateNotif();
 
-                    //countNil what time poll is null, timeout conn + 3000(60 sec,30 * 100ms timeout poll, and 2 invoke)
-                    //100 timeout poll is in m3u8 bin lib
-                    if (countNil > timeout + 3000)
+                    if (countNil > timeout)
                         break;
                 }
 

@@ -26,6 +26,8 @@
     <string name="delete_label">Удалить</string>
     <string name="remove_from_list">Удалить из списка</string>
     <string name="delete_with_files">Удалить с файлами</string>
+    <string name="replace_url">Заменить URL-адрес в загрузке?</string>
+    <string name="replace_url_msg">Загрузка с таким именем существует, заменить его URL-адрес?</string>
 
     <string name="status_load_list">Загрузка листа…</string>
     <string name="status_load_segments">Загрузка сегментов…</string>

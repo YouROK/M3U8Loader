@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.io.File;
 
@@ -25,7 +24,7 @@ import ru.yourok.m3u8loader.utils.ThemeChanger;
 
 
 public class MainActivity extends AppCompatActivity implements LoaderService.LoaderServiceCallbackUpdate {
-    public static AdaptorLoadresList loadersList;
+    public static AdaptorLoadersList loadersList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
         LoaderService.registerOnUpdateLoader(this);
         LoaderService.startService(this);
         if (loadersList == null) {
-            loadersList = new AdaptorLoadresList(this);
+            loadersList = new AdaptorLoadersList(this);
         } else {
             loadersList.setContext(this);
             UpdateList();
@@ -90,6 +89,13 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
 
     public void onAddClick(View view) {
         Intent intent = new Intent(this, AddActivity.class);
+        final int sel = loadersList.getSelected();
+        final Loader loader = LoaderServiceHandler.GetLoader(sel);
+        if (loader != null) {
+            intent.setData(Uri.parse(loader.GetUrl()));
+            intent.putExtra("name", loader.GetName());
+        } else
+            intent.setData(Uri.parse(""));
         startActivity(intent);
     }
 
@@ -124,7 +130,10 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
         if (requestCode == SettingsActivity.REQUEST_CODE && resultCode == RESULT_OK)
             this.recreate();
         if (requestCode == RemoveDialogActivity.REQUEST_CODE && resultCode == RESULT_OK) {
-            loadersList.setSelected(loadersList.getSelected() - 1);
+            if (loadersList.getSelected() == 0 && LoaderServiceHandler.SizeLoaders() > 0)
+                loadersList.setSelected(loadersList.getSelected());
+            else if (loadersList.getSelected() >= 0)
+                loadersList.setSelected(loadersList.getSelected() - 1);
             loadersList.notifyDataSetChanged();
         }
     }

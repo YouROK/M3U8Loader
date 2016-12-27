@@ -13,10 +13,11 @@ import (
 )
 
 func ParseLocalList(opt *loader.HttpOpts) (*List, error) {
-	if strings.HasPrefix(opt.Url, "file://") {
-		opt.Url = opt.Url[7:]
+	name := opt.Url
+	if strings.HasPrefix(name, "file://") {
+		name = name[7:]
 	}
-	buf, err := ioutil.ReadFile(opt.Url)
+	buf, err := ioutil.ReadFile(name)
 	if err != nil {
 		return nil, err
 	}

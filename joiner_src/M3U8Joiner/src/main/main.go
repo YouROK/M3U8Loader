@@ -11,7 +11,7 @@ func main() {
 	opt := m3u8.NewOptions()
 	opt.TempDir = "/home/yourok/tmp/"
 	//	opt.Url = "file:///home/yourok/test.m3u"
-	opt.Url = "https://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear1/prog_index.m3u8"
+	opt.Url = "http://185.38.12.50/sec/1482873511/35383436a5c8d811968980d9e822d16d060f31337b5654cb/ivs/fa/c4/4fecb6a1481c/hls/tracks-3,4/index.m3u8"
 	opt.Name = "test"
 	opt.OutFileDir = opt.TempDir
 	opt.Threads = 10

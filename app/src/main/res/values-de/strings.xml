@@ -27,6 +27,8 @@
     <string name="delete_label">Löschen</string>
     <string name="remove_from_list">Aus Liste entfernen</string>
     <string name="delete_with_files">Löschen mit Dateien</string>
+    <string name="replace_url">Ersetzen Sie die URL beim Laden?</string>
+    <string name="replace_url_msg">Laden mit dem gleichen Namen existiert, ersetzen Sie seine URL?</string>
 
     <string name="status_load_list">Liste wird geladen…</string>
     <string name="status_load_segments">Abschnitte werden geladen…</string>

@@ -2,7 +2,6 @@ package ru.yourok.m3u8loader;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,11 +19,11 @@ import ru.yourok.m3u8loader.utils.Status;
  * Created by yourok on 08.12.16.
  */
 
-public class AdaptorLoadresList extends BaseAdapter {
+public class AdaptorLoadersList extends BaseAdapter {
     private int selected;
     private Context context;
 
-    public AdaptorLoadresList(Context ctx) {
+    public AdaptorLoadersList(Context ctx) {
         this.context = ctx;
         selected = -1;
     }
@@ -78,7 +77,7 @@ public class AdaptorLoadresList extends BaseAdapter {
                     setSelected(-1);
                 else
                     setSelected(position);
-                AdaptorLoadresList.this.notifyDataSetChanged();
+                AdaptorLoadersList.this.notifyDataSetChanged();
             }
         });
 

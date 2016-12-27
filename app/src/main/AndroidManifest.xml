@@ -38,45 +38,25 @@
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:mimeType="*/*" />
             </intent-filter>
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-                <data android:scheme="file" />
-                <data android:host="*" />
-                <data android:mimeType="*/m3u" />
-                <data android:mimeType="*/m3u8" />
-                <data android:mimeType="*/x-mpegURL" />
-                <data android:mimeType="*/vnd.apple.mpegurl" />
-                <data android:mimeType="*/MP2T" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-                <data android:scheme="file" />
-                <data android:host="*" />
                 <data android:mimeType="video/m3u" />
                 <data android:mimeType="video/m3u8" />
                 <data android:mimeType="video/hls" />
                 <data android:mimeType="audio/x-mpegurl" />
-                <data android:mimeType="application/x-mpegURL" />
+                <data android:mimeType="application/x-mpegurl" />
                 <data android:mimeType="application/vnd.apple.mpegurl" />
-                <data android:mimeType="video/MP2T" />
+                <data android:mimeType="video/mp2t" />
             </intent-filter>
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -86,6 +66,27 @@
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:scheme="file" />
+                <data android:host="*" />
+
+                <data android:mimeType="video/m3u" />
+                <data android:mimeType="video/m3u8" />
+                <data android:mimeType="video/hls" />
+                <data android:mimeType="audio/x-mpegurl" />
+                <data android:mimeType="application/x-mpegurl" />
+                <data android:mimeType="application/vnd.apple.mpegurl" />
+                <data android:mimeType="video/mp2t" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:scheme="file" />
+                <data android:scheme="content" />
                 <data android:host="*" />
                 <data android:pathPattern=".*.M3U*" />
                 <data android:pathPattern=".*.m3u*" />
