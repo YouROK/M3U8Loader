@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -22,6 +23,7 @@ import go.m3u8.State;
 import ru.yourok.loader.Loader;
 import ru.yourok.loader.LoaderService;
 import ru.yourok.loader.LoaderServiceHandler;
+import ru.yourok.loader.Options;
 import ru.yourok.m3u8loader.utils.ThemeChanger;
 
 
@@ -83,7 +85,8 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
                 @Override
                 public void run() {
                     loadersList.notifyDataSetChanged();
-                    if (loadersList.getSelected() == -1)
+                    int sel = loadersList.getSelected();
+                    if (sel < 0 || sel >= loadersList.getCount())
                         findViewById(R.id.itemLoaderMenu).setVisibility(View.GONE);
                 }
             });
@@ -121,6 +124,45 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
         LoaderService.stop(this);
     }
 
+    public void onClearListClick(View view) {
+        LoaderService.stop(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.delete_label) + "?");
+        builder.setPositiveButton(R.string.delete_with_files, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                while (LoaderServiceHandler.SizeLoaders() > 0) {
+                    Loader loader = LoaderServiceHandler.GetLoader(0);
+                    String[] files = loader.GetOutFiles();
+                    if (files != null)
+                        for (String f : files)
+                            new File(f).delete();
+                    loader.Stop();
+                    loader.RemoveTemp();
+                    loader.RemoveList();
+                    LoaderServiceHandler.RemoveLoader(0);
+                    Options.getInstance(MainActivity.this).SaveList();
+                }
+                UpdateList();
+            }
+        });
+        builder.setNegativeButton(R.string.remove_from_list, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                while (LoaderServiceHandler.SizeLoaders() > 0) {
+                    Loader loader = LoaderServiceHandler.GetLoader(0);
+                    loader.Stop();
+                    loader.RemoveTemp();
+                    loader.RemoveList();
+                    LoaderServiceHandler.RemoveLoader(0);
+                    Options.getInstance(MainActivity.this).SaveList();
+                }
+                UpdateList();
+            }
+        });
+        builder.create().show();
+    }
+
     public void onSettingsClick(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivityForResult(intent, SettingsActivity.REQUEST_CODE);
@@ -129,8 +171,25 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SettingsActivity.REQUEST_CODE && resultCode == RESULT_OK)
-            this.recreate();
+        if (requestCode == SettingsActivity.REQUEST_CODE && resultCode == RESULT_OK) {
+            if (data.getBooleanExtra("recreate", false))
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(500);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    MainActivity.this.recreate();
+                                }
+                            });
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+        }
         if (requestCode == RemoveDialogActivity.REQUEST_CODE && resultCode == RESULT_OK) {
             if (loadersList.getSelected() == 0 && LoaderServiceHandler.SizeLoaders() > 0)
                 loadersList.setSelected(loadersList.getSelected());
@@ -141,9 +200,7 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
     }
 
     @Override
-    public void onUpdateLoader(int id) {
-        if (id == -1)
-            return;
+    public void onUpdateLoader() {
         UpdateList();
     }
 
@@ -214,6 +271,7 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
                         break;
                     }
                     case R.id.buttonItemMenuRemove: {
+                        LoaderService.stop(MainActivity.this);
                         Intent intent = new Intent(MainActivity.this, RemoveDialogActivity.class);
                         intent.putExtra("index", sel);
                         MainActivity.this.startActivityForResult(intent, RemoveDialogActivity.REQUEST_CODE);

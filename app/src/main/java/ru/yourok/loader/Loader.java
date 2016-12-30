@@ -140,6 +140,9 @@ public class Loader {
         try {
             if (m3u8 == null)
                 m3u8 = M3u8.newM3U8(opts);
+            List list = m3u8.getList();
+            if (list != null && list.getUrlList().equals(opts.getUrl()) && list.getName().equals(opts.getName()))
+                return "";
             m3u8.loadList();
             return "";
         } catch (Exception e) {
@@ -177,6 +180,16 @@ public class Loader {
         isStoped = true;
         if (m3u8 != null)
             m3u8.stop();
+    }
+
+    public void Finish() {
+        if (m3u8 != null)
+            m3u8.finish();
+    }
+
+    public void RemoveList() {
+        if (m3u8 != null)
+            m3u8.removeList();
     }
 
     public void RemoveTemp() {

@@ -35,7 +35,9 @@ public class Notifications {
         this.context = context;
     }
 
-    public void createNotification(int id) {
+    public void createNotification(Loader loader) {
+        if (loader == null)
+            return;
         if (context == null)
             return;
         if (manager == null)
@@ -44,9 +46,6 @@ public class Notifications {
         Intent notificationIntent = new Intent(context, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(context, NOTIFY_ID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Loader loader = LoaderServiceHandler.GetLoader(id);
-        if (loader == null)
-            return;
         int progress = Status.GetProgress(loader);
         String name = loader.GetName();
         String status = Status.GetStatus(context, loader);
@@ -54,7 +53,7 @@ public class Notifications {
         final android.support.v4.app.NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setContentTitle(name)
                 .setContentText(status)
-                .setColor(context.getResources().getColor(R.color.colorImageButtons))
+                .setColor(context.getResources().getColor(R.color.colorPrimaryDark))
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true);
         if (progress > 0)

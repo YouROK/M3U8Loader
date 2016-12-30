@@ -28,6 +28,13 @@ public class LoaderServiceHandler {
         loadersList.remove(i);
     }
 
+    public static int FindLoader(Loader loader) {
+        for (int i = 0; i < loadersList.size(); i++)
+            if (loadersList.get(i) == loader)
+                return i;
+        return -1;
+    }
+
     public static int SizeLoaders() {
         return loadersList.size();
     }

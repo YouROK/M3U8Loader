@@ -29,7 +29,7 @@ public class LoaderService extends Service {
     public static final int CMD_STOP = 2;
 
     public interface LoaderServiceCallbackUpdate {
-        void onUpdateLoader(int id);
+        void onUpdateLoader();
     }
 
     public LoaderService() {
@@ -83,7 +83,7 @@ public class LoaderService extends Service {
 
     public static void registerOnUpdateLoader(LoaderServiceCallbackUpdate onUpdate) {
         loaderServiceCallback = onUpdate;
-        if (instance != null && instance.id != -1)
+        if (instance != null)
             instance.checkState();
     }
 
@@ -109,7 +109,7 @@ public class LoaderService extends Service {
 
     private Boolean isLoading = false;
     private Boolean isChecked = false;
-    private int id = -1;
+    private Loader loader;
 
     public void Start() {
         new Thread(new Runnable() {
@@ -121,9 +121,9 @@ public class LoaderService extends Service {
                     isLoading = true;
                 }
                 while (LoaderServiceHandler.SizeQueue() > 0) {
-                    id = LoaderServiceHandler.PollQueue();
+                    int id = LoaderServiceHandler.PollQueue();
                     if (!isLoading || id == -1) break;
-                    Loader loader = LoaderServiceHandler.GetLoader(id);
+                    loader = LoaderServiceHandler.GetLoader(id);
                     if (loader == null)
                         continue;
                     if (loader.GetState() != null && loader.GetState().getStage() == M3u8.Stage_Finished)
@@ -133,10 +133,9 @@ public class LoaderService extends Service {
                 }
 
                 for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++)
-                    if (LoaderServiceHandler.GetLoader(id) != null)
-                        LoaderServiceHandler.GetLoader(i).PollState();
+                    LoaderServiceHandler.GetLoader(i).PollState();
                 if (loaderServiceCallback != null)
-                    loaderServiceCallback.onUpdateLoader(0);
+                    loaderServiceCallback.onUpdateLoader();
 
                 synchronized (isLoading) {
                     isLoading = false;
@@ -178,9 +177,12 @@ public class LoaderService extends Service {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (finalRet.isEmpty())
-                        Toast.makeText(LoaderService.this, getString(R.string.status_finish) + ": " + loader.GetName(), Toast.LENGTH_SHORT).show();
-                    else {
+                    if (finalRet.isEmpty()) {
+                        if (loader.IsFinished()) {
+                            Toast.makeText(LoaderService.this, getString(R.string.status_finish) + ": " + loader.GetName(), Toast.LENGTH_SHORT).show();
+                            Options.getInstance(LoaderService.this).SaveList();
+                        }
+                    } else {
                         Toast.makeText(LoaderService.this, getString(R.string.error) + finalRet, Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -193,11 +195,9 @@ public class LoaderService extends Service {
     }
 
     void updateNotif() {
-        if (id != -1) {
-            if (loaderServiceCallback != null)
-                loaderServiceCallback.onUpdateLoader(id);
-            notifications.createNotification(id);
-        }
+        if (loaderServiceCallback != null)
+            loaderServiceCallback.onUpdateLoader();
+        notifications.createNotification(loader);
     }
 
     private void checkState() {
@@ -215,31 +215,40 @@ public class LoaderService extends Service {
                 int timeout = Options.getInstance(LoaderService.this).GetTimeout() / 1000;
                 if (timeout == 0)
                     timeout = 30;
+                updateNotif();
                 while (true) {
-                    Loader loader = LoaderServiceHandler.GetLoader(id);
-                    if (loader == null)
-                        break;
-
-                    State state = loader.PollState();
-                    if (state == null && System.currentTimeMillis() - time > 1000) {
-                        countNil++;
-                        time = System.currentTimeMillis();
-                    } else if (state != null)
-                        countNil = 0;
-
-                    while (state != null) {
-                        state = loader.PollState();
-                        if (state != null && System.currentTimeMillis() - time > 1000) {
-                            time = System.currentTimeMillis();
-                            updateNotif();
+                    if (loader == null) {
+                        try {
+                            Thread.sleep(200);
+                            countNil++;
+                            if (countNil > 150)//wait 30 sec
+                                break;
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                            break;
                         }
+                    } else {
+                        State state = pollState();
+                        if (state == null && System.currentTimeMillis() - time > 1000) {
+                            countNil++;
+                            time = System.currentTimeMillis();
+                        } else if (state != null)
+                            countNil = 0;
+
+                        while (state != null) {
+                            state = pollState();
+                            if (state != null && System.currentTimeMillis() - time > 1000) {
+                                time = System.currentTimeMillis();
+                                updateNotif();
+                            }
+                        }
+
+                        updateNotif();
+                        if (countNil > timeout)
+                            break;
                     }
-
-                    updateNotif();
-
-                    if (countNil > timeout)
-                        break;
                 }
+                updateNotif();
 
                 synchronized (isChecked) {
                     isChecked = false;
@@ -248,5 +257,11 @@ public class LoaderService extends Service {
             }
         });
         th.start();
+    }
+
+    private State pollState() {
+        if (loader != null)
+            return loader.PollState();
+        return null;
     }
 }

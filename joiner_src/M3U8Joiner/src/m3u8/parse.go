@@ -49,11 +49,11 @@ func ParseLocalList(opt *loader.HttpOpts) (*List, error) {
 					return nil, err
 				}
 				subList.Name = i.Title
-				list.lists = append(list.lists, subList)
+				list.Lists = append(list.Lists, subList)
 			default:
 				item := new(Item)
 				item.Url = i.URI
-				list.items = append(list.items, item)
+				list.Items = append(list.Items, item)
 			}
 		}
 	case m3u8.MASTER:
@@ -72,7 +72,7 @@ func ParseLocalList(opt *loader.HttpOpts) (*List, error) {
 			if err != nil {
 				return nil, err
 			}
-			list.lists = append(list.lists, subList)
+			list.Lists = append(list.Lists, subList)
 		}
 	}
 	return list, nil
@@ -120,11 +120,11 @@ func ParseList(opt *loader.HttpOpts) (*List, error) {
 					return nil, err
 				}
 				subList.Name = i.Title
-				list.lists = append(list.lists, subList)
+				list.Lists = append(list.Lists, subList)
 			default:
 				item := new(Item)
 				item.Url = subUrl
-				list.items = append(list.items, item)
+				list.Items = append(list.Items, item)
 			}
 		}
 
@@ -148,8 +148,8 @@ func ParseList(opt *loader.HttpOpts) (*List, error) {
 			if err != nil {
 				return nil, err
 			}
-			subList.bandwidt = int(i.Bandwidth)
-			list.lists = append(list.lists, subList)
+			subList.Bandwidth = int(i.Bandwidth)
+			list.Lists = append(list.Lists, subList)
 		}
 	}
 	return list, nil

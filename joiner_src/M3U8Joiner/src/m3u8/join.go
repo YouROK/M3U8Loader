@@ -21,7 +21,7 @@ func (m *M3U8) Join() error {
 }
 
 func (m *M3U8) join(l *List) error {
-	if len(l.items) > 0 {
+	if len(l.Items) > 0 {
 		filename := filepath.Join(m.opt.OutFileDir, l.Name+".mp4")
 		file, err := os.Create(filename)
 		if err != nil {
@@ -29,11 +29,11 @@ func (m *M3U8) join(l *List) error {
 		}
 		defer file.Close()
 		isTs := false
-		for z, i := range l.items {
+		for z, i := range l.Items {
 			if !i.IsLoad {
 				continue
 			}
-			m.sendState(z+1, len(l.items), Stage_JoinSegments, filename, nil)
+			m.sendState(z+1, len(l.Items), Stage_JoinSegments, filename, nil)
 			if strings.ToLower(filepath.Ext(i.FilePath)) == ".ts" {
 				buf, err := ioutil.ReadFile(i.FilePath)
 				if err != nil {
@@ -59,7 +59,7 @@ func (m *M3U8) join(l *List) error {
 				file.Sync()
 				isTs = true
 			} else {
-				m.sendState(z+1, len(l.items), Stage_JoinSegments, filepath.Base(i.FilePath), nil)
+				m.sendState(z+1, len(l.Items), Stage_JoinSegments, filepath.Base(i.FilePath), nil)
 				err := os.Rename(i.FilePath, filepath.Join(m.opt.OutFileDir, filepath.Base(i.FilePath)))
 				if err != nil {
 					return err
@@ -74,7 +74,7 @@ func (m *M3U8) join(l *List) error {
 			os.Remove(filename)
 		}
 	}
-	for _, i := range l.lists {
+	for _, i := range l.Lists {
 		if !i.IsLoad {
 			continue
 		}

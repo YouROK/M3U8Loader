@@ -11,7 +11,7 @@ func main() {
 	opt := m3u8.NewOptions()
 	opt.TempDir = "/home/yourok/tmp/"
 	//	opt.Url = "file:///home/yourok/test.m3u"
-	opt.Url = "http://185.38.12.50/sec/1482873511/35383436a5c8d811968980d9e822d16d060f31337b5654cb/ivs/fa/c4/4fecb6a1481c/hls/tracks-3,4/index.m3u8"
+	opt.Url = "http://devimages.apple.com/iphone/samples/bipbop/bipbopall.m3u8"
 	opt.Name = "test"
 	opt.OutFileDir = opt.TempDir
 	opt.Threads = 10
@@ -19,7 +19,10 @@ func main() {
 
 	m := m3u8.NewM3U8(opt)
 	go func() {
-		err := m.LoadList()
+		var err error
+		if m.GetList() == nil {
+			err = m.LoadList()
+		}
 		if err == nil {
 			for i := 1; i < m.GetList().ItemsSize(); i++ {
 				m.GetList().GetItem(i).IsLoad = false
