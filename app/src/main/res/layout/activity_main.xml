@@ -42,6 +42,15 @@
             android:src="@drawable/ic_pause_black_24dp" />
 
         <ImageButton
+            android:id="@+id/buttonClearList"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onClearListClick"
+            android:src="@drawable/ic_clear_black_24dp" />
+
+        <ImageButton
             android:id="@+id/buttonSettings"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="match_parent"

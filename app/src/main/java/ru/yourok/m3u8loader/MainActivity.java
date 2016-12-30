@@ -21,6 +21,7 @@ import go.m3u8.State;
 import ru.yourok.loader.Loader;
 import ru.yourok.loader.LoaderService;
 import ru.yourok.loader.LoaderServiceHandler;
+import ru.yourok.loader.Options;
 import ru.yourok.m3u8loader.utils.ThemeChanger;
 
 
@@ -119,6 +120,45 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
 
     public void onStopClick(View view) {
         LoaderService.stop(this);
+    }
+
+    public void onClearListClick(View view) {
+        LoaderService.stop(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.delete_label) + "?");
+        builder.setPositiveButton(R.string.delete_with_files, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                while (LoaderServiceHandler.SizeLoaders() > 0) {
+                    Loader loader = LoaderServiceHandler.GetLoader(0);
+                    String[] files = loader.GetOutFiles();
+                    if (files != null)
+                        for (String f : files)
+                            new File(f).delete();
+                    loader.Stop();
+                    loader.RemoveTemp();
+                    loader.RemoveList();
+                    LoaderServiceHandler.RemoveLoader(0);
+                    Options.getInstance(MainActivity.this).SaveList();
+                }
+                UpdateList();
+            }
+        });
+        builder.setNegativeButton(R.string.remove_from_list, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                while (LoaderServiceHandler.SizeLoaders() > 0) {
+                    Loader loader = LoaderServiceHandler.GetLoader(0);
+                    loader.Stop();
+                    loader.RemoveTemp();
+                    loader.RemoveList();
+                    LoaderServiceHandler.RemoveLoader(0);
+                    Options.getInstance(MainActivity.this).SaveList();
+                }
+                UpdateList();
+            }
+        });
+        builder.create().show();
     }
 
     public void onSettingsClick(View view) {

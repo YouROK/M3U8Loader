@@ -215,13 +215,13 @@ public class LoaderService extends Service {
                 int timeout = Options.getInstance(LoaderService.this).GetTimeout() / 1000;
                 if (timeout == 0)
                     timeout = 30;
+                updateNotif();
                 while (true) {
                     if (loader == null) {
                         try {
-                            updateNotif();
-                            Thread.sleep(100);
+                            Thread.sleep(200);
                             countNil++;
-                            if (countNil > 300)//wait 30 sec
+                            if (countNil > 150)//wait 30 sec
                                 break;
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -248,6 +248,7 @@ public class LoaderService extends Service {
                             break;
                     }
                 }
+                updateNotif();
 
                 synchronized (isChecked) {
                     isChecked = false;
