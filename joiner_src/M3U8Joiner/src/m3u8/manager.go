@@ -61,12 +61,13 @@ func (m *M3U8) LoadList() error {
 	list.IsLoad = true
 	m.loadCount = m.prepareList(list)
 	m.list = list
+	m.SaveList()
 	return nil
 }
 
 func (m *M3U8) prepareList(l *List) int {
 	count := 0
-	for i, n := range l.items {
+	for i, n := range l.Items {
 		filename := filepath.Base(n.Url)
 		if len(filename)+len(l.FilePath) > 260 {
 			filename = fmt.Sprintf("segment_%d.ts", i)
@@ -75,10 +76,10 @@ func (m *M3U8) prepareList(l *List) int {
 		n.IsLoad = true
 		count++
 	}
-	for i, sl := range l.lists {
+	for i, sl := range l.Lists {
 		sl.IsLoad = true
 		if sl.Name == "" {
-			sl.Name = fmt.Sprintf("%s.%d.%d", l.Name, i+1, sl.bandwidt)
+			sl.Name = fmt.Sprintf("%s.%d.%d", l.Name, i+1, sl.Bandwidth)
 		}
 		sl.Item.FilePath = filepath.Join(l.Item.FilePath, sl.Name)
 		count += m.prepareList(sl)
@@ -91,8 +92,8 @@ func (m *M3U8) GetCount() int {
 	var walk func(l *List)
 
 	walk = func(l *List) {
-		count += len(l.items)
-		for _, l := range l.lists {
+		count += len(l.Items)
+		for _, l := range l.Lists {
 			if l.IsLoad {
 				walk(l)
 			}
@@ -103,6 +104,9 @@ func (m *M3U8) GetCount() int {
 }
 
 func (m *M3U8) GetList() *List {
+	if m.list == nil {
+		m.list, _ = LoadList(filepath.Join(m.opt.TempDir, m.opt.Name) + ".lst")
+	}
 	return m.list
 }
 

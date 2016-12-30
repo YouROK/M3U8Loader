@@ -82,7 +82,8 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
                 @Override
                 public void run() {
                     loadersList.notifyDataSetChanged();
-                    if (loadersList.getSelected() == -1)
+                    int sel = loadersList.getSelected();
+                    if (sel < 0 || sel >= loadersList.getCount())
                         findViewById(R.id.itemLoaderMenu).setVisibility(View.GONE);
                 }
             });

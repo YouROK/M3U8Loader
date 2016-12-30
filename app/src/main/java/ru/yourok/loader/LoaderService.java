@@ -178,8 +178,10 @@ public class LoaderService extends Service {
                 @Override
                 public void run() {
                     if (finalRet.isEmpty()) {
-                        if (loader.IsFinished())
+                        if (loader.IsFinished()) {
                             Toast.makeText(LoaderService.this, getString(R.string.status_finish) + ": " + loader.GetName(), Toast.LENGTH_SHORT).show();
+                            Options.getInstance(LoaderService.this).SaveList();
+                        }
                     } else {
                         Toast.makeText(LoaderService.this, getString(R.string.error) + finalRet, Toast.LENGTH_SHORT).show();
                     }
@@ -216,6 +218,7 @@ public class LoaderService extends Service {
                 while (true) {
                     if (loader == null) {
                         try {
+                            updateNotif();
                             Thread.sleep(100);
                             countNil++;
                             if (countNil > 300)//wait 30 sec

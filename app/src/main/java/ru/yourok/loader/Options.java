@@ -5,14 +5,18 @@ import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 
+import go.m3u8.M3u8;
+
 /**
  * Created by yourok on 07.12.16.
  */
 public class Options {
     private static Options ourInstance = new Options();
     private SharedPreferences prefs;
+    private Context context;
 
     public static Options getInstance(Context context) {
+        ourInstance.context = context;
         ourInstance.prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return ourInstance;
     }
@@ -86,6 +90,7 @@ public class Options {
         for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++) {
             ed.putString("List_Url_" + String.valueOf(i), LoaderServiceHandler.GetLoader(i).GetUrl());
             ed.putString("List_Name_" + String.valueOf(i), LoaderServiceHandler.GetLoader(i).GetName());
+            ed.putBoolean("List_Finish_" + String.valueOf(i), LoaderServiceHandler.GetLoader(i).IsFinished());
         }
         ed.apply();
     }
@@ -95,17 +100,29 @@ public class Options {
         for (int i = 0; i < lSize; i++) {
             String url = prefs.getString("List_Url_" + String.valueOf(i), "");
             String name = prefs.getString("List_Name_" + String.valueOf(i), "");
+            final boolean finish = prefs.getBoolean("List_Finish_" + String.valueOf(i), false);
             if (name.isEmpty() || url.isEmpty())
                 continue;
-            Loader loader = new Loader();
+            final Loader loader = new Loader();
             loader.SetUrl(url);
             loader.SetName(name);
             boolean isEqual = false;
             for (int n = 0; n < LoaderServiceHandler.SizeLoaders(); n++)
                 if (LoaderServiceHandler.GetLoader(n).equals(loader))
                     isEqual = true;
-            if (!isEqual)
+            if (!isEqual) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (finish) {
+                            loader.LoadListOpts(context);
+                            loader.Finish();
+                            loader.PollState();
+                        }
+                    }
+                }).start();
                 LoaderServiceHandler.AddLoader(loader);
+            }
         }
     }
 }

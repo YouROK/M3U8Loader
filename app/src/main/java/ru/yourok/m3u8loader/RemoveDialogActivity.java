@@ -133,6 +133,7 @@ public class RemoveDialogActivity extends AppCompatActivity {
             return;
         loader.Stop();
         loader.RemoveTemp();
+        loader.RemoveList();
         LoaderServiceHandler.RemoveLoader(index);
         Options.getInstance(this).SaveList();
     }

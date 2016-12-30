@@ -104,13 +104,13 @@ func (m *M3U8) getItem(pos int) *Item {
 	var walk func(l *List, ind *int) *Item
 
 	walk = func(l *List, ind *int) *Item {
-		for _, i := range l.items {
+		for _, i := range l.Items {
 			if *ind == pos {
 				return i
 			}
 			*ind++
 		}
-		for _, l := range l.lists {
+		for _, l := range l.Lists {
 			if l.IsLoad {
 				i := walk(l, ind)
 				if i != nil {
