@@ -88,9 +88,14 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void okBtnClick(View view) {
+        boolean lastTheme = Options.getInstance(this).IsUseDarkTheme();
         saveSettings();
         Intent intent = new Intent();
         setResult(RESULT_OK, intent);
+        if (lastTheme != Options.getInstance(this).IsUseDarkTheme())
+            intent.putExtra("recreate", true);
+        else
+            intent.putExtra("recreate", false);
         finish();
     }
 

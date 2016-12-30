@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -127,8 +128,25 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SettingsActivity.REQUEST_CODE && resultCode == RESULT_OK)
-            this.recreate();
+        if (requestCode == SettingsActivity.REQUEST_CODE && resultCode == RESULT_OK) {
+            if (data.getBooleanExtra("recreate", false))
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(500);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    MainActivity.this.recreate();
+                                }
+                            });
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+        }
         if (requestCode == RemoveDialogActivity.REQUEST_CODE && resultCode == RESULT_OK) {
             if (loadersList.getSelected() == 0 && LoaderServiceHandler.SizeLoaders() > 0)
                 loadersList.setSelected(loadersList.getSelected());
@@ -139,9 +157,7 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
     }
 
     @Override
-    public void onUpdateLoader(int id) {
-        if (id == -1)
-            return;
+    public void onUpdateLoader() {
         UpdateList();
     }
 
@@ -212,6 +228,7 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
                         break;
                     }
                     case R.id.buttonItemMenuRemove: {
+                        LoaderService.stop(MainActivity.this);
                         Intent intent = new Intent(MainActivity.this, RemoveDialogActivity.class);
                         intent.putExtra("index", sel);
                         MainActivity.this.startActivityForResult(intent, RemoveDialogActivity.REQUEST_CODE);
