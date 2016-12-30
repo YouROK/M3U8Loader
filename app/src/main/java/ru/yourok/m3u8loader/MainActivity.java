@@ -1,6 +1,7 @@
 package ru.yourok.m3u8loader;
 
 import android.Manifest;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -146,17 +148,17 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
     }
 
     public void requestPermissionWithRationale() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             Snackbar.make(findViewById(R.id.main_layout), R.string.permission_msg, Snackbar.LENGTH_INDEFINITE)
                     .setAction(R.string.permission_btn, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                         }
                     })
                     .show();
         } else {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
     }
 
@@ -261,6 +263,24 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
             });
             AlertDialog alertDialogObject = dialogBuilder.create();
             alertDialogObject.show();
+        }
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (loadersList == null)
+            return super.onKeyUp(keyCode, event);
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_DPAD_UP:
+                if (loadersList.getSelected() >= 0)
+                    loadersList.setSelected(loadersList.getSelected() - 1);
+                return true;
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                if (loadersList.getSelected() < loadersList.getCount())
+                    loadersList.setSelected(loadersList.getSelected() + 1);
+                return true;
+            default:
+                return super.onKeyUp(keyCode, event);
         }
     }
 }
