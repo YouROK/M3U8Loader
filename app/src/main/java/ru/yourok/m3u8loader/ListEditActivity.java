@@ -101,6 +101,7 @@ public class ListEditActivity extends AppCompatActivity {
             list.getItem(i).setIsLoad(true);
         for (int i = 0; i < list.listsSize(); i++)
             list.getList(i).setLoadList(true);
+        loader.SaveList();
         listviewadapter.notifyDataSetChanged();
     }
 
@@ -110,6 +111,7 @@ public class ListEditActivity extends AppCompatActivity {
             list.getItem(i).setIsLoad(false);
         for (int i = 0; i < list.listsSize(); i++)
             list.getList(i).setLoadList(false);
+        loader.SaveList();
         listviewadapter.notifyDataSetChanged();
     }
 
@@ -119,6 +121,7 @@ public class ListEditActivity extends AppCompatActivity {
             list.getItem(i).setIsLoad(!list.getItem(i).getIsLoad());
         for (int i = 0; i < list.listsSize(); i++)
             list.getList(i).setLoadList(!list.getList(i).isLoadList());
+        loader.SaveList();
         listviewadapter.notifyDataSetChanged();
     }
 
@@ -162,6 +165,7 @@ public class ListEditActivity extends AppCompatActivity {
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                         if (list != null && list.getList(position) != null)
                             list.getList(position).setLoadList(b);
+                        loader.SaveList();
                     }
                 });
                 ((ImageView) v.findViewById(R.id.imageViewEditItem)).setOnClickListener(new View.OnClickListener() {

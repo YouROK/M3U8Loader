@@ -56,6 +56,11 @@
                     app:srcCompat="@drawable/ic_folder_open_black_24dp" />
             </RelativeLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:background="@android:color/transparent" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -85,6 +90,11 @@
                 android:layout_height="wrap_content"
                 android:onClick="clrTempDir"
                 android:text="@string/clear_label" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:background="@android:color/transparent" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -121,11 +131,20 @@
                 android:layout_height="wrap_content"
                 android:inputType="textUri" />
 
-            <CheckBox
-                android:id="@+id/checkBoxChangeTheme"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/use_dark_theme" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:background="@android:color/transparent" />
+
+            <Spinner
+                android:id="@+id/spinnerChangeTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:background="@android:color/transparent" />
 
             <Button
                 android:id="@+id/buttonDefOptions"

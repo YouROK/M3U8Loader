@@ -156,6 +156,11 @@ public class Loader {
         return m3u8.getList();
     }
 
+    public void SaveList() {
+        if (m3u8 != null)
+            m3u8.saveList();
+    }
+
     public String Load() {
         try {
             isStoped = false;

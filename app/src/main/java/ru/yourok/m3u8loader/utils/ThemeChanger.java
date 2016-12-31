@@ -11,10 +11,14 @@ import ru.yourok.m3u8loader.R;
 
 public class ThemeChanger {
     public static void SetTheme(Activity activity) {
-        if (Options.getInstance(activity).IsUseDarkTheme())
-            activity.setTheme(R.style.AppThemeDark);
-        else
-            activity.setTheme(R.style.AppTheme);
+        switch (Options.getInstance(activity).GetTheme()) {
+            case 0:
+                SetLightTheme(activity);
+                return;
+            case 1:
+                SetDarkTheme(activity);
+                return;
+        }
     }
 
     public static void SetDarkTheme(Activity activity) {

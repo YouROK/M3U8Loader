@@ -15,7 +15,6 @@
 
     <string name="set_def_options">Legen Sie die Standardeinstellungen fest</string>
     <string name="default_directory_change">Temporären Ordner ändern</string>
-    <string name="use_dark_theme">Verwenden Sie dunkle Thema</string>
 
     <string name="add_label">Hinzufügen</string>
     <string name="download_label">Download</string>
@@ -51,4 +50,9 @@
     <string name="error_double_name">Download mit gleichen Namen existiert bereits</string>
     <string name="error_double_url">Download mit gleicher Adresse existiert bereits</string>
     <string name="error_create_folder">Ordner kann nicht erstellt werden</string>
+
+    <string-array name="themes_names">
+        <item>Licht</item>
+        <item>Dunkles</item>
+    </string-array>
 </resources>

@@ -14,7 +14,6 @@
 
     <string name="set_def_options">Set the default settings</string>
     <string name="default_directory_change">Select the temp directory</string>
-    <string name="use_dark_theme">Use dark theme</string>
 
     <string name="add_label">Add</string>
     <string name="download_label">Download</string>
@@ -51,4 +50,8 @@
     <string name="error_double_url">Loading with the same url already exists</string>
     <string name="error_create_folder">Error create folder</string>
 
+    <string-array name="themes_names">
+        <item>Light</item>
+        <item>Dark</item>
+    </string-array>
 </resources>

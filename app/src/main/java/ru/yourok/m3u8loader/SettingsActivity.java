@@ -13,10 +13,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +31,7 @@ import ru.yourok.m3u8loader.utils.ThemeChanger;
 public class SettingsActivity extends AppCompatActivity {
 
     public static final int REQUEST_CODE = 1202;
+    private final String[] themeNames = {};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,10 @@ public class SettingsActivity extends AppCompatActivity {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.themes_names));
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        Spinner spinner = ((Spinner) findViewById(R.id.spinnerChangeTheme));
+        spinner.setAdapter(adapter);
         loadSettings();
     }
 
@@ -69,7 +75,7 @@ public class SettingsActivity extends AppCompatActivity {
         ((EditText) findViewById(R.id.editTextTimeout)).setText(String.valueOf(Options.getInstance(this).GetTimeout()));
         ((TextView) findViewById(R.id.textViewTempDir)).setText(Options.getInstance(this).GetTempDir());
         ((EditText) findViewById(R.id.editTextUseragent)).setText(Options.getInstance(this).GetUseragent());
-        ((CheckBox) findViewById(R.id.checkBoxChangeTheme)).setChecked(Options.getInstance(this).IsUseDarkTheme());
+        ((Spinner) findViewById(R.id.spinnerChangeTheme)).setSelection(Options.getInstance(this).GetTheme());
     }
 
     private void saveSettings() {
@@ -78,21 +84,21 @@ public class SettingsActivity extends AppCompatActivity {
         String threads = ((EditText) findViewById(R.id.editTextThreads)).getText().toString();
         String timeout = ((EditText) findViewById(R.id.editTextTimeout)).getText().toString();
         String useragent = ((EditText) findViewById(R.id.editTextUseragent)).getText().toString();
-        boolean usedark = ((CheckBox) findViewById(R.id.checkBoxChangeTheme)).isChecked();
+        int theme = ((Spinner) findViewById(R.id.spinnerChangeTheme)).getSelectedItemPosition();
         Options.getInstance(this).SetOutDir(dirout);
         Options.getInstance(this).SetTempDir(dirtemp);
         Options.getInstance(this).SetTimeout(Integer.parseInt(timeout));
         Options.getInstance(this).SetThreads(Integer.parseInt(threads));
-        Options.getInstance(this).SetDarkTheme(usedark);
+        Options.getInstance(this).SetTheme(theme);
         Options.getInstance(this).SetUseragent(useragent);
     }
 
     public void okBtnClick(View view) {
-        boolean lastTheme = Options.getInstance(this).IsUseDarkTheme();
+        int lastTheme = Options.getInstance(this).GetTheme();
         saveSettings();
         Intent intent = new Intent();
         setResult(RESULT_OK, intent);
-        if (lastTheme != Options.getInstance(this).IsUseDarkTheme())
+        if (lastTheme != Options.getInstance(this).GetTheme())
             intent.putExtra("recreate", true);
         else
             intent.putExtra("recreate", false);
@@ -160,6 +166,6 @@ public class SettingsActivity extends AppCompatActivity {
         ((EditText) findViewById(R.id.editTextTimeout)).setText("60000");
         ((TextView) findViewById(R.id.textViewTempDir)).setText(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/tmp/");
         ((EditText) findViewById(R.id.editTextUseragent)).setText("DWL/1.0.0 (linux)");
-        ((CheckBox) findViewById(R.id.checkBoxChangeTheme)).setChecked(false);
+        ((Spinner) findViewById(R.id.spinnerChangeTheme)).setSelection(1);
     }
 }

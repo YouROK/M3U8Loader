@@ -6,4 +6,7 @@
 
     <color name="colorListSelectLight">#CFD8DC</color>
     <color name="colorListSelectDark">#11171a</color>
+
+    <color name="pressed_color">#4d90fe</color>
+    <color name="default_color">#CFD8DC</color>
 </resources>

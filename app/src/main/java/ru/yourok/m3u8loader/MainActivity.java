@@ -13,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -172,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SettingsActivity.REQUEST_CODE && resultCode == RESULT_OK) {
-            if (data.getBooleanExtra("recreate", false))
+            if (data.getBooleanExtra("recreate", false)) {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -189,6 +190,7 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
                         }
                     }
                 }).start();
+            }
         }
         if (requestCode == RemoveDialogActivity.REQUEST_CODE && resultCode == RESULT_OK) {
             if (loadersList.getSelected() == 0 && LoaderServiceHandler.SizeLoaders() > 0)
@@ -330,12 +332,20 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
             return super.onKeyUp(keyCode, event);
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_UP:
-                if (loadersList.getSelected() >= 0)
+            case KeyEvent.ACTION_UP:
+                if (loadersList.getSelected() > 0) {
                     loadersList.setSelected(loadersList.getSelected() - 1);
+                    findViewById(R.id.topLoaderMenu).requestFocus();
+                }
+                UpdateList();
                 return true;
             case KeyEvent.KEYCODE_DPAD_DOWN:
-                if (loadersList.getSelected() < loadersList.getCount())
+            case KeyEvent.ACTION_DOWN:
+                if (loadersList.getSelected() < loadersList.getCount() - 1) {
                     loadersList.setSelected(loadersList.getSelected() + 1);
+                    findViewById(R.id.itemLoaderMenu).requestFocus();
+                }
+                UpdateList();
                 return true;
             default:
                 return super.onKeyUp(keyCode, event);

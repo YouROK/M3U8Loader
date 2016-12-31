@@ -44,8 +44,8 @@ public class Options {
         return prefs.getString("Useragent", "DWL/1.0.0 (linux)");
     }
 
-    public boolean IsUseDarkTheme() {
-        return prefs.getBoolean("UseDarkTheme", false);
+    public int GetTheme() {
+        return prefs.getInt("Theme", 1);
     }
 
     public void SetThreads(int val) {
@@ -75,6 +75,12 @@ public class Options {
     public void SetUseragent(String val) {
         SharedPreferences.Editor ed = prefs.edit();
         ed.putString("Useragent", val);
+        ed.apply();
+    }
+
+    public void SetTheme(int val) {
+        SharedPreferences.Editor ed = prefs.edit();
+        ed.putInt("Theme", val);
         ed.apply();
     }
 

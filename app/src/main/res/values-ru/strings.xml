@@ -14,7 +14,6 @@
 
     <string name="set_def_options">Установить настройки по умолчанию</string>
     <string name="default_directory_change">Выбрать временную папку</string>
-    <string name="use_dark_theme">Использовать темную тему</string>
 
     <string name="add_label">Добавить</string>
     <string name="download_label">Загрузить</string>
@@ -50,4 +49,10 @@
     <string name="error_double_name">Загрузка с таким именем уже существует</string>
     <string name="error_double_url">Загрузка с такой ссылкой уже существует</string>
     <string name="error_create_folder">Ошибка при создании папки</string>
+
+    <string-array name="themes_names">
+        <item>Светлая</item>
+        <item>Темная</item>
+    </string-array>
+
 </resources>
