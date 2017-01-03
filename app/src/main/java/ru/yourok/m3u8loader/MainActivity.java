@@ -1,11 +1,9 @@
 package ru.yourok.m3u8loader;
 
 import android.Manifest;
-import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -13,7 +11,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -25,6 +22,7 @@ import ru.yourok.loader.Loader;
 import ru.yourok.loader.LoaderService;
 import ru.yourok.loader.LoaderServiceHandler;
 import ru.yourok.loader.Options;
+import ru.yourok.m3u8loader.utils.PlayIntent;
 import ru.yourok.m3u8loader.utils.ThemeChanger;
 
 
@@ -126,6 +124,8 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
     }
 
     public void onClearListClick(View view) {
+        if (LoaderServiceHandler.SizeLoaders() == 0)
+            return;
         LoaderService.stop(this);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.delete_label) + "?");
@@ -297,28 +297,20 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
     }
 
 
-    private void openFile(Loader loader) {
+    private void openFile(final Loader loader) {
         if (loader == null)
             return;
         final String[] names = loader.GetOutFiles();
         if (names == null || names.length == 0)
             return;
         if (names.length == 1) {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.fromFile(new File(names[0])), "video/*");
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Intent chooser = Intent.createChooser(intent, "   ");
-            startActivity(chooser);
+            PlayIntent.start(this, names[0], loader.GetName());
         } else {
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
             dialogBuilder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setDataAndType(Uri.fromFile(new File(names[item])), "video/*");
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    Intent chooser = Intent.createChooser(intent, "   ");
-                    startActivity(chooser);
+                    PlayIntent.start(MainActivity.this, names[item], loader.GetName());
                 }
             });
             AlertDialog alertDialogObject = dialogBuilder.create();

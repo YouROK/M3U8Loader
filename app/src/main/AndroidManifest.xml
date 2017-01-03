@@ -38,10 +38,11 @@
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="*/*" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -56,7 +57,6 @@
                 <data android:mimeType="application/vnd.apple.mpegurl" />
                 <data android:mimeType="video/mp2t" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -67,7 +67,6 @@
                 <data android:scheme="https" />
                 <data android:scheme="file" />
                 <data android:host="*" />
-
                 <data android:mimeType="video/m3u" />
                 <data android:mimeType="video/m3u8" />
                 <data android:mimeType="video/hls" />
@@ -76,7 +75,6 @@
                 <data android:mimeType="application/vnd.apple.mpegurl" />
                 <data android:mimeType="video/mp2t" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

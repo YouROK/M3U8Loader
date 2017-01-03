@@ -48,6 +48,10 @@ public class Options {
         return prefs.getInt("Theme", 1);
     }
 
+    public int GetPlayer() {
+        return prefs.getInt("Player", 0);
+    }
+
     public void SetThreads(int val) {
         SharedPreferences.Editor ed = prefs.edit();
         ed.putInt("Threads", val);
@@ -84,9 +88,9 @@ public class Options {
         ed.apply();
     }
 
-    public void SetDarkTheme(boolean val) {
+    public void SetPlayer(int val) {
         SharedPreferences.Editor ed = prefs.edit();
-        ed.putBoolean("UseDarkTheme", val);
+        ed.putInt("Player", val);
         ed.apply();
     }
 

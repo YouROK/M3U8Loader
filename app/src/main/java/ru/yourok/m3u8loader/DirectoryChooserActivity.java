@@ -79,7 +79,8 @@ public class DirectoryChooserActivity extends AppCompatActivity {
             if (DirectoryPath.getParentFile() != null) {
                 DirectoryPath = DirectoryPath.getParentFile();
                 updateViews();
-            } else
+            }
+            if (!DirectoryPath.canWrite())
                 Toast.makeText(this, getText(R.string.error_dir_perm), Toast.LENGTH_SHORT).show();
         }
     }
@@ -119,7 +120,7 @@ public class DirectoryChooserActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String name = input.getText().toString();
                         if (!new File(DirectoryPath.getAbsolutePath() + "/" + name).mkdir())
-                            Toast.makeText(DirectoryChooserActivity.this,R.string.error_create_folder,Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DirectoryChooserActivity.this, R.string.error_create_folder, Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                         updateViews();
                     }

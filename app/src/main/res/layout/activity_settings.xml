@@ -136,8 +136,27 @@
                 android:layout_height="15dp"
                 android:background="@android:color/transparent" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/theme" />
+
             <Spinner
                 android:id="@+id/spinnerChangeTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:background="@android:color/transparent" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/chnage_player" />
+            <Spinner
+                android:id="@+id/spinnerPlayerChange"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

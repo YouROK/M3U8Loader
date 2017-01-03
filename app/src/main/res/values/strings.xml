@@ -50,8 +50,18 @@
     <string name="error_double_url">Loading with the same url already exists</string>
     <string name="error_create_folder">Error create folder</string>
 
+    <string name="theme">Theme</string>
     <string-array name="themes_names">
         <item>Light</item>
         <item>Dark</item>
     </string-array>
+
+    <string name="chnage_player">Choose player</string>
+    <string-array name="players_names">
+        <item>Choose player</item>
+        <item>Default player</item>
+        <item>MX Player</item>
+        <item>Kodi player</item>
+    </string-array>
+
 </resources>

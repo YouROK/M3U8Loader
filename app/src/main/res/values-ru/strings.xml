@@ -50,9 +50,18 @@
     <string name="error_double_url">Загрузка с такой ссылкой уже существует</string>
     <string name="error_create_folder">Ошибка при создании папки</string>
 
+    <string name="theme">Тема</string>
     <string-array name="themes_names">
         <item>Светлая</item>
         <item>Темная</item>
+    </string-array>
+
+    <string name="chnage_player">Выбрать player</string>
+    <string-array name="players_names">
+        <item>Выбрать player</item>
+        <item>По умолчанию player</item>
+        <item>MX Player</item>
+        <item>Kodi player</item>
     </string-array>
 
 </resources>

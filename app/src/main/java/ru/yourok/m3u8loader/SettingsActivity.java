@@ -31,7 +31,6 @@ import ru.yourok.m3u8loader.utils.ThemeChanger;
 public class SettingsActivity extends AppCompatActivity {
 
     public static final int REQUEST_CODE = 1202;
-    private final String[] themeNames = {};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +48,11 @@ public class SettingsActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.themes_names));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         Spinner spinner = ((Spinner) findViewById(R.id.spinnerChangeTheme));
+        spinner.setAdapter(adapter);
+
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.players_names));
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner = ((Spinner) findViewById(R.id.spinnerPlayerChange));
         spinner.setAdapter(adapter);
         loadSettings();
     }
@@ -76,6 +80,7 @@ public class SettingsActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.textViewTempDir)).setText(Options.getInstance(this).GetTempDir());
         ((EditText) findViewById(R.id.editTextUseragent)).setText(Options.getInstance(this).GetUseragent());
         ((Spinner) findViewById(R.id.spinnerChangeTheme)).setSelection(Options.getInstance(this).GetTheme());
+        ((Spinner) findViewById(R.id.spinnerPlayerChange)).setSelection(Options.getInstance(this).GetPlayer());
     }
 
     private void saveSettings() {
@@ -85,12 +90,14 @@ public class SettingsActivity extends AppCompatActivity {
         String timeout = ((EditText) findViewById(R.id.editTextTimeout)).getText().toString();
         String useragent = ((EditText) findViewById(R.id.editTextUseragent)).getText().toString();
         int theme = ((Spinner) findViewById(R.id.spinnerChangeTheme)).getSelectedItemPosition();
+        int player = ((Spinner) findViewById(R.id.spinnerPlayerChange)).getSelectedItemPosition();
         Options.getInstance(this).SetOutDir(dirout);
         Options.getInstance(this).SetTempDir(dirtemp);
         Options.getInstance(this).SetTimeout(Integer.parseInt(timeout));
         Options.getInstance(this).SetThreads(Integer.parseInt(threads));
         Options.getInstance(this).SetTheme(theme);
         Options.getInstance(this).SetUseragent(useragent);
+        Options.getInstance(this).SetPlayer(player);
     }
 
     public void okBtnClick(View view) {
