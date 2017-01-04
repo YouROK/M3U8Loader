@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"time"
 )
 
 const (
@@ -31,11 +32,16 @@ type M3U8 struct {
 
 	state       chan *State
 	stateMutext sync.Mutex
+
+	bytesInSecond int64
+	speed         int64
+	lsmt          time.Time
 }
 
 func NewM3U8(opt *Options) *M3U8 {
 	m := new(M3U8)
 	m.opt = opt
+	m.cleanSpeed()
 	return m
 }
 

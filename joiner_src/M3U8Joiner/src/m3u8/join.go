@@ -12,6 +12,7 @@ import (
 
 func (m *M3U8) Join() error {
 	m.isJoin = true
+	m.cleanSpeed()
 	err := m.join(m.list)
 	m.isJoin = false
 	if err != nil {
@@ -52,11 +53,13 @@ func (m *M3U8) join(l *List) error {
 						return err
 					}
 				}
-				_, err = file.Write(buf)
+				buflen := 0
+				buflen, err = file.Write(buf)
 				if err != nil {
 					return err
 				}
 				file.Sync()
+				m.messureSpeed(buflen)
 				isTs = true
 			} else {
 				m.sendState(z+1, len(l.Items), Stage_JoinSegments, filepath.Base(i.FilePath), nil)

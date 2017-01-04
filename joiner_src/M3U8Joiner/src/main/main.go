@@ -11,7 +11,7 @@ func main() {
 	opt := m3u8.NewOptions()
 	opt.TempDir = "/home/yourok/tmp/"
 	//	opt.Url = "file:///home/yourok/test.m3u"
-	opt.Url = "http://devimages.apple.com/iphone/samples/bipbop/bipbopall.m3u8"
+	opt.Url = "https://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear1/prog_index.m3u8"
 	opt.Name = "test"
 	opt.OutFileDir = opt.TempDir
 	opt.Threads = 10
@@ -24,9 +24,9 @@ func main() {
 			err = m.LoadList()
 		}
 		if err == nil {
-			for i := 1; i < m.GetList().ItemsSize(); i++ {
+			/*for i := 1; i < m.GetList().ItemsSize(); i++ {
 				m.GetList().GetItem(i).IsLoad = false
-			}
+			}*/
 			fmt.Println("Load")
 			err = m.Load()
 			if err == nil {
@@ -54,9 +54,10 @@ func main() {
 			continue
 		}
 		sg = st.Stage
-		log.Println(st)
+		log.Println(st, m.Speed())
 		if sg < m3u8.Stage_LoadingList {
 			break
 		}
 	}
+	fmt.Println("Exit")
 }

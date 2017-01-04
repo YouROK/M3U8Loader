@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_list_edit"
     android:layout_width="match_parent"
@@ -39,7 +40,7 @@
                 android:layout_weight="1"
                 android:onClick="upBtnClick"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_folder_up_black_24dp" />
+                app:srcCompat="@drawable/ic_folder_up_black_24dp" />
 
             <ImageButton
                 android:id="@+id/btnLoaderListSelAll"
@@ -49,7 +50,7 @@
                 android:layout_weight="1"
                 android:onClick="allSelBtnClick"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_radio_button_checked_black_24dp" />
+                app:srcCompat="@drawable/ic_radio_button_checked_black_24dp" />
 
             <ImageButton
                 android:id="@+id/btnLoaderListSelNone"
@@ -59,7 +60,7 @@
                 android:layout_weight="1"
                 android:onClick="noneSelBtnClick"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_radio_button_unchecked_black_24dp" />
+                app:srcCompat="@drawable/ic_radio_button_unchecked_black_24dp" />
 
             <ImageButton
                 android:id="@+id/btnLoaderListSelReverse"
@@ -69,7 +70,7 @@
                 android:layout_weight="1"
                 android:onClick="reversSelBtnClick"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_radio_button_reverse_black_24dp" />
+                app:srcCompat="@drawable/ic_radio_button_reverse_black_24dp" />
         </LinearLayout>
     </LinearLayout>
 

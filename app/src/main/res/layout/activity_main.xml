@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -22,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onAddClick"
-            android:src="@drawable/ic_add_black_24dp" />
+            app:srcCompat="@drawable/ic_add_black_24dp" />
 
         <ImageButton
             android:id="@+id/buttonDownload"
@@ -31,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onDownloadClick"
-            android:src="@drawable/ic_file_download_black_24dp" />
+            app:srcCompat="@drawable/ic_file_download_black_24dp" />
 
         <ImageButton
             android:id="@+id/buttonPause"
@@ -40,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onStopClick"
-            android:src="@drawable/ic_pause_black_24dp" />
+            app:srcCompat="@drawable/ic_pause_black_24dp" />
 
         <ImageButton
             android:id="@+id/buttonClearList"
@@ -49,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onClearListClick"
-            android:src="@drawable/ic_clear_black_24dp" />
+            app:srcCompat="@drawable/ic_clear_black_24dp" />
 
         <ImageButton
             android:id="@+id/buttonSettings"
@@ -58,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onSettingsClick"
-            android:src="@drawable/ic_more_horiz_black_24dp" />
+            app:srcCompat="@drawable/ic_more_horiz_black_24dp" />
     </LinearLayout>
 
     <ListView
@@ -87,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/ic_play_circle_outline_black_24dp" />
+            app:srcCompat="@drawable/ic_play_circle_outline_black_24dp" />
 
         <ImageButton
             android:id="@+id/buttonItemMenuStop"
@@ -95,7 +96,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/ic_pause_circle_outline_black_24dp" />
+            app:srcCompat="@drawable/ic_pause_circle_outline_black_24dp" />
 
         <ImageButton
             android:id="@+id/buttonItemMenuRemove"
@@ -103,7 +104,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/ic_remove_circle_outline_black_24dp" />
+            app:srcCompat="@drawable/ic_remove_circle_outline_black_24dp" />
 
         <ImageButton
             android:id="@+id/buttonItemMenuEdit"
@@ -111,6 +112,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/ic_mode_edit_black_24dp" />
+            app:srcCompat="@drawable/ic_mode_edit_black_24dp" />
     </LinearLayout>
 </LinearLayout>

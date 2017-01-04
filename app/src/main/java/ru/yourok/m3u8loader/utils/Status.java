@@ -5,6 +5,7 @@ import android.content.Context;
 import go.m3u8.M3u8;
 import go.m3u8.State;
 import ru.yourok.loader.Loader;
+import ru.yourok.m3u8loader.HomeDirsAdapter;
 import ru.yourok.m3u8loader.R;
 
 /**
@@ -17,11 +18,9 @@ public class Status {
             return "";
         String status = "";
         State state = loader.GetState();
-        int curr;
-        int all;
         if (state != null) {
-            curr = (int) state.getCurrent();
-            all = (int) state.getCount();
+            int curr = (int) state.getCurrent();
+            int all = (int) state.getCount();
             switch ((int) state.getStage()) {
                 case (int) M3u8.Stage_Stoped:
                     status = ctx.getString(R.string.status_stoped);
@@ -37,17 +36,27 @@ public class Status {
                     status = ctx.getString(R.string.status_load_list);
                     break;
                 case (int) M3u8.Stage_LoadingContent: {
+                    long speed = loader.GetSpeed();
+                    String speedStr = "";
+                    speedStr = HomeDirsAdapter.humanReadableByteCount(speed, true) + "/sec";
+
                     if (all == 0)
-                        status = String.format(ctx.getString(R.string.status_loaded) + " %d", curr);
-                    else
-                        status = String.format(ctx.getString(R.string.status_loaded) + " %d / %d", curr, all);
+                        status = String.format(ctx.getString(R.string.status_loaded) + " %d %s", curr, speedStr);
+                    else {
+
+                        status = String.format(ctx.getString(R.string.status_loaded) + " %d / %d %s", curr, all, speedStr);
+                    }
                     break;
                 }
                 case (int) M3u8.Stage_JoinSegments: {
+                    long speed = loader.GetSpeed();
+                    String speedStr = "";
+                    speedStr = HomeDirsAdapter.humanReadableByteCount(speed, true) + "/sec";
+
                     if (all == 0)
-                        status = String.format(ctx.getString(R.string.status_joined) + " %d", curr);
+                        status = String.format(ctx.getString(R.string.status_joined) + " %d %s", curr, speedStr);
                     else
-                        status = String.format(ctx.getString(R.string.status_joined) + " %d / %d", curr, all);
+                        status = String.format(ctx.getString(R.string.status_joined) + " %d / %d %s", curr, all, speedStr);
                     break;
                 }
                 case (int) M3u8.Stage_RemoveTemp: {

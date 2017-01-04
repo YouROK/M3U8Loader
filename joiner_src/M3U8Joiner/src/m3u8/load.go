@@ -25,6 +25,8 @@ func (m *M3U8) load(count int) {
 	var wg sync.WaitGroup
 	var mut sync.Mutex
 	pos := 0
+	m.cleanSpeed()
+
 	for i := 0; i < m.opt.Threads; i++ {
 		wg.Add(1)
 		go func() {
@@ -69,10 +71,10 @@ func (m *M3U8) loadItem(item *Item) error {
 	opt.Url = item.Url
 	http := loader.NewHttp(&opt)
 	err := http.Connect()
+	defer http.Close()
 	if err != nil {
 		return err
 	}
-	defer http.Close()
 	buffer := make([]byte, 0)
 	if err == nil {
 		if !exists(filepath.Dir(item.FilePath)) {
@@ -91,9 +93,9 @@ func (m *M3U8) loadItem(item *Item) error {
 	if err == io.EOF {
 		err = nil
 	}
-
 	if err == nil && m.isLoading {
-		ioutil.WriteFile(item.FilePath, buffer, 0666)
+		err = ioutil.WriteFile(item.FilePath, buffer, 0666)
+		m.messureSpeed(len(buffer))
 	}
 
 	return err

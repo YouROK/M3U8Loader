@@ -146,6 +146,7 @@ public class Loader {
             m3u8.loadList();
             return "";
         } catch (Exception e) {
+            m3u8 = null;
             return e.getMessage();
         }
     }
@@ -177,6 +178,7 @@ public class Loader {
         } catch (Exception e) {
             isStoped = true;
             PollState();
+            m3u8 = null;
             return e.getMessage();
         }
     }
@@ -190,6 +192,12 @@ public class Loader {
     public void Finish() {
         if (m3u8 != null)
             m3u8.finish();
+    }
+
+    public long GetSpeed() {
+        if (m3u8 == null)
+            return 0;
+        return (long) m3u8.speed();
     }
 
     public void RemoveList() {
