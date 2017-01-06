@@ -27,8 +27,16 @@ func main() {
 			/*for i := 1; i < m.GetList().ItemsSize(); i++ {
 				m.GetList().GetItem(i).IsLoad = false
 			}*/
-			fmt.Println("Load")
-			err = m.Load()
+			for true {
+				fmt.Println("Load")
+				err = m.Load()
+				if err == nil {
+					break
+				}
+				if err != nil {
+					fmt.Println(err)
+				}
+			}
 			if err == nil {
 				fmt.Println("Join")
 				err = m.Join()
@@ -55,7 +63,7 @@ func main() {
 		}
 		sg = st.Stage
 		log.Println(st, m.Speed())
-		if sg < m3u8.Stage_LoadingList {
+		if sg == m3u8.Stage_Finished {
 			break
 		}
 	}

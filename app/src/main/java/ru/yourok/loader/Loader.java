@@ -115,8 +115,14 @@ public class Loader {
     }
 
     public State PollState() {
-        if (m3u8 == null)
+        if (m3u8 == null) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             return null;
+        }
         State st = M3u8.getState(m3u8);
         if (st != null)
             state = st;
@@ -177,8 +183,9 @@ public class Loader {
             return "";
         } catch (Exception e) {
             isStoped = true;
-            PollState();
+            m3u8.clear();
             m3u8 = null;
+            PollState();
             return e.getMessage();
         }
     }

@@ -43,7 +43,7 @@ public class Notifications {
     }
 
     public void createNotification(Loader loader) {
-        if (loader == null || context == null) {
+        if (loader == null || context == null || LoaderServiceHandler.SizeLoaders() == 0) {
             removeNotification();
             return;
         }

@@ -3,6 +3,7 @@ package m3u8
 import (
 	"fmt"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
@@ -30,12 +31,13 @@ type M3U8 struct {
 	loadIndex int
 	loadCount int
 
-	state       chan *State
-	stateMutext sync.Mutex
+	state      chan *State
+	stateMutex sync.Mutex
 
 	bytesInSecond int64
 	speed         int64
 	lsmt          time.Time
+	speedMutex    sync.Mutex
 }
 
 func NewM3U8(opt *Options) *M3U8 {
@@ -143,4 +145,8 @@ func (m *M3U8) Finish() {
 	m.isJoin = false
 	m.isLoading = false
 	m.sendState(0, 0, Stage_Finished, "", m.lastErr)
+}
+
+func (m *M3U8) Clear() {
+	runtime.GC()
 }

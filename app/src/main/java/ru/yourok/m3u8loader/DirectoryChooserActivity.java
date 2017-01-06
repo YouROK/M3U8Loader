@@ -86,20 +86,22 @@ public class DirectoryChooserActivity extends AppCompatActivity {
     }
 
     public void homeBtnClick(View view) {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle(R.string.selected_folder_label);
-        final HomeDirsAdapter adapter = new HomeDirsAdapter(this);
-        dialogBuilder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int item) {
-                File newDir = (File) adapter.getItem(item);
-                if (newDir != null) {
-                    DirectoryPath = newDir;
-                    updateViews();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+            dialogBuilder.setTitle(R.string.selected_folder_label);
+            final HomeDirsAdapter adapter = new HomeDirsAdapter(this);
+            dialogBuilder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int item) {
+                    File newDir = (File) adapter.getItem(item);
+                    if (newDir != null) {
+                        DirectoryPath = newDir;
+                        updateViews();
+                    }
                 }
-            }
-        });
-        AlertDialog alertDialogObject = dialogBuilder.create();
-        alertDialogObject.show();
+            });
+            AlertDialog alertDialogObject = dialogBuilder.create();
+            alertDialogObject.show();
+        }
     }
 
     public void createDirBtnClick(View view) {

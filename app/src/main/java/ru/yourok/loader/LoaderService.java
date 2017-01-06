@@ -244,7 +244,7 @@ public class LoaderService extends Service {
                         }
 
                         updateNotif();
-                        if (countNil > timeout)
+                        if (countNil > timeout || LoaderServiceHandler.SizeLoaders() == 0)
                             break;
                     }
                 }

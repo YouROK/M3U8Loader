@@ -28,8 +28,9 @@ public class HomeDirsAdapter extends BaseAdapter {
     public int getCount() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             list = context.getExternalFilesDirs(null);
+            return list.length;
         }
-        return list.length;
+        return 0;
     }
 
     @Override
@@ -53,11 +54,11 @@ public class HomeDirsAdapter extends BaseAdapter {
             int paddingDp = (int) (paddingPixel * density);
             convertView.setPadding(paddingDp, 0, 0, paddingDp);
         }
-
-        ((TextView) convertView.findViewById(android.R.id.text1)).setText(list[position].getAbsolutePath());
-        String Space = humanReadableByteCount(list[position].getFreeSpace(), true) + "/" + humanReadableByteCount(list[position].getTotalSpace(), true);
-        ((TextView) convertView.findViewById(android.R.id.text2)).setText(Space);
-
+        if (list != null) {
+            ((TextView) convertView.findViewById(android.R.id.text1)).setText(list[position].getAbsolutePath());
+            String Space = humanReadableByteCount(list[position].getFreeSpace(), true) + "/" + humanReadableByteCount(list[position].getTotalSpace(), true);
+            ((TextView) convertView.findViewById(android.R.id.text2)).setText(Space);
+        }
         return convertView;
 
     }

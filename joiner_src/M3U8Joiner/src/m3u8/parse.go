@@ -81,9 +81,14 @@ func ParseLocalList(opt *loader.HttpOpts) (*List, error) {
 func ParseList(opt *loader.HttpOpts) (*List, error) {
 	http := loader.NewHttp(opt)
 	err := http.Connect()
+	defer func() {
+		http.Close()
+		http = nil
+	}()
 	if err != nil {
 		return nil, err
 	}
+
 	mList, mType, err := m3u8.DecodeFrom(http, false)
 
 	if err != nil {

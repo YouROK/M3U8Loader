@@ -36,20 +36,20 @@ func (s *State) String() string {
 }
 
 func (m *M3U8) sendState(curr, count, stage int, text string, err error) {
-	m.stateMutext.Lock()
+	m.stateMutex.Lock()
 	if m.state == nil || cap(m.state) < count {
 		m.state = make(chan *State, count*3+100)
 	}
-	m.stateMutext.Unlock()
+	m.stateMutex.Unlock()
 	m.state <- &State{curr, count, stage, text, err}
 }
 
 func GetState(m *M3U8) *State {
-	m.stateMutext.Lock()
+	m.stateMutex.Lock()
 	if m.state == nil {
 		m.state = make(chan *State, m.opt.Threads*10)
 	}
-	m.stateMutext.Unlock()
+	m.stateMutex.Unlock()
 	timer := time.NewTimer(time.Millisecond * 150)
 	select {
 	case st := <-m.state:

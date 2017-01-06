@@ -43,6 +43,7 @@ func (h *Http) Connect() error {
 	}
 
 	h.mutex.Lock()
+
 	h.client.Timeout = time.Millisecond * time.Duration(h.opt.Timeout)
 	var netTransport = &http.Transport{
 		Dial: (&net.Dialer{
@@ -52,9 +53,14 @@ func (h *Http) Connect() error {
 		ResponseHeaderTimeout: h.client.Timeout,
 		ExpectContinueTimeout: h.client.Timeout,
 		IdleConnTimeout:       h.client.Timeout,
+		DisableKeepAlives:     true,
 	}
 	h.client.Transport = netTransport
 	h.resp, h.err = h.client.Do(h.req)
+	if h.req != nil && h.req.Body != nil {
+		h.req.Body.Close()
+	}
+	h.req = nil
 	if h.resp != nil && h.resp.StatusCode != http.StatusOK {
 		h.err = errors.New(h.resp.Status)
 	}
@@ -96,13 +102,9 @@ func (h *Http) Close() {
 
 	h.mutex.Lock()
 	defer h.mutex.Unlock()
-	if h.req != nil && h.req.Body != nil && !h.req.Close {
-		h.req.Body.Close()
-	}
 	if h.resp != nil && h.resp.Body != nil && !h.resp.Close {
 		h.resp.Body.Close()
 	}
-	h.req = nil
 	h.resp = nil
 	h.client = nil
 }

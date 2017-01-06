@@ -71,7 +71,10 @@ func (m *M3U8) loadItem(item *Item) error {
 	opt.Url = item.Url
 	http := loader.NewHttp(&opt)
 	err := http.Connect()
-	defer http.Close()
+	defer func() {
+		http.Close()
+		http = nil
+	}()
 	if err != nil {
 		return err
 	}
@@ -85,6 +88,7 @@ func (m *M3U8) loadItem(item *Item) error {
 		n := 0
 		for err == nil && m.isLoading {
 			n, err = http.Read(tmpBuf)
+			m.messureSpeed(n)
 			if n > 0 {
 				buffer = append(buffer, tmpBuf[:n]...)
 			}
@@ -95,7 +99,6 @@ func (m *M3U8) loadItem(item *Item) error {
 	}
 	if err == nil && m.isLoading {
 		err = ioutil.WriteFile(item.FilePath, buffer, 0666)
-		m.messureSpeed(len(buffer))
 	}
 
 	return err
