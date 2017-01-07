@@ -2,6 +2,7 @@ package m3u8
 
 import (
 	"fmt"
+	"net/url"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -77,6 +78,10 @@ func (m *M3U8) prepareList(l *List) int {
 	count := 0
 	for i, n := range l.Items {
 		filename := filepath.Base(n.Url)
+		if uu, err := url.Parse(n.Url); err == nil {
+			filename = filepath.Base(uu.Path)
+		}
+
 		if len(filename)+len(l.FilePath) > 260 {
 			filename = fmt.Sprintf("segment_%d.ts", i)
 		}

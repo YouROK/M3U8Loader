@@ -28,13 +28,15 @@ public class HomeDirsAdapter extends BaseAdapter {
     public int getCount() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             list = context.getExternalFilesDirs(null);
-            return list.length;
+            return list.length + 1;
         }
         return 0;
     }
 
     @Override
     public Object getItem(int position) {
+        if (list == null || position < 0 || position >= list.length)
+            return null;
         return list[position];
     }
 
@@ -45,19 +47,23 @@ public class HomeDirsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(android.R.layout.two_line_list_item, null);
-            int paddingPixel = 5;
+            int paddingPixel = 15;
             float density = context.getResources().getDisplayMetrics().density;
             int paddingDp = (int) (paddingPixel * density);
             convertView.setPadding(paddingDp, 0, 0, paddingDp);
         }
         if (list != null) {
-            ((TextView) convertView.findViewById(android.R.id.text1)).setText(list[position].getAbsolutePath());
-            String Space = humanReadableByteCount(list[position].getFreeSpace(), true) + "/" + humanReadableByteCount(list[position].getTotalSpace(), true);
-            ((TextView) convertView.findViewById(android.R.id.text2)).setText(Space);
+            if (position == list.length) {
+                ((TextView) convertView.findViewById(android.R.id.text1)).setText(context.getString(R.string.default_directory_change));
+                ((TextView) convertView.findViewById(android.R.id.text2)).setText("");
+            } else {
+                ((TextView) convertView.findViewById(android.R.id.text1)).setText(list[position].getAbsolutePath());
+                String Space = humanReadableByteCount(list[position].getFreeSpace(), true) + "/" + humanReadableByteCount(list[position].getTotalSpace(), true);
+                ((TextView) convertView.findViewById(android.R.id.text2)).setText(Space);
+            }
         }
         return convertView;
 

@@ -11,7 +11,7 @@ func main() {
 	opt := m3u8.NewOptions()
 	opt.TempDir = "/home/yourok/tmp/"
 	//	opt.Url = "file:///home/yourok/test.m3u"
-	opt.Url = "https://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear1/prog_index.m3u8"
+	opt.Url = "http://api.new.livestream.com/accounts/22931184/events/6846118/videos/146115126.m3u8"
 	opt.Name = "test"
 	opt.OutFileDir = opt.TempDir
 	opt.Threads = 10
@@ -20,7 +20,7 @@ func main() {
 	m := m3u8.NewM3U8(opt)
 	go func() {
 		var err error
-		if m.GetList() == nil {
+		if m.GetList() == nil || m.GetList().Url != opt.Url {
 			err = m.LoadList()
 		}
 		if err == nil {
@@ -42,7 +42,7 @@ func main() {
 				err = m.Join()
 				if err == nil {
 					fmt.Println("Remove temp")
-					err = m.RemoveTemp()
+					//					err = m.RemoveTemp()
 					if err == nil {
 						m.Finish()
 					}

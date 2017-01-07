@@ -135,16 +135,27 @@ public class SettingsActivity extends AppCompatActivity {
             Intent intent = new Intent(this, DirectoryChooserActivity.class);
             startActivityForResult(intent, 1203);
         } else {
-            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-            final HomeDirsAdapter adapter = new HomeDirsAdapter(this);
-            dialogBuilder.setTitle(R.string.selected_folder_label);
-            dialogBuilder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int item) {
-                    ((TextView) findViewById(R.id.textViewTempDir)).setText(((File) adapter.getItem(item)).getAbsolutePath() + "/tmp");
-                }
-            });
-            AlertDialog alertDialogObject = dialogBuilder.create();
-            alertDialogObject.show();
+            File[] ff = getExternalFilesDirs(null);
+            if (ff == null || ff.length == 0) {
+                Intent intent = new Intent(this, DirectoryChooserActivity.class);
+                startActivityForResult(intent, 1203);
+            } else {
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+                final HomeDirsAdapter adapter = new HomeDirsAdapter(this);
+                dialogBuilder.setTitle(R.string.selected_folder_label);
+                dialogBuilder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        if (adapter.getItem(item) != null)
+                            ((TextView) findViewById(R.id.textViewTempDir)).setText(((File) adapter.getItem(item)).getAbsolutePath() + "/tmp");
+                        else {
+                            Intent intent = new Intent(SettingsActivity.this, DirectoryChooserActivity.class);
+                            startActivityForResult(intent, 1203);
+                        }
+                    }
+                });
+                AlertDialog alertDialogObject = dialogBuilder.create();
+                alertDialogObject.show();
+            }
         }
     }
 
