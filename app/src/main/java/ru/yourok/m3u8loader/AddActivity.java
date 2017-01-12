@@ -42,9 +42,11 @@ public class AddActivity extends AppCompatActivity {
             for (String key : bundle.keySet())
                 if (key.toLowerCase().contains("name") || key.toLowerCase().contains("title")) {
                     Object value = bundle.get(key);
-                    String name = cleanFileName(value.toString().trim());
-                    if (!name.isEmpty())
-                        fileEdit.setText(name);
+                    if (value != null) {
+                        String name = cleanFileName(value.toString().trim());
+                        if (!name.isEmpty())
+                            fileEdit.setText(name);
+                    }
                 }
         }
 
