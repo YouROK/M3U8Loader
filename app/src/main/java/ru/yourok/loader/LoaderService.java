@@ -167,6 +167,8 @@ public class LoaderService extends Service {
 
     private void load(final Loader loader) {
         String ret = "";
+        if (loader == null)
+            return;
         if (loader.GetList() == null)
             ret = loader.LoadListOpts(this);
         if (ret.isEmpty())
