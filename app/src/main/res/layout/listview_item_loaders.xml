@@ -1,55 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/itemLoaderMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
     android:descendantFocusability="blocksDescendants"
-    android:clickable="false"
-    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="horizontal"
     android:paddingLeft="12dp"
     android:paddingRight="12dp">
 
-    <TextView
-        android:id="@+id/itemLoaderName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:text="Name"
-        android:textAppearance="@android:style/TextAppearance.Medium" />
-
-    <TextView
-        android:id="@+id/itemLoaderUrl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="false"
-        android:ellipsize="middle"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:lines="1"
-        android:singleLine="true"
-        android:text="Url"
-        android:textAppearance="@android:style/TextAppearance.Small" />
-
-    <TextView
-        android:id="@+id/itemLoaderStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:text="Status"
-        android:textAppearance="@android:style/TextAppearance.Small" />
-
-    <ProgressBar
-        android:id="@+id/itemProgress"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:max="100"
-        android:progress="0" />
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/itemLoaderName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:text="Name"
+            android:textAppearance="@android:style/TextAppearance.Medium"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/imageButtonShowItemMenu"
+            android:layout_toStartOf="@+id/imageButtonShowItemMenu" />
+
+        <TextView
+            android:id="@+id/itemLoaderUrl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/itemLoaderName"
+            android:clickable="false"
+            android:ellipsize="middle"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:lines="1"
+            android:singleLine="true"
+            android:text="Url"
+            android:textAppearance="@android:style/TextAppearance.Small"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/imageButtonShowItemMenu"
+            android:layout_toStartOf="@+id/imageButtonShowItemMenu" />
+
+        <TextView
+            android:id="@+id/itemLoaderStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/itemLoaderUrl"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:text="Status"
+            android:textAppearance="@android:style/TextAppearance.Small"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/imageButtonShowItemMenu"
+            android:layout_toStartOf="@+id/imageButtonShowItemMenu" />
+
+        <ProgressBar
+            android:id="@+id/itemProgress"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/itemLoaderStatus"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:max="100"
+            android:progress="0" />
+
+        <ImageButton
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/ic_more_vert_black_24dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_above="@+id/itemProgress"
+            android:layout_alignParentTop="true"
+            android:id="@+id/imageButtonShowItemMenu" />
+    </RelativeLayout>
+
+
 </LinearLayout>

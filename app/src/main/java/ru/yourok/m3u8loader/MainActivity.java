@@ -9,8 +9,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -45,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
         }
         ListView listView = ((ListView) findViewById(R.id.listViewLoaders));
         listView.setAdapter(loadersList);
-
         if (loadersList.getSelected() == -1)
             findViewById(R.id.itemLoaderMenu).setVisibility(View.GONE);
 
@@ -110,7 +111,10 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
 
         LoaderServiceHandler.loadersQueue.clear();
         for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++) {
-            State st = LoaderServiceHandler.GetLoader(i).GetState();
+            Loader loader = LoaderServiceHandler.GetLoader(i);
+            if (loader == null)
+                continue;
+            State st = loader.GetState();
             if (st == null || st.getStage() != M3u8.Stage_Finished)
                 LoaderServiceHandler.AddQueue(i);
         }
@@ -152,6 +156,8 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
             public void onClick(DialogInterface dialogInterface, int i) {
                 while (LoaderServiceHandler.SizeLoaders() > 0) {
                     Loader loader = LoaderServiceHandler.GetLoader(0);
+                    if (loader == null)
+                        continue;
                     loader.Stop();
                     loader.RemoveTemp();
                     loader.RemoveList();
@@ -251,7 +257,8 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
                                     if (loader.GetOutFiles() != null)
                                         openFile(loader);
                                     else {
-                                        LoaderServiceHandler.AddQueue(sel);
+                                        if (loadersList.getSelected() != -1)
+                                            LoaderServiceHandler.AddQueue(loadersList.getSelected());
                                         LoaderService.load(MainActivity.this);
                                     }
                                 }

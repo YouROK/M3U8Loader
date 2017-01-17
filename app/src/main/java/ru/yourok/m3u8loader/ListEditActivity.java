@@ -12,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +22,6 @@ import go.m3u8.Item;
 import go.m3u8.List;
 import ru.yourok.loader.Loader;
 import ru.yourok.loader.LoaderServiceHandler;
-import ru.yourok.loader.Options;
 import ru.yourok.m3u8loader.utils.ThemeChanger;
 
 public class ListEditActivity extends AppCompatActivity {
@@ -29,6 +29,7 @@ public class ListEditActivity extends AppCompatActivity {
     private List list;
     private AdaptorEditList listviewadapter;
     private ArrayList<Integer> path = new ArrayList<>();
+    private boolean isSelectLeftBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,11 @@ public class ListEditActivity extends AppCompatActivity {
         int id = intent.getIntExtra("LoaderID", -1);
         if (id == -1)
             return;
+
         loader = LoaderServiceHandler.GetLoader(id);
+        if (loader == null)
+            return;
+
         loader.Stop();
         list = loader.GetList();
         if (list == null) {
@@ -65,18 +70,76 @@ public class ListEditActivity extends AppCompatActivity {
                                 list = loader.GetList();
                                 findViewById(R.id.loaderListProgressBar).setVisibility(View.GONE);
                                 findViewById(R.id.loaderListMenu).setVisibility(View.VISIBLE);
-                                listviewadapter.notifyDataSetChanged();
+                                updateUI();
                             }
                         }
                     });
                 }
             }).start();
         }
+
+        isSelectLeftBar = false;
+
+        updateUI();
+        final SeekBar rangeSeekbar = (SeekBar) findViewById(R.id.rangeSeekbar);
+        rangeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            Number minValue = 0;
+            Number maxValue = 0;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                minValue = 0;
+                maxValue = list.itemsSize();
+
+                if (isSelectLeftBar)
+                    maxValue = progress;
+                else
+                    minValue = progress;
+                ((TextView) findViewById(R.id.textViewRangeLeft)).setText(minValue.toString());
+                ((TextView) findViewById(R.id.textViewRangeRight)).setText(maxValue.toString());
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if (list != null)
+                    for (int i = 0; i < list.itemsSize(); i++)
+                        if (list.getItem(i) != null) {
+                            if (i >= minValue.intValue() && i <= maxValue.intValue())
+                                list.getItem(i).setIsLoad(true);
+                            else
+                                list.getItem(i).setIsLoad(false);
+                        }
+                loader.SaveList();
+                listviewadapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void updateUI() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                final SeekBar rangeSeekbar = (SeekBar) findViewById(R.id.rangeSeekbar);
+
+                if (list == null || list.itemsSize() == 0)
+                    findViewById(R.id.rangeUI).setVisibility(View.GONE);
+                else {
+                    findViewById(R.id.rangeUI).setVisibility(View.VISIBLE);
+                    rangeSeekbar.setMax((int) list.itemsSize());
+                }
+                listviewadapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void findList() {
         list = loader.GetList();
-        listviewadapter.notifyDataSetChanged();
+        updateUI();
         if (list == null)
             return;
         if (path.size() == 0) {
@@ -86,7 +149,7 @@ public class ListEditActivity extends AppCompatActivity {
             findViewById(R.id.btnLoaderListNavUp).setVisibility(View.VISIBLE);
         for (int i : path)
             list = list.getList(i);
-        listviewadapter.notifyDataSetChanged();
+        updateUI();
     }
 
     public void upBtnClick(View view) {
@@ -96,27 +159,32 @@ public class ListEditActivity extends AppCompatActivity {
     }
 
     public void allSelBtnClick(View view) {
-        list = loader.GetList();
+        if (list == null)
+            return;
         for (int i = 0; i < list.itemsSize(); i++)
             list.getItem(i).setIsLoad(true);
         for (int i = 0; i < list.listsSize(); i++)
             list.getList(i).setLoadList(true);
         loader.SaveList();
         listviewadapter.notifyDataSetChanged();
+        isSelectLeftBar = false;
     }
 
     public void noneSelBtnClick(View view) {
-        list = loader.GetList();
+        if (list == null)
+            return;
         for (int i = 0; i < list.itemsSize(); i++)
             list.getItem(i).setIsLoad(false);
         for (int i = 0; i < list.listsSize(); i++)
             list.getList(i).setLoadList(false);
         loader.SaveList();
         listviewadapter.notifyDataSetChanged();
+        isSelectLeftBar = true;
     }
 
     public void reversSelBtnClick(View view) {
-        list = loader.GetList();
+        if (list == null)
+            return;
         for (int i = 0; i < list.itemsSize(); i++)
             list.getItem(i).setIsLoad(!list.getItem(i).getIsLoad());
         for (int i = 0; i < list.listsSize(); i++)
@@ -173,7 +241,6 @@ public class ListEditActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         path.add(position);
                         findList();
-                        listviewadapter.notifyDataSetChanged();
                     }
                 });
 

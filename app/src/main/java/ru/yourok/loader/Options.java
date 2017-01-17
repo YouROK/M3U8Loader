@@ -96,12 +96,15 @@ public class Options {
 
     public void SaveList() {
         SharedPreferences.Editor ed = prefs.edit();
-        ed.putInt("List_Size", LoaderServiceHandler.SizeLoaders());
         for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++) {
-            ed.putString("List_Url_" + String.valueOf(i), LoaderServiceHandler.GetLoader(i).GetUrl());
-            ed.putString("List_Name_" + String.valueOf(i), LoaderServiceHandler.GetLoader(i).GetName());
-            ed.putBoolean("List_Finish_" + String.valueOf(i), LoaderServiceHandler.GetLoader(i).IsFinished());
+            Loader loader = LoaderServiceHandler.GetLoader(i);
+            if (loader == null)
+                continue;
+            ed.putString("List_Url_" + String.valueOf(i), loader.GetUrl());
+            ed.putString("List_Name_" + String.valueOf(i), loader.GetName());
+            ed.putBoolean("List_Finish_" + String.valueOf(i), loader.IsFinished());
         }
+        ed.putInt("List_Size", LoaderServiceHandler.SizeLoaders());
         ed.apply();
     }
 
@@ -118,7 +121,7 @@ public class Options {
             loader.SetName(name);
             boolean isEqual = false;
             for (int n = 0; n < LoaderServiceHandler.SizeLoaders(); n++)
-                if (LoaderServiceHandler.GetLoader(n).equals(loader))
+                if (LoaderServiceHandler.GetLoader(n) != null && LoaderServiceHandler.GetLoader(n).equals(loader))
                     isEqual = true;
             if (!isEqual) {
                 new Thread(new Runnable() {

@@ -132,8 +132,11 @@ public class LoaderService extends Service {
                     load(loader);
                 }
 
-                for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++)
-                    LoaderServiceHandler.GetLoader(i).PollState();
+                for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++) {
+                    Loader loader = LoaderServiceHandler.GetLoader(i);
+                    if (loader != null)
+                        loader.PollState();
+                }
                 if (loaderServiceCallback != null)
                     loaderServiceCallback.onUpdateLoader();
 
@@ -154,11 +157,14 @@ public class LoaderService extends Service {
                     isLoading = false;
                 }
                 for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++) {
-                    LoaderServiceHandler.GetLoader(i).PollState();
-                    State state = LoaderServiceHandler.GetLoader(i).GetState();
+                    Loader loader = LoaderServiceHandler.GetLoader(i);
+                    if (loader == null)
+                        continue;
+                    loader.PollState();
+                    State state = loader.GetState();
                     if (state != null && (state.getStage() == M3u8.Stage_LoadingContent ||
                             state.getStage() == M3u8.Stage_JoinSegments))
-                        LoaderServiceHandler.GetLoader(i).Stop();
+                        loader.Stop();
                 }
                 updateNotif();
             }
@@ -166,11 +172,10 @@ public class LoaderService extends Service {
     }
 
     private void load(final Loader loader) {
-        String ret = "";
+        String ret;
         if (loader == null)
             return;
-        if (loader.GetList() == null)
-            ret = loader.LoadListOpts(this);
+        ret = loader.LoadListOpts(this);
         if (ret.isEmpty())
             ret = loader.Load();
         Handler handler = new Handler(Looper.getMainLooper());

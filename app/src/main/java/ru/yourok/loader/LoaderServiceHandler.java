@@ -50,8 +50,8 @@ public class LoaderServiceHandler {
         return -1;
     }
 
-    public static void RemoveQueue(int id) {
-        loadersQueue.remove(id);
+    public static void ClearQueue() {
+        loadersQueue.clear();
     }
 
     public static int SizeQueue() {

@@ -67,8 +67,10 @@ public class AddActivity extends AppCompatActivity {
 
         if (urlEdit.getText().toString().isEmpty())
             urlEdit.requestFocus();
-        else
+        else if (fileEdit.getText().toString().isEmpty())
             fileEdit.requestFocus();
+        else
+            findViewById(R.id.footer).requestFocus();
     }
 
     public void addBtnClick(View view) {
@@ -84,14 +86,18 @@ public class AddActivity extends AppCompatActivity {
             return;
         }
 
-        for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++)
-            if (LoaderServiceHandler.GetLoader(i).GetName().equals(Name)) {
-                changeUrlLoader(LoaderServiceHandler.GetLoader(i), Url, false);
+        for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++) {
+            Loader loader = LoaderServiceHandler.GetLoader(i);
+            if (loader == null)
+                continue;
+            if (loader.GetName().equals(Name)) {
+                changeUrlLoader(loader, Url, false);
                 return;
-            } else if (LoaderServiceHandler.GetLoader(i).GetUrl().equals(Url)) {
+            } else if (loader.GetUrl().equals(Url)) {
                 Toast.makeText(this, R.string.error_double_url, Toast.LENGTH_SHORT).show();
                 return;
             }
+        }
 
         addLoader(Url, Name, false);
         finish();
@@ -110,14 +116,18 @@ public class AddActivity extends AppCompatActivity {
             return;
         }
 
-        for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++)
-            if (LoaderServiceHandler.GetLoader(i).GetName().equals(Name)) {
-                changeUrlLoader(LoaderServiceHandler.GetLoader(i), Url, true);
+        for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++) {
+            Loader loader = LoaderServiceHandler.GetLoader(i);
+            if (loader == null)
+                continue;
+            if (loader.GetName().equals(Name)) {
+                changeUrlLoader(loader, Url, true);
                 return;
-            } else if (LoaderServiceHandler.GetLoader(i).GetUrl().equals(Url)) {
+            } else if (loader.GetUrl().equals(Url)) {
                 Toast.makeText(this, R.string.error_double_url, Toast.LENGTH_SHORT).show();
                 return;
             }
+        }
 
         addLoader(Url, Name, true);
         finish();

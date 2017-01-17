@@ -144,6 +144,7 @@ public class Loader {
 
     public String LoadList() {
         try {
+            isStoped = false;
             if (m3u8 == null)
                 m3u8 = M3u8.newM3U8(opts);
             List list = m3u8.getList();

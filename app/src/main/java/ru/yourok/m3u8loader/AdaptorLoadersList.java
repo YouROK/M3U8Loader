@@ -1,12 +1,18 @@
 package ru.yourok.m3u8loader;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -69,17 +75,64 @@ public class AdaptorLoadersList extends BaseAdapter {
             view = lInflater.inflate(R.layout.listview_item_loaders, parent, false);
         }
 
-        view.setClickable(true);
-        view.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener clickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (position == selected)
+                if (position == selected) {
                     setSelected(-1);
-                else
+                    Animation anim = new AlphaAnimation(1, 0);
+                    anim.setRepeatCount(1);
+                    anim.setRepeatMode(Animation.REVERSE);
+                    anim.setDuration(200);
+                    anim.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+                            ((ImageButton) ((Activity) context).findViewById(R.id.buttonAdd)).setImageResource(R.drawable.ic_add_black_24dp);
+                        }
+                    });
+                    ((Activity) context).findViewById(R.id.buttonAdd).startAnimation(anim);
+
+                } else {
+                    if (selected == -1) {
+                        Animation anim = new AlphaAnimation(1, 0);
+                        anim.setRepeatCount(1);
+                        anim.setRepeatMode(Animation.REVERSE);
+                        anim.setDuration(200);
+                        anim.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+                                ((ImageButton) ((Activity) context).findViewById(R.id.buttonAdd)).setImageResource(R.drawable.ic_mode_edit_black_24dp);
+                            }
+                        });
+                        ((Activity) context).findViewById(R.id.buttonAdd).startAnimation(anim);
+                    }
                     setSelected(position);
+                }
                 AdaptorLoadersList.this.notifyDataSetChanged();
             }
-        });
+        };
+
+        view.setClickable(true);
+        view.setOnClickListener(clickListener);
+        view.findViewById(R.id.imageButtonShowItemMenu).setOnClickListener(clickListener);
 
         Loader loader = LoaderServiceHandler.GetLoader(position);
         if (loader != null) {
@@ -95,8 +148,10 @@ public class AdaptorLoadersList extends BaseAdapter {
             theme.resolveAttribute(R.attr.colorItemSelectMenu, typedValue, true);
             view.setBackgroundColor(typedValue.data);
             view.getBackground().setAlpha(100);
-        } else
+        } else {
             view.setBackgroundResource(android.R.color.transparent);
+            view.getBackground().setAlpha(0);
+        }
 
         return view;
     }
