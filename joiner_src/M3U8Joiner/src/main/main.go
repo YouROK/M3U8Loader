@@ -12,11 +12,13 @@ func main() {
 	opt.TempDir = "/home/yourok/tmp/"
 	//	opt.Url = "file:///home/yourok/test.m3u"
 	//	opt.Url = "http://api.new.livestream.com/accounts/22931184/events/6846118/videos/146115126.m3u8"
-	opt.Url = "http://atv-vod.ercdn.net/eskiya_dunyaya_hukumdar_olmaz/050/eskiya_dunyaya_hukumdar_olmaz_050.smil/chunklist_b1200000_t64MTIwMGticHM=.m3u8?st=UMUgMJhxlvjQEdm1fxfT_Q&e=1484251384&SessionID=1qhyziauy3dwxx4yxfydiu2m&StreamGroup=eskiya-dunyaya-hukumdar-olmaz&Site=atv&DeviceGroup=web"
+	//	opt.Url = "http://atv-vod.ercdn.net/eskiya_dunyaya_hukumdar_olmaz/050/eskiya_dunyaya_hukumdar_olmaz_050.smil/chunklist_b1200000_t64MTIwMGticHM=.m3u8?st=UMUgMJhxlvjQEdm1fxfT_Q&e=1484251384&SessionID=1qhyziauy3dwxx4yxfydiu2m&StreamGroup=eskiya-dunyaya-hukumdar-olmaz&Site=atv&DeviceGroup=web"
+	opt.Url = "file:///home/yourok/Projects/Android/M3U8Loader/joiner_src/M3U8Joiner/src/main/a.m3u8"
+
 	opt.Name = "test"
 	opt.OutFileDir = opt.TempDir
-	opt.Threads = 10
-	opt.Timeout = 60000
+	opt.Threads = 30
+	opt.Timeout = 0
 
 	m := m3u8.NewM3U8(opt)
 	go func() {
@@ -25,9 +27,12 @@ func main() {
 			err = m.LoadList()
 		}
 		if err == nil {
-			/*for i := 1; i < m.GetList().ItemsSize(); i++ {
+			for i := 1; i < m.GetList().ListsSize(); i++ {
+				m.GetList().GetList(i).IsLoad = false
+			}
+			for i := 1; i < m.GetList().ItemsSize(); i++ {
 				m.GetList().GetItem(i).IsLoad = false
-			}*/
+			}
 			for true {
 				fmt.Println("Load")
 				err = m.Load()

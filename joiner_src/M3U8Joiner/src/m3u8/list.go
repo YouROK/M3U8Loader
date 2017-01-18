@@ -10,6 +10,7 @@ import (
 type List struct {
 	Items     []*Item `json:",omitempty"`
 	Lists     []*List `json:",omitempty"`
+	EncKey    *Key    `json:",omitempty"`
 	Name      string
 	Bandwidth int
 	Item

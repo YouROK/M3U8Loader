@@ -101,11 +101,17 @@ func ParseList(opt *loader.HttpOpts) (*List, error) {
 	switch mType {
 	case m3u8.MEDIA:
 		l := mList.(*m3u8.MediaPlaylist)
+		if l.Key != nil {
+			key, err := getKey(opt, l.Key)
+			if err != nil {
+				return nil, errors.New("Error parse drm key: " + err.Error())
+			}
+			list.EncKey = key
+		}
 		for _, i := range l.Segments {
 			if i == nil {
 				continue
 			}
-
 			ext := strings.ToLower(filepath.Ext(i.URI))
 
 			subUrl := i.URI
@@ -172,4 +178,14 @@ func joinUrl(fileUrl, relPath string) (string, error) {
 	}
 	uri.Path = filepath.Join(filepath.Dir(uri.Path), relPath)
 	return uri.String(), nil
+}
+
+func getKey(opt *loader.HttpOpts, m3u8key *m3u8.Key) (*Key, error) {
+	o := *opt
+	var err error
+	o.Url, err = joinUrl(o.Url, m3u8key.URI)
+	if err != nil {
+		return nil, err
+	}
+	return loadM3U8Key(&o, m3u8key)
 }

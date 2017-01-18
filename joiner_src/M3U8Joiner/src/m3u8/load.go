@@ -1,6 +1,8 @@
 package m3u8
 
 import (
+	"encoding/binary"
+	"errors"
 	"io"
 	"io/ioutil"
 	"loader"
@@ -32,8 +34,9 @@ func (m *M3U8) load(count int) {
 		go func() {
 			for m.isLoading {
 				var item *Item
+				var list *List
 				mut.Lock()
-				item = m.getItem(pos)
+				item, list = m.getItem(pos)
 				if item != nil {
 					pos++
 					m.sendState(pos, count, Stage_LoadingContent, item.Url, nil)
@@ -43,7 +46,7 @@ func (m *M3U8) load(count int) {
 				if item == nil {
 					break
 				}
-				err := m.loadItem(item)
+				err := m.loadItem(item, list)
 				if err != nil {
 					fmt.Println("Error", err, item)
 					m.isLoading = false
@@ -57,7 +60,7 @@ func (m *M3U8) load(count int) {
 	wg.Wait()
 }
 
-func (m *M3U8) loadItem(item *Item) error {
+func (m *M3U8) loadItem(item *Item, list *List) error {
 	if item != nil && !item.IsLoad {
 		return nil
 	}
@@ -98,32 +101,53 @@ func (m *M3U8) loadItem(item *Item) error {
 		err = nil
 	}
 	if err == nil && m.isLoading {
+		if list.EncKey != nil {
+			k := *list.EncKey
+			if k.IV == nil { //if iv == nil use index of item
+				num := -1
+				for n, i := range list.Items {
+					if i == item {
+						num = n + 1
+						break
+					}
+				}
+				if num == -1 {
+					return errors.New("drm key is wrong")
+				}
+				k.IV = make([]byte, 16)
+				binary.BigEndian.PutUint32(k.IV, uint32(num))
+			}
+			err = decrypt(buffer, &k)
+			if err != nil {
+				return err
+			}
+		}
 		err = ioutil.WriteFile(item.FilePath, buffer, 0666)
 	}
 
 	return err
 }
 
-func (m *M3U8) getItem(pos int) *Item {
+func (m *M3U8) getItem(pos int) (*Item, *List) {
 	ind := 0
-	var walk func(l *List, ind *int) *Item
+	var walk func(l *List, ind *int) (*Item, *List)
 
-	walk = func(l *List, ind *int) *Item {
+	walk = func(l *List, ind *int) (*Item, *List) {
 		for _, i := range l.Items {
 			if *ind == pos {
-				return i
+				return i, l
 			}
 			*ind++
 		}
 		for _, l := range l.Lists {
 			if l.IsLoad {
-				i := walk(l, ind)
+				i, ll := walk(l, ind)
 				if i != nil {
-					return i
+					return i, ll
 				}
 			}
 		}
-		return nil
+		return nil, nil
 	}
 	return walk(m.list, &ind)
 }
