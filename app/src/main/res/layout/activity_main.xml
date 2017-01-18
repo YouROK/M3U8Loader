@@ -66,10 +66,6 @@
         android:id="@+id/listViewLoaders"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:choiceMode="none"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
         android:listSelector="@android:color/transparent"
         android:layout_weight="1" />
 

@@ -132,7 +132,6 @@ public class AdaptorLoadersList extends BaseAdapter {
 
         view.setClickable(true);
         view.setOnClickListener(clickListener);
-        view.findViewById(R.id.imageButtonShowItemMenu).setOnClickListener(clickListener);
 
         Loader loader = LoaderServiceHandler.GetLoader(position);
         if (loader != null) {

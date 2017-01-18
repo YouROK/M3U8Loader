@@ -7,9 +7,8 @@ android {
         applicationId "ru.yourok.m3u8loader"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 116
-        versionName "1.16"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        versionCode 117
+        versionName "1.17"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -31,9 +30,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
     compile project(':m3u8')
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support:design:25.1.0'
