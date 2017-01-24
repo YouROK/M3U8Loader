@@ -119,10 +119,23 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void clrTempDir(View view) {
-        String tmpdir = ((TextView) findViewById(R.id.textViewTempDir)).getText().toString();
-        String ret = Loader.RemoveDir(tmpdir);
-        if (ret.isEmpty()) ret = getText(android.R.string.ok).toString();
-        Toast.makeText(this, ret, Toast.LENGTH_SHORT).show();
+        final String tmpdir = ((TextView) findViewById(R.id.textViewTempDir)).getText().toString();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.clear_label));
+        builder.setMessage(getString(R.string.delete_warn) + "\n" + tmpdir);
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String ret = Loader.RemoveDir(tmpdir);
+                if (ret.isEmpty()) {
+                    new File(tmpdir).mkdir();
+                    ret = getText(android.R.string.ok).toString();
+                }
+                Toast.makeText(SettingsActivity.this, ret, Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton(android.R.string.no, null);
+        builder.create().show();
     }
 
     public void srchBtnClick(View view) {

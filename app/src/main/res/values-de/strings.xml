@@ -41,6 +41,8 @@
     <string name="permission_msg">Zugriffsrechte auf Ihre Speichermedien werden benötigt, um heruntergeladene Dateien zu speichern</string>
     <string name="permission_btn">ERLAUBEN</string>
 
+    <string name="delete_warn">Alle Dateien im Verzeichnis gelöscht wird, weitergehen?</string>
+
     <string name="error_download_dir">Zielordner nicht ausgewählt</string>
     <string name="error_dir_perm">Keine Zugriffsrechte auf Speichermedien</string>
     <string name="error_url_empty">Keine Downloadadresse angegeben</string>

@@ -40,6 +40,8 @@
     <string name="permission_msg">Доступ к памяти требуется для загрузки и записи файлов</string>
     <string name="permission_btn">РАЗРЕШИТЬ</string>
 
+    <string name="delete_warn">Все файлы в директории будут удалены, продолжить?</string>
+
     <string name="error_download_dir">Папка загрузки не установлена</string>
     <string name="error_dir_perm">Доступ к папке запрещен</string>
     <string name="error_url_empty">URL адрес пуст</string>

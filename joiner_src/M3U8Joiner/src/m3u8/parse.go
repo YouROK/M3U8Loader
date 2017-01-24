@@ -176,8 +176,8 @@ func joinUrl(fileUrl, relPath string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	uri.Path = filepath.Join(filepath.Dir(uri.Path), relPath)
-	return uri.String(), nil
+	ret := uri.Scheme + "://" + uri.Host + filepath.Join(filepath.Dir(uri.Path), relPath)
+	return ret, nil
 }
 
 func getKey(opt *loader.HttpOpts, m3u8key *m3u8.Key) (*Key, error) {

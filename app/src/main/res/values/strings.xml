@@ -40,6 +40,8 @@
     <string name="permission_msg">Storage permission is needed to download and write files</string>
     <string name="permission_btn">GRANT</string>
 
+    <string name="delete_warn">All files in the directory will be deleted, continue?</string>
+
     <string name="error_download_dir">Download dir not set</string>
     <string name="error_dir_perm">Directory permission denied</string>
     <string name="error_url_empty">Url is empty</string>
