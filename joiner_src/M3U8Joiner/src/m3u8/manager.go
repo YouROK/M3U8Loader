@@ -79,7 +79,7 @@ func (m *M3U8) prepareList(l *List) int {
 	for i, n := range l.Items {
 		filename := filepath.Base(n.Url)
 		if uu, err := url.Parse(n.Url); err == nil {
-			filename = filepath.Base(uu.Path)
+			filename = fmt.Sprintf("%000d_%s", i, filepath.Base(uu.Path))
 		}
 
 		if len(filename)+len(l.FilePath) > 260 {
