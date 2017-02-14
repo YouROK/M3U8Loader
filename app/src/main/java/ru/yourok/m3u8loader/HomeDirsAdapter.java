@@ -59,7 +59,7 @@ public class HomeDirsAdapter extends BaseAdapter {
             if (position == list.length) {
                 ((TextView) convertView.findViewById(android.R.id.text1)).setText(context.getString(R.string.default_directory_change));
                 ((TextView) convertView.findViewById(android.R.id.text2)).setText("");
-            } else {
+            } else if (list[position] != null) {
                 ((TextView) convertView.findViewById(android.R.id.text1)).setText(list[position].getAbsolutePath());
                 String Space = humanReadableByteCount(list[position].getFreeSpace(), true) + "/" + humanReadableByteCount(list[position].getTotalSpace(), true);
                 ((TextView) convertView.findViewById(android.R.id.text2)).setText(Space);
