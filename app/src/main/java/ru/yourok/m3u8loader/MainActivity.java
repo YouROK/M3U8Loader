@@ -58,19 +58,20 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
     protected void onStart() {
         super.onStart();
         LoaderService.registerOnUpdateLoader(this);
-    }
-
-    @Override
-    protected void onStop() {
-        LoaderService.registerOnUpdateLoader(null);
-        super.onStop();
+        LoaderService.startService(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         LoaderService.registerOnUpdateLoader(this);
-        UpdateList();
+        LoaderService.startService(this);
+    }
+
+    @Override
+    protected void onStop() {
+        LoaderService.registerOnUpdateLoader(null);
+        super.onStop();
     }
 
     @Override
