@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+	"time"
 
 	"fmt"
 )
@@ -46,9 +47,17 @@ func (m *M3U8) load(count int) {
 				if item == nil {
 					break
 				}
-				err := m.loadItem(item, list)
-				if err != nil {
+				var err error
+				for i := 0; i < 5; i++ {
+					err = m.loadItem(item, list)
+					if err == nil {
+						break
+					}
 					fmt.Println("Error", err, item)
+					fmt.Println("Try again", i)
+					time.Sleep(time.Millisecond * 500)
+				}
+				if err != nil {
 					m.isLoading = false
 					m.lastErr = err
 					break
@@ -87,7 +96,7 @@ func (m *M3U8) loadItem(item *Item, list *List) error {
 			os.MkdirAll(filepath.Dir(item.FilePath), 0777)
 		}
 
-		tmpBuf := make([]byte, 1024)
+		tmpBuf := make([]byte, 1024*10)
 		n := 0
 		for err == nil && m.isLoading {
 			n, err = http.Read(tmpBuf)
