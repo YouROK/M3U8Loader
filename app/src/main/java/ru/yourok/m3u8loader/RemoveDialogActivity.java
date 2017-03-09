@@ -101,11 +101,12 @@ public class RemoveDialogActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.listViewRemoveFiles);
         SparseBooleanArray sbArray = listView.getCheckedItemPositions();
         boolean isRemoveList = true;
-        for (int i = 0; i < names.length; i++)
-            if (sbArray.valueAt(i))
-                new File(names[i]).delete();
-            else
-                isRemoveList = false;
+        if (names != null && names.length > 0)
+            for (int i = 0; i < names.length; i++)
+                if (sbArray.valueAt(i))
+                    new File(names[i]).delete();
+                else
+                    isRemoveList = false;
         if (isRemoveList)
             removeFromList(index);
         finishOK();
