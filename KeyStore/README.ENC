@@ -1,0 +1,4 @@
+#Encode
+openssl enc -aes-256-cbc -salt -in file.txt -out file.txt.enc
+#Decode
+openssl enc -aes-256-cbc -d -in file.txt.enc -out file.txt
