@@ -1,4 +1,4 @@
-package ru.yourok.m3u8loader.utils;
+package ru.yourok.m3u8loaderbeta.utils;
 
 /**
  * Created by yourok on 11.12.16.
@@ -7,21 +7,21 @@ package ru.yourok.m3u8loader.utils;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v7.app.NotificationCompat;
+import android.widget.TextView;
 
-import go.m3u8.State;
-import ru.yourok.loader.Loader;
-import ru.yourok.loader.LoaderServiceHandler;
-import ru.yourok.m3u8loader.MainActivity;
-import ru.yourok.m3u8loader.R;
+import org.json.JSONObject;
+
+import dwl.LoaderInfo;
+import ru.yourok.loader.Manager;
+import ru.yourok.loader.MyApplication;
+import ru.yourok.loader.Parse;
+import ru.yourok.loader.Store;
+import ru.yourok.m3u8loaderbeta.MainActivity;
+import ru.yourok.m3u8loaderbeta.R;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,43 +32,93 @@ import ru.yourok.m3u8loader.R;
 public class Notifications {
     private static final int NOTIFY_ID = 0;
 
-    private static final String NOTIFICATION_DELETED_ACTION = "NOTIFICATION_DELETED";
+    private static int Index = -1;
+    private static boolean isUpdate = false;
+    private static Object lock = new Object();
 
-    private NotificationManager manager;
-    private Context context;
-    private State state;
+    public static void Update(int index) {
+        synchronized (lock) {
+            Index = index;
+            if (isUpdate)
+                return;
+            isUpdate = true;
+        }
 
-    public Notifications(Context context) {
-        this.context = context;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (isUpdate) {
+                    Context context = MyApplication.getContext();
+                    createNotification(context, Index);
+                    if (Index == -1)
+                        break;
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                isUpdate = false;
+            }
+        }).start();
     }
 
-    public void createNotification(Loader loader) {
-        if (loader == null || context == null || LoaderServiceHandler.SizeLoaders() == 0) {
-            removeNotification();
+    public static void createNotification(Context context, int index) {
+        if (context == null || index == -1) {
+            removeNotification(context);
             return;
         }
-        if (state == loader.GetState())
-            return;
-        if (manager == null)
-            manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        state = loader.GetState();
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         Intent notificationIntent = new Intent(context, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(context, NOTIFY_ID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        int progress = Status.GetProgress(loader);
-        String name = loader.GetName();
-        String status = Status.GetStatus(context, loader);
+        LoaderInfo info = Manager.GetLoaderInfo(index);
+        if (info == null)
+            return;
+
+        String progress = "";
+        if (info.getLoadingCount() > 0)
+            progress = info.getCompleted() + " / " + info.getLoadingCount() + " " + (int) (info.getCompleted() * 100 / info.getLoadingCount())+"% ";
+        int st = (int) info.getStatus();
+        String status = "";
+        switch ((int) info.getStatus()) {
+            case Manager.STATUS_STOPED: {
+                status = context.getResources().getString(R.string.status_load_stopped);
+                break;
+            }
+            case Manager.STATUS_LOADING: {
+                String speed = "";
+                if (info.getSpeed() > 0)
+                    speed = Store.byteFmt(info.getSpeed(), false) + "/sec ";
+                status = context.getResources().getString(R.string.status_load_loading) + " " + info.getThreads() + ", " + progress + "" + speed;
+                break;
+            }
+            case Manager.STATUS_COMPLETE: {
+                status = context.getResources().getString(R.string.status_load_complete);
+                break;
+            }
+            case Manager.STATUS_ERROR: {
+                status = context.getResources().getString(R.string.status_load_error) + ": " + info.getError();
+                break;
+            }
+            default:
+                status = context.getResources().getString(R.string.status_load_unknown);
+                break;
+        }
 
         final android.support.v4.app.NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                .setContentTitle(name)
+                .setContentTitle(info.getName())
                 .setContentText(status)
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true);
 
-        if (progress > 0)
-            builder.setProgress(100, progress, false);
+        if (info.getLoadingCount() > 0) {
+            int percent = (int) (info.getCompleted() * 100 / info.getLoadingCount());
+            if (percent > 0)
+                builder.setProgress(100, percent, false);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             builder.setColor(context.getResources().getColor(R.color.colorPrimaryDark, null));
@@ -86,12 +136,10 @@ public class Notifications {
         else
             notification = builder.build();
 
-
         manager.notify(NOTIFY_ID, notification);
     }
 
-    public void removeNotification() {
-        if (manager != null)
-            manager.cancel(NOTIFY_ID);
+    static void removeNotification(Context context) {
+        ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(NOTIFY_ID);
     }
 }

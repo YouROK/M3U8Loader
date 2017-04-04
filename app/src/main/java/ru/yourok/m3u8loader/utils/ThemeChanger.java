@@ -1,22 +1,22 @@
-package ru.yourok.m3u8loader.utils;
+package ru.yourok.m3u8loaderbeta.utils;
 
 import android.app.Activity;
 
-import ru.yourok.loader.Options;
-import ru.yourok.m3u8loader.R;
+import ru.yourok.loader.Store;
+import ru.yourok.m3u8loaderbeta.R;
 
 /**
- * Created by yourok on 23.12.16.
+ * Created by yourok on 29.03.17.
  */
 
 public class ThemeChanger {
     public static void SetTheme(Activity activity) {
-        switch (Options.getInstance(activity).GetTheme()) {
-            case 0:
-                SetLightTheme(activity);
-                return;
-            case 1:
+        switch (Store.getTheme(activity)) {
+            case "0":
                 SetDarkTheme(activity);
+                return;
+            case "1":
+                SetLightTheme(activity);
                 return;
         }
     }

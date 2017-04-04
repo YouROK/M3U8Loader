@@ -1,17 +1,15 @@
-package ru.yourok.m3u8loader.utils;
+package ru.yourok.m3u8loaderbeta.utils;
 
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.List;
 
-import ru.yourok.loader.Options;
+import ru.yourok.loader.Store;
 
 /**
  * Created by yourok on 03.01.17.
@@ -19,23 +17,23 @@ import ru.yourok.loader.Options;
 
 public class PlayIntent {
     public static void start(Context context, String filename, String title) {
-        int player = Options.getInstance(context).GetPlayer();
+        String player = Store.getPlayer(context);
         Intent intent;
         switch (player) {
             //Chooser
-            case 0:
+            case "0":
                 intent = getChooser(filename, title);
                 break;
             //Default
             default:
-            case 1:
+            case "1":
                 intent = getDefaultPlayer(filename, title);
                 break;
             //MX Player
-            case 2:
+            case "2":
                 intent = getMXPlayer(context, filename, title);
                 break;
-            case 3:
+            case "3":
                 intent = getKodiPlayer(context, filename, title);
                 break;
         }
@@ -106,6 +104,4 @@ public class PlayIntent {
         intent.setPackage(pkg);
         return intent;
     }
-
-
 }

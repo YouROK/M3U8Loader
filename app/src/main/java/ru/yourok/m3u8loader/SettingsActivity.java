@@ -1,32 +1,22 @@
 package ru.yourok.m3u8loader;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
+import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
-
-import ru.yourok.loader.Loader;
-import ru.yourok.loader.Options;
-import ru.yourok.m3u8loader.utils.ThemeChanger;
+import dwl.Settings;
+import ru.yourok.loader.Manager;
+import ru.yourok.loader.Store;
+import ru.yourok.m3u8loaderbeta.utils.ThemeChanger;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -37,8 +27,9 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ThemeChanger.SetTheme(this);
         setContentView(R.layout.activity_settings);
+
         try {
-            PackageInfo pInfo = null;
+            PackageInfo pInfo;
             pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             String version = pInfo.versionName;
             ((TextView) findViewById(R.id.textViewVersion)).setText(version);
@@ -47,65 +38,52 @@ public class SettingsActivity extends AppCompatActivity {
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.themes_names));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        Spinner spinner = ((Spinner) findViewById(R.id.spinnerChangeTheme));
+        Spinner spinner = ((Spinner) findViewById(R.id.spinnerChooseTheme));
         spinner.setAdapter(adapter);
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.players_names));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner = ((Spinner) findViewById(R.id.spinnerPlayerChange));
+        spinner = ((Spinner) findViewById(R.id.spinnerChoosePlayer));
         spinner.setAdapter(adapter);
+
         loadSettings();
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        ((EditText) findViewById(R.id.editTextDirectoryPath)).setText(savedInstanceState.getString("DownloadDir", ""));
-        ((EditText) findViewById(R.id.editTextThreads)).setText(savedInstanceState.getString("Threads", ""));
-        ((EditText) findViewById(R.id.editTextTimeout)).setText(savedInstanceState.getString("Timeout", ""));
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString("DownloadDir", ((EditText) findViewById(R.id.editTextDirectoryPath)).getText().toString());
-        outState.putString("Threads", ((EditText) findViewById(R.id.editTextThreads)).getText().toString());
-        outState.putString("Timeout", ((EditText) findViewById(R.id.editTextTimeout)).getText().toString());
-    }
-
     private void loadSettings() {
-        ((EditText) findViewById(R.id.editTextDirectoryPath)).setText(Options.getInstance(this).GetOutDir());
-        ((EditText) findViewById(R.id.editTextThreads)).setText(String.valueOf(Options.getInstance(this).GetThreads()));
-        ((EditText) findViewById(R.id.editTextTimeout)).setText(String.valueOf(Options.getInstance(this).GetTimeout()));
-        ((TextView) findViewById(R.id.textViewTempDir)).setText(Options.getInstance(this).GetTempDir());
-        ((EditText) findViewById(R.id.editTextUseragent)).setText(Options.getInstance(this).GetUseragent());
-        ((Spinner) findViewById(R.id.spinnerChangeTheme)).setSelection(Options.getInstance(this).GetTheme());
-        ((Spinner) findViewById(R.id.spinnerPlayerChange)).setSelection(Options.getInstance(this).GetPlayer());
+        Settings sets = Manager.GetSettings();
+        ((EditText) findViewById(R.id.editTextDirectoryPath)).setText(Store.getDownloadPath());
+        ((EditText) findViewById(R.id.editTextThreads)).setText(String.valueOf(sets.getThreads()));
+        ((EditText) findViewById(R.id.editTextRepeatError)).setText(String.valueOf(sets.getErrorRepeat()));
+        ((EditText) findViewById(R.id.editTextCookies)).setText(sets.getCookies());
+        ((EditText) findViewById(R.id.editTextUseragent)).setText(sets.getUseragent());
+        ((Spinner) findViewById(R.id.spinnerChooseTheme)).setSelection(Integer.parseInt(Store.getTheme(this)));
+        ((Spinner) findViewById(R.id.spinnerChoosePlayer)).setSelection(Integer.parseInt(Store.getPlayer(this)));
     }
 
     private void saveSettings() {
         String dirout = ((EditText) findViewById(R.id.editTextDirectoryPath)).getText().toString();
-        String dirtemp = ((TextView) findViewById(R.id.textViewTempDir)).getText().toString();
         String threads = ((EditText) findViewById(R.id.editTextThreads)).getText().toString();
-        String timeout = ((EditText) findViewById(R.id.editTextTimeout)).getText().toString();
+        String errRepeat = ((EditText) findViewById(R.id.editTextRepeatError)).getText().toString();
         String useragent = ((EditText) findViewById(R.id.editTextUseragent)).getText().toString();
-        int theme = ((Spinner) findViewById(R.id.spinnerChangeTheme)).getSelectedItemPosition();
-        int player = ((Spinner) findViewById(R.id.spinnerPlayerChange)).getSelectedItemPosition();
-        Options.getInstance(this).SetOutDir(dirout);
-        Options.getInstance(this).SetTempDir(dirtemp);
-        Options.getInstance(this).SetTimeout(Integer.parseInt(timeout));
-        Options.getInstance(this).SetThreads(Integer.parseInt(threads));
-        Options.getInstance(this).SetTheme(theme);
-        Options.getInstance(this).SetUseragent(useragent);
-        Options.getInstance(this).SetPlayer(player);
+        String cookies = ((EditText) findViewById(R.id.editTextCookies)).getText().toString();
+        int theme = ((Spinner) findViewById(R.id.spinnerChooseTheme)).getSelectedItemPosition();
+        int player = ((Spinner) findViewById(R.id.spinnerChoosePlayer)).getSelectedItemPosition();
+        Manager.SetSettingsDownloadPath(dirout);
+        Manager.SetSettingsThreads(Integer.parseInt(threads));
+        Manager.SetSettingsErrorRepeat(Integer.parseInt(errRepeat));
+        Manager.SetSettingsUseragent(useragent);
+        Manager.SetSettingsCookies(cookies);
+        Manager.SaveSettings();
+        Store.setTheme(this, String.valueOf(theme));
+        Store.setPlayer(this, String.valueOf(player));
     }
 
     public void okBtnClick(View view) {
-        int lastTheme = Options.getInstance(this).GetTheme();
+        String lastTheme = Store.getTheme(this);
         saveSettings();
         Intent intent = new Intent();
         setResult(RESULT_OK, intent);
-        if (lastTheme != Options.getInstance(this).GetTheme())
+        if (!lastTheme.equals(Store.getTheme(this)))
             intent.putExtra("recreate", true);
         else
             intent.putExtra("recreate", false);
@@ -118,58 +96,9 @@ public class SettingsActivity extends AppCompatActivity {
         finish();
     }
 
-    public void clrTempDir(View view) {
-        final String tmpdir = ((TextView) findViewById(R.id.textViewTempDir)).getText().toString();
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.clear_label));
-        builder.setMessage(getString(R.string.delete_warn) + "\n" + tmpdir);
-        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                String ret = Loader.RemoveDir(tmpdir);
-                if (ret.isEmpty()) {
-                    new File(tmpdir).mkdir();
-                    ret = getText(android.R.string.ok).toString();
-                }
-                Toast.makeText(SettingsActivity.this, ret, Toast.LENGTH_SHORT).show();
-            }
-        });
-        builder.setNegativeButton(android.R.string.no, null);
-        builder.create().show();
-    }
-
     public void srchBtnClick(View view) {
-        Intent intent = new Intent(this, DirectoryChooserActivity.class);
+        Intent intent = new Intent(this, DirectoryListActivity.class);
         startActivityForResult(intent, 1202);
-    }
-
-    public void findTempDir(View view) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            Intent intent = new Intent(this, DirectoryChooserActivity.class);
-            startActivityForResult(intent, 1203);
-        } else {
-            File[] ff = getExternalFilesDirs(null);
-            if (ff == null || ff.length == 0) {
-                Intent intent = new Intent(this, DirectoryChooserActivity.class);
-                startActivityForResult(intent, 1203);
-            } else {
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-                final HomeDirsAdapter adapter = new HomeDirsAdapter(this);
-                dialogBuilder.setTitle(R.string.selected_folder_label);
-                dialogBuilder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int item) {
-                        if (adapter.getItem(item) != null)
-                            ((TextView) findViewById(R.id.textViewTempDir)).setText(((File) adapter.getItem(item)).getAbsolutePath() + "/tmp");
-                        else {
-                            Intent intent = new Intent(SettingsActivity.this, DirectoryChooserActivity.class);
-                            startActivityForResult(intent, 1203);
-                        }
-                    }
-                });
-                AlertDialog alertDialogObject = dialogBuilder.create();
-                alertDialogObject.show();
-            }
-        }
     }
 
     @Override
@@ -183,20 +112,17 @@ public class SettingsActivity extends AppCompatActivity {
             return;
         }
 
-        if (requestCode == 1202) {
+        if (requestCode == 1202)
             ((EditText) findViewById(R.id.editTextDirectoryPath)).setText(name);
-        } else if (requestCode == 1203) {
-            ((TextView) findViewById(R.id.textViewTempDir)).setText(name);
-        }
     }
-
 
     public void defOptions(View view) {
         ((EditText) findViewById(R.id.editTextDirectoryPath)).setText(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath());
-        ((EditText) findViewById(R.id.editTextThreads)).setText("10");
-        ((EditText) findViewById(R.id.editTextTimeout)).setText("60000");
-        ((TextView) findViewById(R.id.textViewTempDir)).setText(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/tmp/");
+        ((EditText) findViewById(R.id.editTextThreads)).setText("30");
+        ((EditText) findViewById(R.id.editTextRepeatError)).setText("5");
         ((EditText) findViewById(R.id.editTextUseragent)).setText("DWL/1.0.0 (linux)");
-        ((Spinner) findViewById(R.id.spinnerChangeTheme)).setSelection(1);
+        ((EditText) findViewById(R.id.editTextCookies)).setText("");
+        ((Spinner) findViewById(R.id.spinnerChooseTheme)).setSelection(0);
+        ((Spinner) findViewById(R.id.spinnerChoosePlayer)).setSelection(0);
     }
 }

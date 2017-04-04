@@ -4,32 +4,30 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.KeyEvent;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.File;
 
-import go.m3u8.M3u8;
-import go.m3u8.State;
 import ru.yourok.loader.Loader;
-import ru.yourok.loader.LoaderService;
-import ru.yourok.loader.LoaderServiceHandler;
-import ru.yourok.loader.Options;
-import ru.yourok.m3u8loader.utils.PlayIntent;
-import ru.yourok.m3u8loader.utils.ThemeChanger;
+import ru.yourok.loader.Manager;
+import ru.yourok.loader.Parse;
+import ru.yourok.m3u8loaderbeta.utils.*;
 
 
-public class MainActivity extends AppCompatActivity implements LoaderService.LoaderServiceCallbackUpdate {
-    public static AdaptorLoadersList loadersList;
+public class MainActivity extends AppCompatActivity {
+    public static final String TAG = "MainActivity";
+
+    private ListView loadersList;
+    private boolean isUpdateList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,138 +35,174 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
         ThemeChanger.SetTheme(this);
         setContentView(R.layout.activity_main);
 
-        LoaderService.registerOnUpdateLoader(this);
-        LoaderService.startService(this);
-        if (loadersList == null) {
-            loadersList = new AdaptorLoadersList(this);
-        } else {
-            loadersList.setContext(this);
-            UpdateList();
-        }
-        ListView listView = ((ListView) findViewById(R.id.listViewLoaders));
-        listView.setAdapter(loadersList);
-        if (loadersList.getSelected() == -1)
-            findViewById(R.id.itemLoaderMenu).setVisibility(View.GONE);
-
-        setMenuClickListener();
+        loadersList = (ListView) findViewById(R.id.listViewLoaders);
+        final MainActivityLoaderAdaptor adapter = new MainActivityLoaderAdaptor(this);
+        loadersList.setAdapter(adapter);
+        loadersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (adapter.getSelected() == i) {
+                    adapter.setSelected(-1);
+                } else {
+                    adapter.setSelected(i);
+                }
+                adapter.notifyDataSetChanged();
+                updateMenu();
+            }
+        });
+        updateMenu();
         requestPermissionWithRationale();
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        LoaderService.registerOnUpdateLoader(this);
-        LoaderService.startService(this);
+    protected void onPause() {
+        isUpdateList = false;
+        super.onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        LoaderService.registerOnUpdateLoader(this);
-        LoaderService.startService(this);
+        updateList();
     }
 
-    @Override
-    protected void onStop() {
-        LoaderService.registerOnUpdateLoader(null);
-        super.onStop();
+    public void requestPermissionWithRationale() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Snackbar.make(findViewById(R.id.main_layout), R.string.permission_msg, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.permission_btn, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                        }
+                    })
+                    .show();
+        } else {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
     }
 
-    @Override
-    protected void onPause() {
-        LoaderService.registerOnUpdateLoader(null);
-        super.onPause();
+    private void updateMenu() {
+        int sel = ((MainActivityLoaderAdaptor) loadersList.getAdapter()).getSelected();
+        if (sel == -1)
+            findViewById(R.id.itemLoaderMenu).setVisibility(View.GONE);
+        else
+            findViewById(R.id.itemLoaderMenu).setVisibility(View.VISIBLE);
     }
 
-    public void UpdateList() {
-        if (loadersList != null)
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    loadersList.notifyDataSetChanged();
-                    int sel = loadersList.getSelected();
-                    if (sel < 0 || sel >= loadersList.getCount())
-                        findViewById(R.id.itemLoaderMenu).setVisibility(View.GONE);
+    private final Object lock = new Object();
+
+    private void updateList() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ((BaseAdapter) loadersList.getAdapter()).notifyDataSetChanged();
+            }
+        });
+
+        synchronized (lock) {
+            if (isUpdateList)
+                return;
+            isUpdateList = true;
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (; isUpdateList; ) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((BaseAdapter) loadersList.getAdapter()).notifyDataSetChanged();
+                            MainActivityLoaderAdaptor adaptorList = ((MainActivityLoaderAdaptor) loadersList.getAdapter());
+                            if (Manager.Length() > 0 && adaptorList.getSelected() >= Manager.Length())
+                                adaptorList.setSelected(Manager.Length() - 1);
+                            if (Manager.Length() == 0)
+                                adaptorList.setSelected(-1);
+                        }
+                    });
+                    try {
+                        if (Loader.isLoading())
+                            Thread.sleep(200);
+                        else
+                            Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-            });
+            }
+        }).start();
     }
 
     public void onAddClick(View view) {
-        Intent intent = new Intent(this, AddActivity.class);
-        final int sel = loadersList.getSelected();
-        final Loader loader = LoaderServiceHandler.GetLoader(sel);
-        if (loader != null) {
-            intent.setData(Uri.parse(loader.GetUrl()));
-            intent.putExtra("name", loader.GetName());
-        } else
-            intent.setData(Uri.parse(""));
-        startActivity(intent);
-    }
-
-    public void onDownloadClick(View view) {
         view.setEnabled(false);
-        view.invalidate();
-        view.refreshDrawableState();
-
-        LoaderServiceHandler.loadersQueue.clear();
-        for (int i = 0; i < LoaderServiceHandler.SizeLoaders(); i++) {
-            Loader loader = LoaderServiceHandler.GetLoader(i);
-            if (loader == null)
-                continue;
-            State st = loader.GetState();
-            if (st == null || st.getStage() != M3u8.Stage_Finished)
-                LoaderServiceHandler.AddQueue(i);
-        }
-        LoaderService.load(this);
-
+        Intent intent = new Intent(this, AddLoaderActivity.class);
+        final int sel = ((MainActivityLoaderAdaptor) loadersList.getAdapter()).getSelected();
+        intent.setData(Uri.parse(""));
+        startActivity(intent);
         view.setEnabled(true);
     }
 
-    public void onStopClick(View view) {
-        LoaderService.stop(this);
+    public void onDownloadAllClick(View view) {
+        view.setEnabled(false);
+        Loader.Clear();
+        for (int i = 0; i < Manager.Length(); i++) {
+            if (Manager.GetLoaderStatus(i) != Manager.STATUS_COMPLETE)
+                Loader.Add(i);
+        }
+        Loader.Start();
+        updateList();
+        view.setEnabled(true);
+    }
+
+    public void onStopAllClick(View view) {
+        view.setEnabled(false);
+        Loader.Clear();
+        updateList();
+        view.setEnabled(true);
     }
 
     public void onClearListClick(View view) {
-        if (LoaderServiceHandler.SizeLoaders() == 0)
+        if (Manager.Length() == 0)
             return;
-        LoaderService.stop(this);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.delete_label) + "?");
-        builder.setPositiveButton(R.string.delete_with_files, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                while (LoaderServiceHandler.SizeLoaders() > 0) {
-                    Loader loader = LoaderServiceHandler.GetLoader(0);
-                    String[] files = loader.GetOutFiles();
-                    if (files != null)
-                        for (String f : files)
-                            new File(f).delete();
-                    loader.Stop();
-                    loader.RemoveTemp();
-                    loader.RemoveList();
-                    LoaderServiceHandler.RemoveLoader(0);
-                    Options.getInstance(MainActivity.this).SaveList();
-                }
-                UpdateList();
+        boolean isFiles = false;
+        for (int i = 0; i < Manager.Length(); i++)
+            if (new File(Manager.GetFileName(i)).exists()) {
+                isFiles = true;
+                break;
             }
-        });
-        builder.setNegativeButton(R.string.remove_from_list, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                while (LoaderServiceHandler.SizeLoaders() > 0) {
-                    Loader loader = LoaderServiceHandler.GetLoader(0);
-                    if (loader == null)
-                        continue;
-                    loader.Stop();
-                    loader.RemoveTemp();
-                    loader.RemoveList();
-                    LoaderServiceHandler.RemoveLoader(0);
-                    Options.getInstance(MainActivity.this).SaveList();
+        view.setEnabled(false);
+        if (!isFiles) {
+            Loader.Clear();
+            while (Manager.Length() > 0)
+                Manager.Remove(0);
+            updateList();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.delete_label) + "?");
+            builder.setPositiveButton(R.string.delete_with_files, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Loader.Clear();
+                    while (Manager.Length() > 0) {
+                        String outFileName = Manager.GetFileName(0);
+                        Manager.Remove(0);
+                        new File(outFileName).delete();
+                    }
+                    updateList();
                 }
-                UpdateList();
-            }
-        });
-        builder.create().show();
+            });
+            builder.setNegativeButton(R.string.remove_from_list, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Loader.Clear();
+                    while (Manager.Length() > 0)
+                        Manager.Remove(0);
+                    updateList();
+                }
+            });
+            builder.setNeutralButton(" ", null);
+            builder.create().show();
+        }
+        view.setEnabled(true);
     }
 
     public void onSettingsClick(View view) {
@@ -199,156 +233,84 @@ public class MainActivity extends AppCompatActivity implements LoaderService.Loa
                 }).start();
             }
         }
-        if (requestCode == RemoveDialogActivity.REQUEST_CODE && resultCode == RESULT_OK) {
-            if (loadersList.getSelected() == 0 && LoaderServiceHandler.SizeLoaders() > 0)
-                loadersList.setSelected(loadersList.getSelected());
-            else if (loadersList.getSelected() >= 0)
-                loadersList.setSelected(loadersList.getSelected() - 1);
-            loadersList.notifyDataSetChanged();
-        }
     }
 
-    @Override
-    public void onUpdateLoader() {
-        UpdateList();
-    }
-
-    public void requestPermissionWithRationale() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            Snackbar.make(findViewById(R.id.main_layout), R.string.permission_msg, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.permission_btn, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                        }
-                    })
-                    .show();
-        } else {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-        }
-    }
-
-    private void setMenuClickListener() {
-        //Menu
-        View.OnClickListener clickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                final int sel = loadersList.getSelected();
-                final Loader loader = LoaderServiceHandler.GetLoader(sel);
-                if (loader == null) {
-                    loadersList.setSelected(-1);
+    public void onLoadItemClick(View view) {
+        int sel = ((MainActivityLoaderAdaptor) loadersList.getAdapter()).getSelected();
+        if (sel != -1) {
+            if (Manager.GetLoaderStatus(sel) == Manager.STATUS_COMPLETE) {
+                String fn = Manager.GetFileName(sel);
+                String title = Manager.GetLoaderInfo(sel).getName();
+                if (!new File(fn).exists()) {
+                    Toast.makeText(this, getText(R.string.error_file_notexist) + ": " + fn, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (sel == -1)
-                    return;
-                switch (view.getId()) {
-                    case R.id.buttonItemMenuStart: {
-                        if (loader.GetList() == null) {
-                            view.setEnabled(false);
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    loader.LoadListOpts(MainActivity.this);
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            view.setEnabled(true);
-                                        }
-                                    });
-                                    if (loader.GetOutFiles() != null)
-                                        openFile(loader);
-                                    else {
-                                        if (loadersList.getSelected() != -1)
-                                            LoaderServiceHandler.AddQueue(loadersList.getSelected());
-                                        LoaderService.load(MainActivity.this);
-                                    }
-                                }
-                            }).start();
-                            LoaderService.startService(MainActivity.this);
-                        } else {
-                            if (loader.GetOutFiles() != null)
-                                openFile(loader);
-                            else {
-                                LoaderServiceHandler.AddQueue(sel);
-                                LoaderService.load(MainActivity.this);
-                            }
-                        }
-                        break;
-                    }
-                    case R.id.buttonItemMenuStop: {
-                        if (loader.IsWorking())
-                            loader.Stop();
-                        break;
-                    }
-                    case R.id.buttonItemMenuRemove: {
-                        LoaderService.stop(MainActivity.this);
-                        Intent intent = new Intent(MainActivity.this, RemoveDialogActivity.class);
-                        intent.putExtra("index", sel);
-                        MainActivity.this.startActivityForResult(intent, RemoveDialogActivity.REQUEST_CODE);
-                        break;
-                    }
-                    case R.id.buttonItemMenuEdit: {
-                        Intent intent = new Intent(MainActivity.this, ListEditActivity.class);
-                        intent.putExtra("LoaderID", sel);
-                        MainActivity.this.startActivity(intent);
-                        break;
-                    }
-                }
-                UpdateList();
+                PlayIntent.start(this, fn, title);
+                return;
             }
-        };
 
-        findViewById(R.id.buttonItemMenuStart).setOnClickListener(clickListener);
-        findViewById(R.id.buttonItemMenuStop).setOnClickListener(clickListener);
-        findViewById(R.id.buttonItemMenuRemove).setOnClickListener(clickListener);
-        findViewById(R.id.buttonItemMenuEdit).setOnClickListener(clickListener);
-    }
-
-
-    private void openFile(final Loader loader) {
-        if (loader == null)
-            return;
-        final String[] names = loader.GetOutFiles();
-        if (names == null || names.length == 0)
-            return;
-        if (names.length == 1) {
-            PlayIntent.start(this, names[0], loader.GetName());
-        } else {
-            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
-            dialogBuilder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int item) {
-                    PlayIntent.start(MainActivity.this, names[item], loader.GetName());
-                }
-            });
-            AlertDialog alertDialogObject = dialogBuilder.create();
-            alertDialogObject.show();
+            if (Manager.GetLoaderStatus(sel) != Manager.STATUS_LOADING) {
+                view.setEnabled(false);
+                Loader.Add(sel);
+                Loader.Start();
+                updateList();
+                view.setEnabled(true);
+            }
         }
     }
 
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (loadersList == null)
-            return super.onKeyUp(keyCode, event);
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_DPAD_UP:
-            case KeyEvent.ACTION_UP:
-                if (loadersList.getSelected() > 0) {
-                    loadersList.setSelected(loadersList.getSelected() - 1);
-                    findViewById(R.id.topLoaderMenu).requestFocus();
-                }
-                UpdateList();
-                return true;
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-            case KeyEvent.ACTION_DOWN:
-                if (loadersList.getSelected() < loadersList.getCount() - 1) {
-                    loadersList.setSelected(loadersList.getSelected() + 1);
-                    findViewById(R.id.itemLoaderMenu).requestFocus();
-                }
-                UpdateList();
-                return true;
-            default:
-                return super.onKeyUp(keyCode, event);
+    public void onStopItemClick(View view) {
+        int sel = ((MainActivityLoaderAdaptor) loadersList.getAdapter()).getSelected();
+        if (sel != -1) {
+            view.setEnabled(false);
+            Loader.Rem(sel);
+            Manager.Stop(sel);
+            updateList();
+            view.setEnabled(true);
+        }
+    }
+
+    public void onRemoveItemClick(View view) {
+        view.setEnabled(false);
+        final int sel = ((MainActivityLoaderAdaptor) loadersList.getAdapter()).getSelected();
+        if (sel != -1) {
+            final String outFileName = Manager.GetFileName(sel);
+            if (!new File(outFileName).exists()) {
+                Loader.Rem(sel);
+                Manager.Remove(sel);
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(getString(R.string.delete_label) + "?");
+                builder.setPositiveButton(R.string.delete_with_files, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Loader.Rem(sel);
+                        Manager.Remove(sel);
+                        new File(outFileName).delete();
+                        updateList();
+                    }
+                });
+                builder.setNegativeButton(R.string.remove_from_list, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Loader.Rem(sel);
+                        Manager.Remove(sel);
+                        updateList();
+                    }
+                });
+                builder.create().show();
+            }
+        }
+        view.setEnabled(true);
+    }
+
+    public void onEditItemClick(View view) {
+        int sel = ((MainActivityLoaderAdaptor) loadersList.getAdapter()).getSelected();
+        if (sel != -1) {
+            onStopAllClick(view);
+            Intent intent = new Intent(this, EditLoaderActivity.class);
+            intent.putExtra("Index", sel);
+            startActivity(intent);
         }
     }
 }
