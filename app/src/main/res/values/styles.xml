@@ -1,19 +1,24 @@
 <resources>
 
     <!-- Base application theme. -->
+    <!--<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">-->
+        <!--<item name="colorPrimary">@color/colorPrimary</item>-->
+        <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+        <!--<item name="colorAccent">@color/colorAccent</item>-->
+    <!--</style>-->
+
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorItemSelectMenu">@color/colorListSelectLight</item>
-
+        <!--<item name="colorItemSelectMenu">@color/colorListSelectLight</item>-->
     </style>
 
     <style name="AppThemeDark" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorItemSelectMenu">@color/colorListSelectDark</item>
+        <!--<item name="colorItemSelectMenu">@color/colorListSelectDark</item>-->
 
         <item name="android:textColorPrimary">@color/colorListSelectLight</item>
         <item name="android:colorForeground">@color/colorAccent</item>
@@ -23,4 +28,6 @@
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
     </style>
+
 </resources>
+

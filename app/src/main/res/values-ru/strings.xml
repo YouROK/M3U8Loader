@@ -1,67 +1,65 @@
 <resources>
-    <string name="app_name">M3U8Loader</string>
+    <string name="app_name">M3U8LoaderBeta</string>
 
-    <string name="file_name">Имя файла (без расширения):</string>
-    <string name="url_name">URL-адрес:</string>
-    <string name="timeout">Время ожидания соединения:</string>
-    <string name="threads">Потоки:</string>
+    <string name="name">Имя:</string>
+    <string name="url_link">URL-адрес:</string>
+
+    <string name="threads">Потоков:</string>
+    <string name="repeat_error">Повторить при ошибке:</string>
     <string name="useragent">User agent:</string>
+    <string name="cookies">Cookies:</string>
     <string name="download_path">Папка загрузки:</string>
-    <string name="temp_dir">Временная директория:</string>
+    <string name="set_def_settings">Установить настройки по умолчанию</string>
 
-    <string name="main_btn_start">Загрузить</string>
-    <string name="main_btn_stop">Остановить</string>
-
-    <string name="set_def_options">Установить настройки по умолчанию</string>
-    <string name="default_directory_change">Выбрать временную папку</string>
-
-    <string name="add_label">Добавить</string>
-    <string name="download_label">Загрузить</string>
-    <string name="settings_label">Настройки</string>
-    <string name="clear_label">Очистить временную папку</string>
     <string name="selected_folder_label">Выберите папку:</string>
-    <string name="new_directory_title">Создать папку</string>
+    <string name="new_directory_title">Новая папка</string>
     <string name="new_directory_name_label">Название новой папки:</string>
-    <string name="delete_label">Удалить</string>
-    <string name="remove_from_list">Удалить из списка</string>
-    <string name="delete_with_files">Удалить с файлами</string>
-    <string name="replace_url">Заменить URL-адрес в загрузке?</string>
-    <string name="replace_url_msg">Загрузка с таким именем существует, заменить его URL-адрес?</string>
 
-    <string name="status_load_list">Загрузка листа…</string>
-    <string name="status_load_segments">Загрузка сегментов…</string>
-    <string name="status_join_files">Соединение файлов…</string>
-    <string name="status_remove_temp">Удаление временных файлов…</string>
-    <string name="status_finish">Завершено</string>
-    <string name="status_stoped">Остановлено</string>
-    <string name="status_loaded">Загружается</string>
-    <string name="status_joined">Соединяется</string>
+    <string name="range_changed">Диапазон изменён, Вам нужно загрузить файл заного</string>
+    <string name="set_range_and_clean">Установить диапазон и очистить загрузку?</string>
+    <string name="warn_clean_message">Осторожно, при очистке, удаляются все настройки и скачанный файл.\nОчистить?</string>
+
+    <string name="refresh_label">Обновить</string>
+    <string name="clear_download_label">Очистить загрузку</string>
+    <string name="add_label">Добавить</string>
+    <string name="download_label">Скачать</string>
+    <string name="delete_label">Удалить</string>
+    <string name="delete_with_files">Удалить с файлами</string>
+    <string name="remove_from_list">Удалить из списка</string>
+    <string name="status_label">Статус</string>
+
+    <string name="status_load_stopped">Бездействует</string>
+    <string name="status_load_loading">Загружается</string>
+    <string name="status_load_complete">Завершено</string>
+    <string name="status_load_error">Ошибка</string>
+    <string name="status_load_unknown">Неизвестно</string>
 
     <string name="permission_msg">Доступ к памяти требуется для загрузки и записи файлов</string>
     <string name="permission_btn">РАЗРЕШИТЬ</string>
 
-    <string name="delete_warn">Все файлы в директории будут удалены, продолжить?</string>
+    <string name="replace_url">Заменить ссылку в загрузке?</string>
+    <string name="replace_url_msg">Загрузка с таким именем существует, заменить в ней ссылку?</string>
 
-    <string name="error_download_dir">Папка загрузки не установлена</string>
-    <string name="error_dir_perm">Доступ к папке запрещен</string>
-    <string name="error_url_empty">URL адрес пуст</string>
-    <string name="error_filename_empty">Пустое имя файла</string>
-    <string name="error_already_loading">Уже загружается</string>
-    <string name="error">Ошибка:</string>
-    <string name="error_double_name">Загрузка с таким именем уже существует</string>
-    <string name="error_double_url">Загрузка с такой ссылкой уже существует</string>
+    <string name="error">Ошибка</string>
+    <string name="error_file_notexist">Файл не найден</string>
     <string name="error_create_folder">Ошибка при создании папки</string>
+    <string name="error_change_url">Ошибка при изменении ссылки</string>
+    <string name="error_empty_url">Url адрес пуст</string>
+    <string name="error_empty_name">Пустое имя файла</string>
+    <string name="error_same_url">Загрузка с такой ссылкой уже существует</string>
+    <string name="error_find_cfg_save_dir">Ошибка при открытии папки сохранения</string>
+    <string name="error_directory_permission">Доступ к папке запрещен</string>
 
-    <string name="theme">Тема</string>
+    <string name="choose_theme">Выбрать тему</string>
     <string-array name="themes_names">
-        <item>Светлая</item>
         <item>Темная</item>
+        <item>Светлая</item>
     </string-array>
 
-    <string name="chnage_player">Выбрать player</string>
+    <string name="choose_player">Выбрать плеер</string>
     <string-array name="players_names">
-        <item>Выбрать player</item>
-        <item>По умолчанию player</item>
+        <item>Выбрать плеер</item>
+        <item>Плеер по умолчанию</item>
         <item>MX Player</item>
         <item>Kodi player</item>
     </string-array>

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_layout"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
+    android:id="@+id/main_layout"
     android:divider="?android:attr/dividerVertical"
     android:orientation="vertical"
-    android:showDividers="middle">
+    tools:context="ru.yourok.m3u8loaderbeta.MainActivity">
 
     <LinearLayout
-        android:id="@+id/topLoaderMenu"
         style="@android:style/DeviceDefault.ButtonBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="onDownloadClick"
+            android:onClick="onDownloadAllClick"
             app:srcCompat="@drawable/ic_file_download_black_24dp" />
 
         <ImageButton
@@ -40,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="onStopClick"
+            android:onClick="onStopAllClick"
             app:srcCompat="@drawable/ic_pause_black_24dp" />
 
         <ImageButton
@@ -66,8 +66,9 @@
         android:id="@+id/listViewLoaders"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:listSelector="@android:color/transparent"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:choiceMode="singleChoice"
+        android:padding="8dp" />
 
     <LinearLayout
         android:id="@+id/itemLoaderMenu"
@@ -76,7 +77,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0"
         android:orientation="horizontal"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <ImageButton
             android:id="@+id/buttonItemMenuStart"
@@ -84,7 +85,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_play_circle_outline_black_24dp" />
+            app:srcCompat="@drawable/ic_play_circle_outline_black_24dp"
+            android:onClick="onLoadItemClick"/>
 
         <ImageButton
             android:id="@+id/buttonItemMenuStop"
@@ -92,6 +94,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:onClick="onStopItemClick"
             app:srcCompat="@drawable/ic_pause_circle_outline_black_24dp" />
 
         <ImageButton
@@ -100,6 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:onClick="onRemoveItemClick"
             app:srcCompat="@drawable/ic_remove_circle_outline_black_24dp" />
 
         <ImageButton
@@ -108,6 +112,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:onClick="onEditItemClick"
             app:srcCompat="@drawable/ic_mode_edit_black_24dp" />
     </LinearLayout>
+
 </LinearLayout>

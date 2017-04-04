@@ -1,0 +1,124 @@
+package load
+
+import (
+	"dwl/list"
+	"dwl/progress"
+	"dwl/settings"
+	"errors"
+	"sync"
+	"time"
+)
+
+const (
+	STATUS_STOPED = iota
+	STATUS_LOADING
+	STATUS_COMPLETE
+	STATUS_ERROR
+)
+
+type Loader struct {
+	sets *settings.Settings
+	list *list.List
+
+	partMutex sync.Mutex
+	file      *File
+
+	wait      sync.WaitGroup
+	waitList  sync.WaitGroup
+	isLoading bool
+	err       error
+}
+
+func NewLoader(sets *settings.Settings, list *list.List) *Loader {
+	l := new(Loader)
+	l.list = list
+	l.sets = sets
+	return l
+}
+
+func (l *Loader) Load(update func(loader *Loader)) {
+	if l.sets.DownloadPath == "" {
+		l.err = errors.New("download path not set")
+		return
+	}
+	if l.isLoading {
+		return
+	}
+	l.isLoading = true
+	l.wait.Add(1)
+	defer func() {
+		l.isLoading = false
+		if l.file != nil {
+			l.file.Close()
+		}
+		l.wait.Done()
+	}()
+
+	l.file, l.err = l.openFile()
+	if l.err != nil {
+		return
+	}
+	for l.isLoading {
+		for l.isNext() {
+			go func() {
+				if l.loadPart() && update != nil {
+					update(l)
+				}
+			}()
+			if l.isEnd() {
+				l.isLoading = false
+				break
+			}
+			time.Sleep(time.Millisecond * 50)
+		}
+		if l.isLoading {
+			time.Sleep(time.Millisecond * 50)
+		}
+	}
+	l.waitList.Wait()
+}
+
+func (l *Loader) Stop() {
+	l.isLoading = false
+	l.list.Stop()
+}
+
+func (l *Loader) WaitLoading() {
+	l.wait.Wait()
+}
+
+func (l *Loader) GetProgress() progress.Progress {
+	pp := make(progress.Progress, 0)
+	for _, p := range l.list.Items {
+		pp = append(pp, p.DownloadProgress)
+	}
+	return pp
+}
+
+func (l *Loader) Loading() bool {
+	return l.isLoading
+}
+
+func (l *Loader) Complete() bool {
+	return l.isEnd()
+}
+
+func (l *Loader) Error() error {
+	return l.err
+}
+
+func (l *Loader) GetList() *list.List {
+	return l.list
+}
+
+func (l *Loader) Status() int {
+	if l.isLoading {
+		return STATUS_LOADING
+	} else if l.Complete() {
+		return STATUS_COMPLETE
+	} else if l.err != nil {
+		return STATUS_ERROR
+	} else {
+		return STATUS_STOPED
+	}
+}

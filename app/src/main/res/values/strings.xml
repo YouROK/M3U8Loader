@@ -1,69 +1,66 @@
 <resources>
-    <string name="app_name">M3U8Loader</string>
+    <string name="app_name">M3U8LoaderBeta</string>
 
-    <string name="file_name">File name (without ext):</string>
-    <string name="url_name">Url link:</string>
-    <string name="timeout">Timeout:</string>
+    <string name="name">Name:</string>
+    <string name="url_link">Url link:</string>
+
     <string name="threads">Threads:</string>
+    <string name="repeat_error">Repeat on error:</string>
     <string name="useragent">User agent:</string>
+    <string name="cookies">Cookies:</string>
     <string name="download_path">Download path:</string>
-    <string name="temp_dir">Temp directory:</string>
+    <string name="set_def_settings">Set the default settings</string>
 
-    <string name="main_btn_start">Start</string>
-    <string name="main_btn_stop">Stop</string>
-
-    <string name="set_def_options">Set the default settings</string>
-    <string name="default_directory_change">Select the temp directory</string>
-
-    <string name="add_label">Add</string>
-    <string name="download_label">Download</string>
-    <string name="settings_label">Settings</string>
-    <string name="clear_label">Clear temp files</string>
     <string name="selected_folder_label">Selected folder:</string>
     <string name="new_directory_title">New folder</string>
     <string name="new_directory_name_label">Name of new folder:</string>
-    <string name="delete_label">Delete</string>
-    <string name="remove_from_list">Remove from list</string>
-    <string name="delete_with_files">Delete with files</string>
-    <string name="replace_url">Replace the url in loading?</string>
-    <string name="replace_url_msg">Loading with the same name exists, replace his URL?</string>
 
-    <string name="status_load_list">Loading list…</string>
-    <string name="status_load_segments">Loading segments…</string>
-    <string name="status_join_files">Join files…</string>
-    <string name="status_remove_temp">Remove temp…</string>
-    <string name="status_finish">Finish</string>
-    <string name="status_stoped">Stoped</string>
-    <string name="status_loaded">Loaded</string>
-    <string name="status_joined">Joined</string>
+    <string name="range_changed">The range is changed, you need to download it again</string>
+    <string name="set_range_and_clean">Set range and clean loading?</string>
+    <string name="warn_clean_message">Caution, during cleaning, all settings and the downloaded file are deleted.\nClean?</string>
+
+    <string name="refresh_label">Refresh</string>
+    <string name="clear_download_label">Clear download</string>
+    <string name="add_label">Add</string>
+    <string name="download_label">Download</string>
+    <string name="delete_label">Delete</string>
+    <string name="delete_with_files">Delete with files</string>
+    <string name="remove_from_list">Remove from list</string>
+    <string name="status_label">Status</string>
+
+    <string name="status_load_stopped">Idle</string>
+    <string name="status_load_loading">Loading</string>
+    <string name="status_load_complete">Complete</string>
+    <string name="status_load_error">Error</string>
+    <string name="status_load_unknown">Unknown</string>
 
     <string name="permission_msg">Storage permission is needed to download and write files</string>
     <string name="permission_btn">GRANT</string>
 
-    <string name="delete_warn">All files in the directory will be deleted, continue?</string>
+    <string name="replace_url">Replace the url in loading?</string>
+    <string name="replace_url_msg">Loading with the same name exists, replace his URL?</string>
 
-    <string name="error_download_dir">Download dir not set</string>
-    <string name="error_dir_perm">Directory permission denied</string>
-    <string name="error_url_empty">Url is empty</string>
-    <string name="error_filename_empty">Filename is empty</string>
-    <string name="error_already_loading">Already loading</string>
-    <string name="error">Error:</string>
-    <string name="error_double_name">Loading with the same name already exists</string>
-    <string name="error_double_url">Loading with the same url already exists</string>
+    <string name="error">Error</string>
+    <string name="error_file_notexist">File not found</string>
+    <string name="error_directory_permission">Directory permission denied</string>
     <string name="error_create_folder">Error create folder</string>
+    <string name="error_change_url">Error change url</string>
+    <string name="error_empty_url">Error empty url</string>
+    <string name="error_empty_name">Error empty name</string>
+    <string name="error_same_url">Loading with the same url already exists</string>
+    <string name="error_find_cfg_save_dir">Error save directory permission denied or not exist</string>
 
-    <string name="theme">Theme</string>
+    <string name="choose_theme">Choose theme</string>
     <string-array name="themes_names">
-        <item>Light</item>
         <item>Dark</item>
+        <item>Light</item>
     </string-array>
 
-    <string name="chnage_player">Choose player</string>
+    <string name="choose_player">Choose player</string>
     <string-array name="players_names">
         <item>Choose player</item>
         <item>Default player</item>
         <item>MX Player</item>
         <item>Kodi player</item>
     </string-array>
-
 </resources>
