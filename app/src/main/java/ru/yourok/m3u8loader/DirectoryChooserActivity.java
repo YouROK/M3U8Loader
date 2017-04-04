@@ -222,5 +222,4 @@ public class DirectoryChooserActivity extends AppCompatActivity {
             return v;
         }
     }
-
 }
