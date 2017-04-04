@@ -31,7 +31,7 @@ public class SettingsActivity extends AppCompatActivity {
         try {
             PackageInfo pInfo;
             pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            String version = getText(R.string.app_name) + " " + pInfo.versionName;
+            String version = "YouROK "+getText(R.string.app_name) + " " + pInfo.versionName;
             ((TextView) findViewById(R.id.textViewVersion)).setText(version);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
