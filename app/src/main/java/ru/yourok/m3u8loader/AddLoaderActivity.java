@@ -149,7 +149,7 @@ public class AddLoaderActivity extends AppCompatActivity {
         }
 
         if (load && oldLength != Manager.Length()) {
-            int start = Manager.Length() - oldLength;
+            int start = Manager.Length() - (Manager.Length()-oldLength);
             for (int i = start; i < Manager.Length(); i++)
                 Loader.Add(i);
             Loader.Start();
