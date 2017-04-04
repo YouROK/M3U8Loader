@@ -35,11 +35,7 @@ public class Store {
     }
 
     static public String getDownloadPath() {
-        String dp = Manager.GetSettings().getDownloadPath();
-        if (dp.isEmpty()) {
-            return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
-        }
-        return dp;
+        return Manager.GetSettings().getDownloadPath();
     }
 
     static public String getTheme(Context context) {
