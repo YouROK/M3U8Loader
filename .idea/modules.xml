@@ -5,7 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/M3U8Loader.iml" filepath="$PROJECT_DIR$/M3U8Loader.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/dwl/dwl.iml" filepath="$PROJECT_DIR$/dwl/dwl.iml" />
-      <module fileurl="file://$PROJECT_DIR$/dwl/dwl.iml" filepath="$PROJECT_DIR$/dwl/dwl.iml" />
     </modules>
   </component>
 </project>
