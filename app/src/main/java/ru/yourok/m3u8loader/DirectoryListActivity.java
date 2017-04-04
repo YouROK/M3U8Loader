@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import ru.yourok.loader.Store;
-import ru.yourok.m3u8loaderbeta.utils.ThemeChanger;
+import ru.yourok.m3u8loader.utils.ThemeChanger;
 
 public class DirectoryListActivity extends AppCompatActivity {
 

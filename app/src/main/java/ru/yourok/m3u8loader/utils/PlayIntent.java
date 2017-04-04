@@ -1,4 +1,4 @@
-package ru.yourok.m3u8loaderbeta.utils;
+package ru.yourok.m3u8loader.utils;
 
 import android.content.Context;
 import android.content.Intent;

@@ -41,7 +41,7 @@ func (m *Manager) GetLoaderInfo(index int) *LoaderInfo {
 				li.Completed++
 			}
 			li.LoadedBytes += itm.Size
-			_, spd := itm.GetSpeed()
+			spd, _ := itm.GetSpeed()
 			li.Speed += int64(spd)
 			li.LoadingCount++
 			if itm.IsLoading {

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:context="ru.yourok.m3u8loaderbeta.EditLoaderActivity">
+    android:focusableInTouchMode="true"
+    tools:context="ru.yourok.m3u8loader.EditLoaderActivity">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:layout_above="@id/footer"
+        android:layout_alignParentTop="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -119,7 +120,7 @@
         style="@android:style/DeviceDefault.ButtonBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
+        android:layout_alignParentBottom="true"
         android:divider="?android:attr/dividerVertical"
         android:orientation="horizontal"
         android:showDividers="middle">
@@ -142,4 +143,4 @@
             android:onClick="cancelBtnClick"
             android:text="@android:string/cancel" />
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

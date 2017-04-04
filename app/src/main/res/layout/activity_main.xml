@@ -8,7 +8,7 @@
     android:id="@+id/main_layout"
     android:divider="?android:attr/dividerVertical"
     android:orientation="vertical"
-    tools:context="ru.yourok.m3u8loaderbeta.MainActivity">
+    tools:context="ru.yourok.m3u8loader.MainActivity">
 
     <LinearLayout
         style="@android:style/DeviceDefault.ButtonBar"

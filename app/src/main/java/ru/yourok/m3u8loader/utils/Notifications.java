@@ -1,4 +1,4 @@
-package ru.yourok.m3u8loaderbeta.utils;
+package ru.yourok.m3u8loader.utils;
 
 /**
  * Created by yourok on 11.12.16.
@@ -11,17 +11,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.NotificationCompat;
-import android.widget.TextView;
-
-import org.json.JSONObject;
 
 import dwl.LoaderInfo;
 import ru.yourok.loader.Manager;
 import ru.yourok.loader.MyApplication;
-import ru.yourok.loader.Parse;
 import ru.yourok.loader.Store;
-import ru.yourok.m3u8loaderbeta.MainActivity;
-import ru.yourok.m3u8loaderbeta.R;
+import ru.yourok.m3u8loader.MainActivity;
+import ru.yourok.m3u8loader.R;
 
 /**
  * Created with IntelliJ IDEA.

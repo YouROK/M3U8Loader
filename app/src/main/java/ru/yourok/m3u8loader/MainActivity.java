@@ -19,8 +19,7 @@ import java.io.File;
 
 import ru.yourok.loader.Loader;
 import ru.yourok.loader.Manager;
-import ru.yourok.loader.Parse;
-import ru.yourok.m3u8loaderbeta.utils.*;
+import ru.yourok.m3u8loader.utils.*;
 
 
 public class MainActivity extends AppCompatActivity {

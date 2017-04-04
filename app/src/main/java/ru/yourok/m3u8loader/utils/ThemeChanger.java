@@ -1,9 +1,9 @@
-package ru.yourok.m3u8loaderbeta.utils;
+package ru.yourok.m3u8loader.utils;
 
 import android.app.Activity;
 
 import ru.yourok.loader.Store;
-import ru.yourok.m3u8loaderbeta.R;
+import ru.yourok.m3u8loader.R;
 
 /**
  * Created by yourok on 29.03.17.

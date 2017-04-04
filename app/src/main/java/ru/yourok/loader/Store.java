@@ -7,7 +7,7 @@ import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import dwl.*;
-import ru.yourok.m3u8loaderbeta.R;
+import ru.yourok.m3u8loader.R;
 
 /**
  * Created by yourok on 23.03.17.
@@ -43,13 +43,21 @@ public class Store {
     }
 
     static public String getTheme(Context context) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getString("Theme", "0");
+        try {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            return prefs.getString("Theme", "0");
+        } catch (Exception e) {
+            return "0";
+        }
     }
 
     static public String getPlayer(Context context) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getString("Player", "0");
+        try {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            return prefs.getString("Player", "0");
+        } catch (Exception e) {
+            return "0";
+        }
     }
 
     static public void setTheme(Context context, String val) {

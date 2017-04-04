@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">M3U8LoaderBeta</string>
+    <string name="app_name">M3U8Loader</string>
 
     <string name="name">Имя:</string>
     <string name="url_link">URL-адрес:</string>

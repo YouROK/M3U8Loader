@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
-    tools:context="ru.yourok.m3u8loaderbeta.AddLoaderActivity">
+    tools:context="ru.yourok.m3u8loader.AddLoaderActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

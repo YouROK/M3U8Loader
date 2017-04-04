@@ -109,10 +109,12 @@ func (p *Pool) Stop() {
 	p.working = false
 	p.mut.Lock()
 	defer p.mut.Unlock()
-	for _, w := range p.workers {
-		w.stop()
+	if len(p.workers) > 0 {
+		for _, w := range p.workers {
+			w.stop()
+		}
+		<-p.wait
 	}
-	<-p.wait
 }
 
 func (p *Pool) Error() error {

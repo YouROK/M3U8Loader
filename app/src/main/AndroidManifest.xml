@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    android:installLocation="auto"
     package="ru.yourok.m3u8loader">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -7,18 +8,15 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name="ru.yourok.loader.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:installLocation="auto"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name="ru.yourok.loader.LoaderService" />
-
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleTop"
-            android:windowSoftInputMode="stateHidden">
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,13 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DirectoryChooserActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".SettingsActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".AddActivity"
+            android:name=".AddLoaderActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleTop"
             android:windowSoftInputMode="adjustResize">
@@ -139,12 +131,9 @@
                 <data android:pathPattern=".*..*..*..*..*..*..*..*..*..*..*..*..*..*..*.m3u.*" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ListEditActivity"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".RemoveDialogActivity"
-            android:theme="@style/MyDialog" />
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".DirectoryListActivity" />
+        <activity android:name=".EditLoaderActivity" />
     </application>
 
 </manifest>

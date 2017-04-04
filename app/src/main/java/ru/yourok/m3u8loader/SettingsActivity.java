@@ -16,7 +16,7 @@ import android.widget.Toast;
 import dwl.Settings;
 import ru.yourok.loader.Manager;
 import ru.yourok.loader.Store;
-import ru.yourok.m3u8loaderbeta.utils.ThemeChanger;
+import ru.yourok.m3u8loader.utils.ThemeChanger;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -31,7 +31,7 @@ public class SettingsActivity extends AppCompatActivity {
         try {
             PackageInfo pInfo;
             pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            String version = pInfo.versionName;
+            String version = getText(R.string.app_name) + " " + pInfo.versionName;
             ((TextView) findViewById(R.id.textViewVersion)).setText(version);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
