@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -84,8 +85,13 @@ public class MainActivity extends AppCompatActivity {
         int sel = ((MainActivityLoaderAdaptor) loadersList.getAdapter()).getSelected();
         if (sel == -1)
             findViewById(R.id.itemLoaderMenu).setVisibility(View.GONE);
-        else
+        else {
+            if (Manager.GetLoaderStatus(sel) == Manager.STATUS_COMPLETE)
+                ((ImageButton) findViewById(R.id.buttonItemMenuStart)).setImageResource(R.drawable.ic_play_circle_outline_black_24dp);
+            else
+                ((ImageButton) findViewById(R.id.buttonItemMenuStart)).setImageResource(R.drawable.ic_file_download_black_24dp);
             findViewById(R.id.itemLoaderMenu).setVisibility(View.VISIBLE);
+        }
     }
 
     private final Object lock = new Object();
@@ -116,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
                                 adaptorList.setSelected(Manager.Length() - 1);
                             if (Manager.Length() == 0)
                                 adaptorList.setSelected(-1);
+                            updateList();
                         }
                     });
                     try {
