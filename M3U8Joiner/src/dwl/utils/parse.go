@@ -7,7 +7,11 @@ import (
 )
 
 func isRelativeUrl(path string) bool {
-	return !strings.HasPrefix(strings.ToLower(path), "http://") && !strings.HasPrefix(strings.ToLower(path), "https://") && !strings.HasPrefix(strings.ToLower(path), "file://")
+	path = strings.ToLower(path)
+	if strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://") || strings.HasPrefix(path, "file://") || strings.HasPrefix(path, "/") {
+		return false
+	}
+	return true
 }
 
 func DirUrl(Url string) (string, error) {
@@ -22,6 +26,13 @@ func DirUrl(Url string) (string, error) {
 func JoinUrl(BaseUrl, PartUrl string) (string, error) {
 	//if not relative return part url
 	if !isRelativeUrl(PartUrl) {
+		if !strings.HasPrefix(strings.ToLower(PartUrl), "http") {
+			Url, err := url.Parse(BaseUrl)
+			if err != nil {
+				return "", err
+			}
+			PartUrl = Url.Scheme + "://" + Url.Host + PartUrl
+		}
 		return PartUrl, nil
 	}
 
