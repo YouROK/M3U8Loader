@@ -63,7 +63,7 @@ func (h *Http) Connect() error {
 	}*/
 	h.resp, h.err = h.client.Do(h.req)
 	if h.resp != nil && (h.resp.StatusCode != http.StatusOK && h.resp.StatusCode != http.StatusPartialContent) {
-		h.err = errors.New(h.resp.Status)
+		h.err = errors.New(h.resp.Request.URL.String() + " " + h.resp.Status)
 	}
 	h.mutex.Unlock()
 
