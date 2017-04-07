@@ -13,7 +13,7 @@ type Settings struct {
 
 func NewSettings() *Settings {
 	s := new(Settings)
-	s.Threads = 30
+	s.Threads = 20
 	s.ErrorRepeat = 5
 	s.Useragent = "DWL/1.0.0 (" + runtime.GOOS + ")"
 	return s

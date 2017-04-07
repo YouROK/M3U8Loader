@@ -61,7 +61,6 @@ public class Notifications {
 
     public static void createNotification(Context context, int index) {
         if (context == null || index == -1) {
-            removeNotification(context);
             return;
         }
 
@@ -74,25 +73,23 @@ public class Notifications {
         if (info == null)
             return;
 
-        String progress = "";
-        if (info.getLoadingCount() > 0)
-            progress = info.getCompleted() + " / " + info.getLoadingCount() + " " + (int) (info.getCompleted() * 100 / info.getLoadingCount())+"% ";
-        int st = (int) info.getStatus();
-        String status = "";
+        String status;
         switch ((int) info.getStatus()) {
             case Manager.STATUS_STOPED: {
-                status = context.getResources().getString(R.string.status_load_stopped);
+                String progress = info.getCompleted() + " / " + info.getLoadingCount() + " ";
+                status = context.getResources().getString(R.string.status_load_stopped) + progress + Store.byteFmt(info.getLoadedBytes());
                 break;
             }
             case Manager.STATUS_LOADING: {
                 String speed = "";
+                String loaded = Store.byteFmt(info.getLoadedBytes());
                 if (info.getSpeed() > 0)
-                    speed = Store.byteFmt(info.getSpeed(), false) + "/sec ";
-                status = context.getResources().getString(R.string.status_load_loading) + " " + info.getThreads() + ", " + progress + "" + speed;
+                    speed = Store.byteFmt(info.getSpeed()) + "/sec   ";
+                status = context.getResources().getString(R.string.status_load_loading) + " " + info.getThreads() + "   " + speed + loaded;
                 break;
             }
             case Manager.STATUS_COMPLETE: {
-                status = context.getResources().getString(R.string.status_load_complete);
+                status = context.getResources().getString(R.string.status_load_complete) + " " + Store.byteFmt(info.getLoadedBytes());
                 break;
             }
             case Manager.STATUS_ERROR: {

@@ -4,11 +4,16 @@ import (
 	"dwl/client"
 	"dwl/crypto"
 	"dwl/progress"
+	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"sync"
 	"time"
+	"unicode"
 )
+
+var Error_TextData = errors.New("loading not media data")
 
 type List struct {
 	Items  []*Item     `json:",omitempty"`
@@ -118,7 +123,22 @@ func (i *Item) load(header http.Header) error {
 		n, err = cli.Read(buffer)
 		i.MessureSpeed(n)
 		if n > 0 {
-			i.Buffer = append(i.Buffer, buffer[:n]...)
+			if i.Size == 0 {
+				isg := 0
+				for _, c := range string(buffer) {
+					if unicode.IsGraphic(rune(c)) {
+						isg++
+					}
+				}
+				if isg*100/n > 99 {
+					fmt.Println("Error loaded page than media", string(buffer))
+					i.err = Error_TextData
+					break
+				}
+			}
+			if i.err == nil {
+				i.Buffer = append(i.Buffer, buffer[:n]...)
+			}
 		}
 		i.Size = int64(len(i.Buffer))
 	}

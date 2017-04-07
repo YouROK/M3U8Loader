@@ -79,11 +79,11 @@ public class MainActivityLoaderAdaptor extends BaseAdapter {
                     view.findViewById(R.id.textViewError).setVisibility(View.VISIBLE);
 
                 if (info.getSpeed() > 0)
-                    ((TextView) view.findViewById(R.id.textViewSpeed)).setText(Store.byteFmt(info.getSpeed(), false)+"/sec");
+                    ((TextView) view.findViewById(R.id.textViewSpeed)).setText(Store.byteFmt(info.getSpeed())+"/sec");
                 else
                     ((TextView) view.findViewById(R.id.textViewSpeed)).setText("");
 
-                ((TextView) view.findViewById(R.id.textViewCount)).setText(info.getCompleted() + "/" + info.getLoadingCount() + " " + Store.byteFmt(info.getLoadedBytes(), false));
+                ((TextView) view.findViewById(R.id.textViewCount)).setText(info.getCompleted() + "/" + info.getLoadingCount() + " " + Store.byteFmt(info.getLoadedBytes()));
                 if (info.getLoadingCount() > 0)
                     ((ProgressBar) view.findViewById(R.id.progressBar)).setProgress((int) (info.getCompleted() * 100 / info.getLoadingCount()));
                 else

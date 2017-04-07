@@ -114,9 +114,24 @@ public class AddLoaderActivity extends AppCompatActivity {
         finish();
     }
 
-    private void addList(boolean load) {
-        String Name = cleanFileName(fileEdit.getText().toString().trim());
-        String Url = urlEdit.getText().toString().trim();
+    private void waitManager(final boolean set){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (set)
+                    findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+                else
+                    findViewById(R.id.progressBar).setVisibility(View.GONE);
+                findViewById(R.id.buttonAdd).setEnabled(!set);
+                findViewById(R.id.buttonDownload).setEnabled(!set);
+                findViewById(R.id.buttonCancel).setEnabled(!set);
+            }
+        });
+    }
+
+    private void addList(final boolean load) {
+        final String Name = cleanFileName(fileEdit.getText().toString().trim());
+        final String Url = urlEdit.getText().toString().trim();
         if (Url.isEmpty()) {
             toastRes(R.string.error_empty_url);
             return;
@@ -141,20 +156,27 @@ public class AddLoaderActivity extends AppCompatActivity {
                 return;
             }
         }
-        int oldLength = Manager.Length();
-        String err = Manager.Add(Url, Name);
-        if (!err.isEmpty()) {
-            toastMsg(AddLoaderActivity.this.getText(R.string.error) + ": " + err);
-            return;
-        }
+        waitManager(true);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int oldLength = Manager.Length();
+                String err = Manager.Add(Url, Name);
+                waitManager(false);
+                if (!err.isEmpty()) {
+                    toastMsg(AddLoaderActivity.this.getText(R.string.error) + ": " + err);
+                    return;
+                }
 
-        if (load && oldLength != Manager.Length()) {
-            int start = Manager.Length() - (Manager.Length()-oldLength);
-            for (int i = start; i < Manager.Length(); i++)
-                Loader.Add(i);
-            Loader.Start();
-        }
-        finish();
+                if (load && oldLength != Manager.Length()) {
+                    int start = Manager.Length() - (Manager.Length() - oldLength);
+                    for (int i = start; i < Manager.Length(); i++)
+                        Loader.Add(i);
+                    Loader.Start();
+                }
+                AddLoaderActivity.this.finish();
+            }
+        }).start();
     }
 
     private void changeUrlLoader() {

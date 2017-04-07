@@ -7,8 +7,8 @@ android {
         applicationId "ru.yourok.m3u8loader"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 8
-        versionName "0.008"
+        versionCode 9
+        versionName "0.009"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -24,6 +24,15 @@ android {
                     output.outputFile = new File(output.outputFile.parent, newName)
                 }
             }
+        }
+    }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+            universalApk false
         }
     }
 }

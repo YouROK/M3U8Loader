@@ -127,9 +127,14 @@ public class MainActivity extends AppCompatActivity {
                     });
                     try {
                         if (Loader.isLoading())
-                            Thread.sleep(200);
-                        else
-                            Thread.sleep(1000);
+                            Thread.sleep(500);
+                        else {
+                            for (int i = 0; i < 100; i++) {
+                                Thread.sleep(100);
+                                if (!isUpdateList || Loader.isLoading())
+                                    break;
+                            }
+                        }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -141,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
     public void onAddClick(View view) {
         view.setEnabled(false);
         Intent intent = new Intent(this, AddLoaderActivity.class);
-        final int sel = ((MainActivityLoaderAdaptor) loadersList.getAdapter()).getSelected();
         intent.setData(Uri.parse(""));
         startActivity(intent);
         view.setEnabled(true);

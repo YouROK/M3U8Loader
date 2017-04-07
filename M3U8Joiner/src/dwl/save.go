@@ -87,17 +87,17 @@ func (m *Manager) readLoader(fn string) (*load.Loader, error) {
 	if err != nil {
 		return nil, err
 	}
-	var list *list.List = new(list.List)
-	err = json.Unmarshal(buf, list)
+	var llist *list.List = new(list.List)
+	err = json.Unmarshal(buf, llist)
 	if err != nil {
 		return nil, err
 	}
 
-	if list != nil && list.Len() > 0 {
+	if llist != nil && llist.Len() > 0 {
 		//при открытии сохранения, могут быть дыры, тогда нужно загружать всё с дыры
 		find := false
-		for n := 0; n < list.Len(); n++ {
-			itm := list.Get(n)
+		for n := 0; n < llist.Len(); n++ {
+			itm := llist.Get(n)
 			itm.IsLoading = false                                          //not loading on open
 			itm.AverSpeed = 0                                              //reset speed
 			if !find && (!itm.IsComplete || itm.Size == 0) && itm.IsLoad { //found a hole
@@ -113,9 +113,12 @@ func (m *Manager) readLoader(fn string) (*load.Loader, error) {
 		}
 	}
 
-	return load.NewLoader(m.Settings, list), nil
+	return load.NewLoader(m.Settings, llist), nil
 }
 
 func (m *Manager) update(loader *load.Loader) {
-	m.saveLoader(loader)
+	err := m.saveLoader(loader)
+	if err != nil {
+		fmt.Println("Error save list config", err, loader.GetList().Url, m.getLoaderCfgPath(loader))
+	}
 }

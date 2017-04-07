@@ -45,7 +45,7 @@ func NewWorker(i int, update func(), list *list.List, sets *settings.Settings) *
 }
 
 func (p *Pool) Push(itm int, update func()) bool {
-	if itm == -1 {
+	if itm == -1 || p.workers == nil {
 		return false
 	}
 	p.mut.Lock()
@@ -81,6 +81,7 @@ func (p *Pool) Start() {
 		done := make(chan struct{}, 64)
 		for p.working {
 			p.mut.Lock()
+			isLoad := false
 			for i := 0; i < len(p.workers); i++ {
 				w := p.workers[i]
 				if w.status == STATUS_ERROR {
@@ -92,6 +93,7 @@ func (p *Pool) Start() {
 					i--
 					continue
 				} else if w.status == STATUS_STOPED && p.working {
+					isLoad = true
 					go func() {
 						w.start()
 						done <- struct{}{}
@@ -99,7 +101,9 @@ func (p *Pool) Start() {
 				}
 			}
 			p.mut.Unlock()
-			<-done
+			if isLoad {
+				<-done
+			}
 		}
 		p.wait <- true
 	}()
@@ -130,11 +134,7 @@ func (w *Worker) start() {
 			w.status = STATUS_COMPLETE
 			break
 		}
-		wait := time.Millisecond * 200 * time.Duration(i+1)
-		if wait > time.Second {
-			wait = time.Second
-		}
-		time.Sleep(wait)
+		time.Sleep(time.Second)
 	}
 	if w.err != nil {
 		w.status = STATUS_ERROR

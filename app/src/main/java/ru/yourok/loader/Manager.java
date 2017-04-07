@@ -178,6 +178,4 @@ public class Manager {
         if (manager != null)
             manager.setSettingsErrorRepeat(val);
     }
-
-
 }

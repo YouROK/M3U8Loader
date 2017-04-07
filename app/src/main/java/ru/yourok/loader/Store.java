@@ -66,11 +66,10 @@ public class Store {
         prefs.edit().putString("Player", val).apply();
     }
 
-    static public String byteFmt(long bytes, boolean si) {
-        int unit = si ? 1000 : 1024;
-        if (bytes < unit) return bytes + " B";
-        int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
-        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+    static public String byteFmt(long bytes) {
+        if (bytes < 1024) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(1024));
+        String pre = String.valueOf("KMGTPE".charAt(exp - 1));
+        return String.format("%.1f %sB", bytes / Math.pow(1024, exp), pre);
     }
 }

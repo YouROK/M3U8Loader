@@ -40,6 +40,12 @@
             android:ems="10"
             android:inputType="textUri|textAutoComplete"
             android:selectAllOnFocus="true" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
     </LinearLayout>
 
     <LinearLayout
