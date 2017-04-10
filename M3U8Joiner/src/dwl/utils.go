@@ -40,3 +40,4 @@ func (m *Manager) findLoaderName(name string) *load.Loader {
 	}
 	return nil
 }
+

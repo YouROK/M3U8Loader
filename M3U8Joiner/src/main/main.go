@@ -6,6 +6,8 @@ import (
 	"dwl/utils"
 	"fmt"
 	"time"
+
+	"github.com/pkg/profile"
 )
 
 //sets.Url = "https://vootvideo.akamaized.net/enc/fhls/p/1982551/sp/198255100/serveFlavor/entryId/0_g4nuihuo/v/2/pv/1/flavorId/0_11554gdn/name/a.mp4/index.m3u8" //Crypted
@@ -23,9 +25,13 @@ import (
 //sets.Url = "https://prod-video-eu-central-1.periscope.tv/2E5wszX3mrgwHvl3daBru8ueOIiN3sQ87WgcFqT2dqO9BpZjiuO6KC0M8GIfRHL-67PYFUzd3uAS1IQqbTAB-g/replay/eu-central-1/periscope-replay-direct-prod-eu-central-1-public/playlist_1490096320968103978.m3u8"
 
 func main() {
-	url := "http://localhost:8090/files/bipbop/gear4/prog_index.m3u8"
+	//defer profile.Start(profile.CPUProfile, profile.ProfilePath(".pro")).Stop()
+	defer profile.Start(profile.MemProfile, profile.ProfilePath(".pro")).Stop()
+	//defer profile.Start(profile.BlockProfile, profile.ProfilePath(".pro")).Stop()
+
+	//url := "http://localhost:8090/files/bipbop/gear4/prog_index.m3u8"
 	//url := "http://localhost:8090/files/bipbop/bipbopall.m3u8"
-	//url := "https://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear1/prog_index.m3u8"
+	url := "https://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear1/prog_index.m3u8"
 	//url := "https://video.twimg.com/ext_tw_video/849602250762850304/pu/pl/MO3vtWhlBE0lBL6l.m3u8"
 	name := "test"
 

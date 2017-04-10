@@ -4,6 +4,7 @@ import (
 	"dwl/list"
 	"dwl/load"
 	"dwl/settings"
+	"dwl/utils"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -48,7 +49,7 @@ func (m *Manager) saveSettings() error {
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(filepath.Join(m.saveDir, managerConfigFile), buf, 0666)
+	return utils.WriteFileSave(filepath.Join(m.saveDir, managerConfigFile), buf)
 }
 
 func (m *Manager) getLoaderCfgPath(loader *load.Loader) string {
@@ -66,7 +67,7 @@ func (m *Manager) saveLoader(loader *load.Loader) error {
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(fn, []byte(buf), 0666)
+	return utils.WriteFileSave(fn, []byte(buf))
 }
 
 func (m *Manager) readSettings() {

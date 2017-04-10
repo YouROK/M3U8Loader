@@ -78,7 +78,7 @@ func (p *Pool) Start() {
 	p.mut.Unlock()
 
 	go func() {
-		done := make(chan struct{}, 64)
+		done := make(chan struct{}, 10)
 		for p.working {
 			p.mut.Lock()
 			isLoad := false
