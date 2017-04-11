@@ -46,8 +46,13 @@ public class Notifications {
                 while (isUpdate) {
                     Context context = MyApplication.getContext();
                     createNotification(context, Index);
-                    if (Index == -1)
+                    if (Index == -1) {
+                        if (Manager.Length() > 0)
+                            createNotification(context, Manager.Length() - 1);
+                        else
+                            removeNotification(context);
                         break;
+                    }
                     try {
                         Thread.sleep(200);
                     } catch (InterruptedException e) {
@@ -77,7 +82,7 @@ public class Notifications {
         switch ((int) info.getStatus()) {
             case Manager.STATUS_STOPED: {
                 String progress = info.getCompleted() + " / " + info.getLoadingCount() + " ";
-                status = context.getResources().getString(R.string.status_load_stopped) + progress + Store.byteFmt(info.getLoadedBytes());
+                status = context.getResources().getString(R.string.status_load_stopped) +" "+ progress + Store.byteFmt(info.getLoadedBytes());
                 break;
             }
             case Manager.STATUS_LOADING: {
