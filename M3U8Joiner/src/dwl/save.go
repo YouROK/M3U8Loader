@@ -105,11 +105,13 @@ func (m *Manager) readLoader(fn string) (*load.Loader, error) {
 				find = true
 				itm.IsComplete = false
 				itm.Size = 0
+				itm.CleanLoadedBytes()
 				continue
 			}
 			if find { //closed a hole
 				itm.IsComplete = false
 				itm.Size = 0
+				itm.CleanLoadedBytes()
 			}
 		}
 	}
