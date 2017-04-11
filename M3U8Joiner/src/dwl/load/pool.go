@@ -78,32 +78,22 @@ func (p *Pool) Start() {
 	p.mut.Unlock()
 
 	go func() {
-		done := make(chan struct{}, 10)
 		for p.working {
 			p.mut.Lock()
-			isLoad := false
 			for i := 0; i < len(p.workers); i++ {
 				w := p.workers[i]
-				if w.status == STATUS_ERROR {
+				if w.status == STATUS_STOPED && p.working {
+					w.start()
+				} else if w.status == STATUS_ERROR {
 					p.err = w.err
 					p.working = false
 					break
 				} else if w.status == STATUS_COMPLETE {
 					p.workers = append(p.workers[:i], p.workers[i+1:]...)
 					i--
-					continue
-				} else if w.status == STATUS_STOPED && p.working {
-					isLoad = true
-					go func() {
-						w.start()
-						done <- struct{}{}
-					}()
 				}
 			}
 			p.mut.Unlock()
-			if isLoad {
-				<-done
-			}
 		}
 		p.wait <- true
 	}()
@@ -127,21 +117,23 @@ func (p *Pool) Error() error {
 
 func (w *Worker) start() {
 	w.status = STATUS_LOADING
-	w.err = nil
-	for i := 0; i < w.sets.ErrorRepeat && w.status == STATUS_LOADING; i++ {
-		w.err = w.list.Load(w.index)
-		if w.err == nil {
-			w.status = STATUS_COMPLETE
-			break
+	go func() {
+		w.err = nil
+		for i := 0; i < w.sets.ErrorRepeat && w.status == STATUS_LOADING; i++ {
+			w.err = w.list.Load(w.index)
+			if w.err == nil {
+				w.status = STATUS_COMPLETE
+				break
+			}
+			time.Sleep(time.Second)
 		}
-		time.Sleep(time.Second)
-	}
-	if w.err != nil {
-		w.status = STATUS_ERROR
-	}
-	if w.update != nil {
-		w.update()
-	}
+		if w.err != nil {
+			w.status = STATUS_ERROR
+		}
+		if w.update != nil {
+			w.update()
+		}
+	}()
 }
 
 func (w *Worker) stop() {
