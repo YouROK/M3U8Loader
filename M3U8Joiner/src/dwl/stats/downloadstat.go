@@ -66,3 +66,7 @@ func (d *DownloadStat) MeasureSpeed(realc int) {
 		d.deltaBytes = 0
 	}
 }
+
+func (d *DownloadStat) CleanLoadedBytes() {
+	d.loadedByte = 0
+}
