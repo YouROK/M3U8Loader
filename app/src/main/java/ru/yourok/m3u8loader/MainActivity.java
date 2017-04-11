@@ -154,7 +154,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void onDownloadAllClick(View view) {
         view.setEnabled(false);
-        Loader.Clear();
         for (int i = 0; i < Manager.Length(); i++) {
             if (Manager.GetLoaderStatus(i) != Manager.STATUS_COMPLETE)
                 Loader.Add(i);
