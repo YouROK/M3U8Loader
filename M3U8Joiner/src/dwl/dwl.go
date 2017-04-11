@@ -66,6 +66,7 @@ func (m *Manager) Clean(index int) {
 		itm.SetLoadComplete(false)
 		itm.Size = 0
 		itm.CleanBuffer()
+		itm.CleanLoadedBytes()
 		itm.StopSpeed()
 	}
 	os.Remove(m.getLoaderCfgPath(loader))
