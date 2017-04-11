@@ -5,10 +5,10 @@ import (
 	"dwl/crypto"
 	"dwl/stats"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"unicode"
-	"fmt"
 )
 
 var Error_TextData = errors.New("loading not media data")
