@@ -26,8 +26,10 @@ public class Loader {
 
     static public void Add(int index) {
         synchronized (lock) {
-            if (Manager.GetLoaderStatus(index) != Manager.STATUS_COMPLETE)
-                loaderList.add(index);
+            if (Manager.GetLoaderStatus(index) != Manager.STATUS_COMPLETE) {
+                if (loaderList.indexOf(new Integer(index)) == -1)
+                    loaderList.add(index);
+            }
         }
     }
 
