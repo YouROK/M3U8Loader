@@ -8,7 +8,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 125
-        versionName "0.0010"
+        versionName "0.0010 Beta"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -27,14 +27,14 @@ android {
         }
     }
 
-    splits {
-        abi {
-            enable true
-            reset()
-            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-            universalApk false
-        }
-    }
+//    splits {
+//        abi {
+//            enable true
+//            reset()
+//            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+//            universalApk false
+//        }
+//    }
 }
 
 dependencies {

@@ -15,15 +15,16 @@ func WriteFileSave(filename string, data []byte) error {
 	if err != nil {
 		return err
 	}
-
-	if info, err := f.Stat(); err == nil && info.Size() != int64(len(data)) {
-		f.Truncate(int64(len(data)))
-	}
-
-	n, err := f.Write(data)
+	n, err := f.WriteAt(data, 0)
 	if err == nil && n < len(data) {
 		err = io.ErrShortWrite
 	}
+	if info, er := f.Stat(); er == nil {
+		if int64(len(data)) != info.Size() {
+			f.Truncate(int64(n))
+		}
+	}
+	f.Sync()
 	if err1 := f.Close(); err == nil {
 		err = err1
 	}

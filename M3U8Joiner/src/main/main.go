@@ -24,7 +24,6 @@ import (
 //sets.Url = "https://prod-video-eu-central-1.periscope.tv/2E5wszX3mrgwHvl3daBru8ueOIiN3sQ87WgcFqT2dqO9BpZjiuO6KC0M8GIfRHL-67PYFUzd3uAS1IQqbTAB-g/replay/eu-central-1/periscope-replay-direct-prod-eu-central-1-public/playlist_1490096320968103978.m3u8"
 
 func main() {
-
 	url := "http://localhost:8090/files/bipbop/gear4/prog_index.m3u8"
 	//url := "http://localhost:8090/files/bipbop/bipbopall.m3u8"
 	//url := "https://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear1/prog_index.m3u8"
