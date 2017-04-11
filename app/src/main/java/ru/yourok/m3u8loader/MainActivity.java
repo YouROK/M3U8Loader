@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -322,5 +323,65 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("Index", sel);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (loadersList == null)
+            return super.onKeyUp(keyCode, event);
+
+        MainActivityLoaderAdaptor adapter = ((MainActivityLoaderAdaptor) loadersList.getAdapter());
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_DPAD_UP:
+            case KeyEvent.ACTION_UP:
+                if (adapter.getSelected() > 0) {
+                    adapter.setSelected(adapter.getSelected() - 1);
+                }
+                updateMenu();
+                adapter.notifyDataSetChanged();
+                return true;
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+            case KeyEvent.ACTION_DOWN:
+                if (adapter.getSelected() < adapter.getCount() - 1) {
+                    adapter.setSelected(adapter.getSelected() + 1);
+                }
+                updateMenu();
+                adapter.notifyDataSetChanged();
+                return true;
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_DPAD_RIGHT: {
+                View view = findViewById(R.id.buttonSettings);
+                if (view.isFocused()) {
+                    findViewById(R.id.buttonItemMenuStart).requestFocus();
+                    return true;
+                }
+                view = findViewById(R.id.buttonItemMenuEdit);
+                if (view.isFocused()) {
+                    findViewById(R.id.buttonAdd).requestFocus();
+                    return true;
+                }
+                break;
+            }
+            case KeyEvent.KEYCODE_DPAD_LEFT: {
+                View view = findViewById(R.id.buttonAdd);
+                if (view.isFocused()) {
+                    findViewById(R.id.buttonItemMenuEdit).requestFocus();
+                    return true;
+                }
+                view = findViewById(R.id.buttonItemMenuStart);
+                if (view.isFocused()) {
+                    findViewById(R.id.buttonSettings).requestFocus();
+                    return true;
+                }
+                break;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
