@@ -149,6 +149,6 @@ func (w *Worker) stop() {
 		w.status = STATUS_STOPED
 	}
 	if itm := w.list.Get(w.index); itm != nil {
-		itm.IsLoading = false
+		itm.SetLoading(false)
 	}
 }

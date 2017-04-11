@@ -3,6 +3,7 @@ package list
 import (
 	"bytes"
 	"dwl/crypto"
+	"dwl/stats"
 	"dwl/utils"
 	"encoding/hex"
 	"fmt"
@@ -99,7 +100,7 @@ func (p *ParseList) parse(url string) ([]*List, error) {
 					}
 				} else {
 					// if items in media
-					itm := Item{}
+					itm := stats.Item{}
 					itm.Url = itemUrl
 					itm.IsLoad = true
 					itm.Index = len(list.Items)

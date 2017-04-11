@@ -45,29 +45,30 @@ func (w *File) WriteAt(list *list.List) error {
 			break
 		}
 
-		if itm.IsLoad && itm.IsFinishLoad && itm.Buffer != nil {
+		if itm.IsLoad && itm.Size == 0 {
+			break
+		}
+
+		if itm.IsLoad && itm.IsLoadComplete() && itm.GetBuffer() != nil {
 			if list.EncKey != nil {
 				k := *list.EncKey
 				if k.IV == nil { //if iv == nil use index of item
 					k.IV = make([]byte, 16)
 					binary.BigEndian.PutUint32(k.IV, uint32(itm.Index))
 				}
-				err = crypto.Decrypt(itm.Buffer, &k)
+				err = crypto.Decrypt(itm.GetBuffer(), &k)
 				if err != nil {
 					break
 				}
 			}
-			itm.Offset = offset
-			_, err = w.file.WriteAt(itm.Buffer, offset)
+			_, err = w.file.WriteAt(itm.GetBuffer(), offset)
 			if err != nil {
 				break
 			}
-			itm.Buffer = nil
+			itm.CleanBuffer()
 			itm.IsComplete = true
 		}
-		if itm.IsLoad && !itm.IsComplete && !itm.IsFinishLoad {
-			break
-		}
+
 		offset += itm.Size
 	}
 	w.file.Sync()

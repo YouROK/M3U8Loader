@@ -63,10 +63,10 @@ func (m *Manager) Clean(index int) {
 	loader.Stop()
 	for _, itm := range loader.GetList().Items {
 		itm.IsComplete = false
+		itm.SetLoadComplete(false)
 		itm.Size = 0
-		itm.Buffer = nil
-		itm.AverSpeed = 0
-		itm.IsFinishLoad = false
+		itm.CleanBuffer()
+		itm.StopSpeed()
 	}
 	os.Remove(m.getLoaderCfgPath(loader))
 	m.update(loader)

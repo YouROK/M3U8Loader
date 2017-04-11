@@ -3,47 +3,27 @@ package list
 import (
 	"dwl/client"
 	"dwl/crypto"
-	"dwl/progress"
+	"dwl/stats"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
-	"sync"
-	"time"
 	"unicode"
+	"fmt"
 )
 
 var Error_TextData = errors.New("loading not media data")
 
 type List struct {
-	Items  []*Item     `json:",omitempty"`
+	Items  []*stats.Item
 	EncKey *crypto.Key `json:",omitempty"`
 
-	Url     string
-	Name    string
-	Headers http.Header
-
+	Url       string
+	Name      string
 	Bandwidth int
+	Headers   http.Header
 }
 
-type Item struct {
-	Index  int
-	Url    string
-	IsLoad bool
-	Size   int64
-	Offset int64
-
-	progress.DownloadProgress
-
-	wait sync.WaitGroup
-	mut  sync.Mutex
-	err  error
-
-	Buffer       []byte `json:"-"`
-	IsFinishLoad bool   `json:"-"`
-}
-
-func (l *List) Get(index int) *Item {
+func (l *List) Get(index int) *stats.Item {
 	for _, i := range l.Items {
 		if i.Index == index {
 			return i
@@ -59,71 +39,64 @@ func (l *List) Len() int {
 func (l *List) Load(index int) error {
 	itm := l.Get(index)
 	if itm != nil && itm.IsLoad {
-		return itm.load(l.Headers)
+		return l.load(itm, l.Headers)
 	}
 	return nil
 }
 
 func (l *List) Stop() {
 	for _, i := range l.Items {
-		if i.IsLoading {
-			i.IsLoading = false
-		}
+		i.SetLoading(false)
 	}
 }
 
-func (l *List) Range(fn func(i int, itm *Item)) {
+func (l *List) Range(fn func(i int, itm *stats.Item)) {
 	for i, itm := range l.Items {
 		fn(i, itm)
 	}
 }
 
-func (i *Item) load(header http.Header) error {
-	i.mut.Lock()
-	defer i.mut.Unlock()
-	if i.IsLoading || i.IsFinishLoad {
+func (l *List) load(itm *stats.Item, header http.Header) error {
+	if itm.IsLoading() || itm.IsLoadComplete() {
 		return nil
 	}
-	i.IsLoading = true
-	i.IsFinishLoad = false
-	i.Buffer = nil
-	i.wait.Add(1)
+	itm.SetLoading(true)
+	itm.SetLoadComplete(false)
+	itm.CleanBuffer()
 	defer func() {
-		i.IsLoading = false
-		i.wait.Done()
+		itm.SetLoading(false)
 	}()
 
-	startTime := time.Now()
-	cli, err := client.GetClient(i.Url, header)
+	cli, err := client.GetClient(itm.Url, header)
 	if err != nil {
-		i.err = err
+		itm.SetError(err)
 		return err
 	}
 
 	err = cli.Connect()
 	if err != nil {
-		i.err = err
+		itm.SetError(err)
 		return err
 	}
 
 	defer func() {
-		if i.IsFinishLoad {
-			i.LoadingTime = time.Since(startTime)
-		}
 		cli.Close()
 		cli = nil
 	}()
 
 	buffer := make([]byte, 32768)
 	n := 0
-	i.Size = 0
-	i.ConnectTime = time.Since(startTime)
-	i.StartSpeed()
-	for err == nil && i.IsLoading {
+	itm.Size = cli.GetSize()
+	if itm.Size <= 0 {
+		return errors.New("get wrong size: " + itm.Url + " 0 bytes")
+	}
+	itm.InitBuffer(itm.Size)
+	itm.StartSpeed()
+	for err == nil && itm.IsLoading() {
 		n, err = cli.Read(buffer)
-		i.MessureSpeed(n)
+		itm.MeasureSpeed(n)
 		if n > 0 {
-			if i.Size == 0 {
+			if len(itm.GetBuffer()) == 0 {
 				isg := 0
 				for _, c := range string(buffer) {
 					if unicode.IsGraphic(rune(c)) {
@@ -132,33 +105,24 @@ func (i *Item) load(header http.Header) error {
 				}
 				if isg*100/n > 99 {
 					fmt.Println("Error loaded page than media", string(buffer))
-					i.err = Error_TextData
+					err = Error_TextData
 					break
 				}
 			}
-			if i.err == nil {
-				i.Buffer = append(i.Buffer, buffer[:n]...)
+			if n > 0 {
+				itm.AppendBuffer(buffer[:n])
 			}
 		}
-		i.Size = int64(len(i.Buffer))
 	}
-	i.StopSpeed()
+	itm.StopSpeed()
 	if err == io.EOF {
 		err = nil
-		i.IsFinishLoad = true
+		itm.SetLoadComplete(true)
 	}
 	if err != nil {
-		i.Size = 0
-		i.AverSpeed = 0
+		itm.Size = 0
+		itm.CleanBuffer()
 	}
-	i.err = err
+	itm.SetError(err)
 	return err
-}
-
-func (i *Item) Err() error {
-	return i.err
-}
-
-func (i *Item) LeftBytes() int64 {
-	return i.Size - i.LoadedByte
 }

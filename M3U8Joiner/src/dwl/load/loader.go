@@ -114,3 +114,24 @@ func (l *Loader) Status() int {
 		return STATUS_STOPED
 	}
 }
+
+///////////////////////////////////////////////////////////////
+
+func (l *Loader) getLoadIndex(startInd int) int {
+	for i := startInd; i < len(l.list.Items); i++ {
+		p := l.list.Get(i)
+		if p.IsLoad && !p.IsLoading() && !p.IsComplete && !p.IsLoadComplete() {
+			return p.Index
+		}
+	}
+	return -1
+}
+
+func (l *Loader) isEnd() bool {
+	for _, p := range l.list.Items {
+		if !p.IsComplete && p.IsLoad {
+			return false
+		}
+	}
+	return true
+}
