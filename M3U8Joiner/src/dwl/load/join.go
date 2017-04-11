@@ -5,6 +5,7 @@ import (
 	"dwl/list"
 	"dwl/utils"
 	"encoding/binary"
+	"io"
 	"os"
 	"path/filepath"
 	"sync"
@@ -50,18 +51,26 @@ func (w *File) WriteAt(list *list.List) error {
 		}
 
 		if itm.IsLoad && itm.IsLoadComplete() && itm.GetBuffer() != nil {
+			var buffer []byte = itm.GetBuffer()
 			if list.EncKey != nil {
 				k := *list.EncKey
 				if k.IV == nil { //if iv == nil use index of item
 					k.IV = make([]byte, 16)
 					binary.BigEndian.PutUint32(k.IV, uint32(itm.Index))
 				}
-				err = crypto.Decrypt(itm.GetBuffer(), &k)
+				tmp := make([]byte, len(buffer))
+				copy(tmp, buffer)
+				err = crypto.Decrypt(tmp, &k)
 				if err != nil {
 					break
 				}
+				buffer = tmp
 			}
-			_, err = w.file.WriteAt(itm.GetBuffer(), offset)
+			var n int
+			n, err = w.file.WriteAt(buffer, offset)
+			if n != len(buffer) {
+				err = io.ErrShortWrite
+			}
 			if err != nil {
 				break
 			}
