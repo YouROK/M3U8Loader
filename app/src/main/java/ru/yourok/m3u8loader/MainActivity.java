@@ -286,8 +286,14 @@ public class MainActivity extends AppCompatActivity {
         if (sel != -1) {
             final String outFileName = Manager.GetFileName(sel);
             if (!new File(outFileName).exists()) {
-                Loader.Rem(sel);
-                Manager.Remove(sel);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Loader.Rem(sel);
+                        Manager.Remove(sel);
+                        updateList();
+                    }
+                }).start();
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(getString(R.string.delete_label) + "?");
