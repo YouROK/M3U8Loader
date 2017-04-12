@@ -41,6 +41,8 @@ public class Loader {
                     loaderList.remove(i);
                     break;
                 }
+            if (Length() == 0)
+                Notifications.RemoveNotification();
         }
     }
 
@@ -50,6 +52,7 @@ public class Loader {
             loaderList.clear();
             for (int i = 0; i < Manager.Length(); i++)
                 Manager.Stop(i);
+            Notifications.RemoveNotification();
         }
     }
 
@@ -85,6 +88,13 @@ public class Loader {
                     }
                     Manager.Wait(index);
                     notifyLoader(index);
+                    LoaderInfo info = Manager.GetLoaderInfo(index);
+                    if (!info.getError().isEmpty()){
+                        synchronized (lock) {
+                            loaderList.clear();
+                        }
+                        break;
+                    }
                 }
                 loading = false;
                 Notifications.Update(-1);
