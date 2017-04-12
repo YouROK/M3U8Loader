@@ -74,6 +74,7 @@ func (w *File) WriteAt(list *list.List) error {
 			if err != nil {
 				break
 			}
+			buffer = nil
 			itm.CleanBuffer()
 			itm.IsComplete = true
 		}
