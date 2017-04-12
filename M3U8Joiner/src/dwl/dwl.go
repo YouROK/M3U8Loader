@@ -36,6 +36,7 @@ func (m *Manager) Add(url, name string) error {
 		return err
 	}
 	for _, l := range lists {
+		//l.IndexSort = len(m.loaders)
 		m.addList(l)
 	}
 	return nil
