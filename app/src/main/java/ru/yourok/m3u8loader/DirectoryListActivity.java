@@ -270,7 +270,7 @@ public class DirectoryListActivity extends AppCompatActivity {
                 int paddingDp = (int) (paddingPixel * density);
                 convertView.setPadding(paddingDp, 0, 0, paddingDp);
             }
-            if (list != null) {
+            if (list != null && list.get(position) != null) {
                 ((TextView) convertView.findViewById(android.R.id.text1)).setText(list.get(position).getAbsolutePath());
                 String Space = Store.byteFmt(list.get(position).getFreeSpace()) + "/" + Store.byteFmt(list.get(position).getTotalSpace());
                 ((TextView) convertView.findViewById(android.R.id.text2)).setText(Space);
