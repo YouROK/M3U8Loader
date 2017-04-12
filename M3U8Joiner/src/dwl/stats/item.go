@@ -1,5 +1,7 @@
 package stats
 
+import "runtime"
+
 type Item struct {
 	Index  int
 	Url    string
@@ -39,4 +41,5 @@ func (i *Item) GetBuffer() []byte {
 
 func (i *Item) CleanBuffer() {
 	i.buffer = nil
+	runtime.GC()
 }
