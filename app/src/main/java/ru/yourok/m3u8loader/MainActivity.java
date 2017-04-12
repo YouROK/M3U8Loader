@@ -339,17 +339,17 @@ public class MainActivity extends AppCompatActivity {
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_UP:
             case KeyEvent.ACTION_UP:
-                if (adapter.getSelected() > 0) {
-                    adapter.setSelected(adapter.getSelected() - 1);
-                }
+                adapter.setSelected(adapter.getSelected() - 1);
+                if (adapter.getSelected() < 0)
+                    adapter.setSelected(adapter.getCount() - 1);
                 updateMenu();
                 adapter.notifyDataSetChanged();
                 return true;
             case KeyEvent.KEYCODE_DPAD_DOWN:
             case KeyEvent.ACTION_DOWN:
-                if (adapter.getSelected() < adapter.getCount() - 1) {
-                    adapter.setSelected(adapter.getSelected() + 1);
-                }
+                adapter.setSelected(adapter.getSelected() + 1);
+                if (adapter.getSelected() >= adapter.getCount())
+                    adapter.setSelected(0);
                 updateMenu();
                 adapter.notifyDataSetChanged();
                 return true;
