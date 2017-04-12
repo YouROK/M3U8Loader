@@ -50,7 +50,7 @@ public class Notifications {
                         if (Manager.Length() > 0)
                             createNotification(context, Manager.Length() - 1);
                         else
-                            removeNotification(context);
+                            RemoveNotification();
                         break;
                     }
                     try {
@@ -64,7 +64,7 @@ public class Notifications {
         }).start();
     }
 
-    public static void createNotification(Context context, int index) {
+    static void createNotification(Context context, int index) {
         if (context == null || index == -1) {
             return;
         }
@@ -137,7 +137,8 @@ public class Notifications {
         manager.notify(NOTIFY_ID, notification);
     }
 
-    static void removeNotification(Context context) {
+    public static void RemoveNotification() {
+        Context context = MyApplication.getContext();
         ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(NOTIFY_ID);
     }
 }
