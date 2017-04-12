@@ -34,7 +34,17 @@ func (m *Manager) loadConfig() error {
 	}
 
 	sort.Slice(m.loaders, func(i, j int) bool {
-		return m.loaders[i].GetList().Name < m.loaders[j].GetList().Name
+		nameI := m.loaders[i].GetList().Name
+		nameJ := m.loaders[j].GetList().Name
+		//пробуем сортировать числа, 1x2 videoname -> 1002
+		//пробуем сортировать числа, 1x23 videoname -> 1023
+		numI := GetNumbersStr(nameI)
+		numJ := GetNumbersStr(nameJ)
+		if numI != -1 && numJ != -1 && numI != numJ {
+			return numI < numJ
+		}
+
+		return nameI < nameJ
 	})
 
 	return nil
