@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void requestPermissionWithRationale() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            Snackbar.make(findViewById(R.id.main_layout), R.string.permission_msg, Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(findViewById(R.id.main_layout), R.string.permission_storage_msg, Snackbar.LENGTH_INDEFINITE)
                     .setAction(R.string.permission_btn, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
