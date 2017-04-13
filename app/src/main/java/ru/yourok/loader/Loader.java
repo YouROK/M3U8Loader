@@ -71,10 +71,10 @@ public class Loader {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                int index = -1;
                 while (loaderList.size() > 0) {
                     if (!loading)
                         break;
-                    int index;
                     synchronized (lock) {
                         index = loaderList.get(0);
                         Manager.Load(index);
@@ -97,7 +97,7 @@ public class Loader {
                     }
                 }
                 loading = false;
-                Notifications.Update(-1);
+                Notifications.Update(index);
             }
         }).start();
     }
