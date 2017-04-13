@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="ru.yourok.m3u8loader.DonationActivity"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/textViewDonTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/donation"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:background="@android:color/transparent" />
+
+    <TextView
+        android:id="@+id/textViewDonMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/donation_msg"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:background="@android:color/transparent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buttonDonEUR"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onDonEURClick"
+            android:text="PayPal EUR" />
+
+        <Button
+            android:id="@+id/buttonDonRUB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onDonRUBClick"
+            android:text="PayPal RUB" />
+    </LinearLayout>
+
+</LinearLayout>
