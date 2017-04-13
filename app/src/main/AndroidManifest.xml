@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    android:installLocation="auto"
-    package="ru.yourok.m3u8loader">
+    package="ru.yourok.m3u8loader"
+    android:installLocation="auto">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -44,7 +44,7 @@
                 <data android:mimeType="video/m3u" />
                 <data android:mimeType="video/m3u8" />
                 <data android:mimeType="video/hls" />
-                <data android:mimeType="audio/mpegurl"/>
+                <data android:mimeType="audio/mpegurl" />
                 <data android:mimeType="audio/x-mpegurl" />
                 <data android:mimeType="application/x-mpegurl" />
                 <data android:mimeType="application/vnd.apple.mpegurl" />
@@ -59,12 +59,12 @@
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:scheme="file" />
-                <data android:scheme="content"/>
+                <data android:scheme="content" />
                 <data android:host="*" />
                 <data android:mimeType="video/m3u" />
                 <data android:mimeType="video/m3u8" />
                 <data android:mimeType="video/hls" />
-                <data android:mimeType="audio/mpegurl"/>
+                <data android:mimeType="audio/mpegurl" />
                 <data android:mimeType="audio/x-mpegurl" />
                 <data android:mimeType="application/x-mpegurl" />
                 <data android:mimeType="application/vnd.apple.mpegurl" />
@@ -137,6 +137,7 @@
         <activity android:name=".SettingsActivity" />
         <activity android:name=".DirectoryListActivity" />
         <activity android:name=".EditLoaderActivity" />
+        <activity android:name=".DonationActivity"></activity>
     </application>
 
 </manifest>
