@@ -1,9 +1,12 @@
 package ru.yourok.m3u8loader;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,7 +16,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+
 import dwl.Settings;
+import ru.yourok.loader.Loader;
 import ru.yourok.loader.Manager;
 import ru.yourok.loader.Store;
 import ru.yourok.m3u8loader.utils.ThemeChanger;
@@ -124,5 +130,10 @@ public class SettingsActivity extends AppCompatActivity {
         ((EditText) findViewById(R.id.editTextCookies)).setText("");
         ((Spinner) findViewById(R.id.spinnerChooseTheme)).setSelection(0);
         ((Spinner) findViewById(R.id.spinnerChoosePlayer)).setSelection(0);
+    }
+
+    public void Donation(View view) {
+        Intent intent = new Intent(this, DonationActivity.class);
+        startActivity(intent);
     }
 }

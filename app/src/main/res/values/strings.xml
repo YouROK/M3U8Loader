@@ -34,11 +34,14 @@
     <string name="status_load_error">Error</string>
     <string name="status_load_unknown">Unknown</string>
 
-    <string name="permission_msg">Storage permission is needed to download and write files</string>
+    <string name="permission_storage_msg">Storage permission is needed to download and write files</string>
     <string name="permission_btn">GRANT</string>
 
     <string name="replace_url">Replace the url in loading?</string>
     <string name="replace_url_msg">Loading with the same name exists, replace his URL?</string>
+
+    <string name="donation">Donation</string>
+    <string name="donation_msg">If this app makes you happier, you can give me a</string>
 
     <string name="error">Error</string>
     <string name="error_file_notexist">File not found</string>

@@ -34,11 +34,14 @@
     <string name="status_load_error">Ошибка</string>
     <string name="status_load_unknown">Неизвестно</string>
 
-    <string name="permission_msg">Доступ к памяти требуется для загрузки и записи файлов</string>
+    <string name="permission_storage_msg">Доступ к памяти требуется для загрузки и записи файлов</string>
     <string name="permission_btn">РАЗРЕШИТЬ</string>
 
     <string name="replace_url">Заменить ссылку в загрузке?</string>
     <string name="replace_url_msg">Загрузка с таким именем существует, заменить в ней ссылку?</string>
+
+    <string name="donation">Пожертвование</string>
+    <string name="donation_msg">Если это приложение делает вас счастливее, можете угостить меня</string>
 
     <string name="error">Ошибка</string>
     <string name="error_file_notexist">Файл не найден</string>
