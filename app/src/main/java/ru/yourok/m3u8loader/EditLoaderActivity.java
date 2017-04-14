@@ -33,6 +33,8 @@ public class EditLoaderActivity extends AppCompatActivity {
             finish();
 
         info = Manager.GetLoaderInfo(Index);
+        if (info == null)
+            finish();
 
         final SeekBar left = (SeekBar) findViewById(R.id.rangeSeekbarLeft);
         final SeekBar right = (SeekBar) findViewById(R.id.rangeSeekbarRight);
@@ -119,7 +121,7 @@ public class EditLoaderActivity extends AppCompatActivity {
                 });
             }
         });
-        builder.setNegativeButton(android.R.string.cancel,null);
+        builder.setNegativeButton(android.R.string.cancel, null);
         builder.create().show();
     }
 
