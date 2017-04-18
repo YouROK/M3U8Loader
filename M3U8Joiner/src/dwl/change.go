@@ -5,8 +5,20 @@ import (
 	"net/http"
 )
 
-func (m *Manager) SetLoaderUrl(url, name string) error {
-	lists, err := m.parse(url, name)
+func (m *Manager) SetLoaderUrl(url, name, cookies, useragent string) error {
+	var header = make(http.Header)
+	if useragent != "" {
+		header.Add("UserAgent", useragent)
+	} else if m.Useragent != "" {
+		header.Add("UserAgent", m.Useragent)
+	}
+	if cookies != "" {
+		header.Add("Cookie", cookies)
+	} else if m.Cookies != "" {
+		header.Add("Cookie", m.Cookies)
+	}
+
+	lists, err := m.parse(url, name, header)
 	if err != nil {
 		return err
 	}
@@ -14,10 +26,11 @@ func (m *Manager) SetLoaderUrl(url, name string) error {
 	for _, lst := range lists {
 		loader := m.findLoaderName(lst.Name)
 		if loader != nil {
-			loader.GetList().Url = lst.Url
 			if loader.GetList().Len() != lst.Len() {
 				return errors.New("different list with same name")
 			}
+			loader.GetList().Url = lst.Url
+			loader.GetList().Headers = header
 			for _, itm := range lst.Items {
 				loader.GetList().Get(itm.Index).Url = itm.Url
 			}

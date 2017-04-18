@@ -9,11 +9,14 @@ import android.widget.TextView;
 
 import java.util.Random;
 
+import ru.yourok.m3u8loader.utils.ThemeChanger;
+
 public class DonationActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ThemeChanger.SetTheme(this);
         setContentView(R.layout.activity_donation);
 
         ((TextView) findViewById(R.id.textViewDonMessage)).setText(getString(R.string.donation_msg) + " " + giveMe() + " :)");

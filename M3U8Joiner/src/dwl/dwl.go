@@ -4,6 +4,7 @@ import (
 	"dwl/load"
 	"dwl/settings"
 	"dwl/utils"
+	"net/http"
 	"os"
 	"sync"
 )
@@ -30,13 +31,24 @@ func OpenManager(savedir string) (*Manager, error) {
 	return m, nil
 }
 
-func (m *Manager) Add(url, name string) error {
-	lists, err := m.parse(url, name)
+func (m *Manager) Add(url, name, cookies, useragent string) error {
+	var header = make(http.Header)
+	if useragent != "" {
+		header.Add("UserAgent", useragent)
+	} else if m.Useragent != "" {
+		header.Add("UserAgent", m.Useragent)
+	}
+	if cookies != "" {
+		header.Add("Cookie", cookies)
+	} else if m.Cookies != "" {
+		header.Add("Cookie", m.Cookies)
+	}
+
+	lists, err := m.parse(url, name, header)
 	if err != nil {
 		return err
 	}
 	for _, l := range lists {
-		//l.IndexSort = len(m.loaders)
 		m.addList(l)
 	}
 	return nil

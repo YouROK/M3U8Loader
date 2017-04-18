@@ -314,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
                         updateList();
                     }
                 });
+                builder.setNeutralButton(" ", null);
                 builder.create().show();
             }
         }

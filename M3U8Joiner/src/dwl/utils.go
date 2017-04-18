@@ -8,15 +8,7 @@ import (
 	"unicode"
 )
 
-func (m *Manager) parse(url, name string) ([]*list.List, error) {
-	var header http.Header = make(http.Header)
-	if m.Useragent != "" {
-		header.Add("UserAgent", m.Useragent)
-	}
-	if m.Cookies != "" {
-		header.Add("Cookie", m.Cookies)
-	}
-
+func (m *Manager) parse(url, name string, header http.Header) ([]*list.List, error) {
 	parseList, err := list.ParseUrl(url, name, header)
 	if err != nil {
 		return nil, err

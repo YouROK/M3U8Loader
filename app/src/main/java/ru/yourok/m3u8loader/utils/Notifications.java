@@ -52,6 +52,10 @@ public class Notifications {
                         else
                             RemoveNotification();
                         break;
+                    } else {
+                        LoaderInfo info = Manager.GetLoaderInfo(Index);
+                        if (info != null && info.getStatus() != Manager.STATUS_LOADING)
+                            break;
                     }
                     try {
                         Thread.sleep(200);
@@ -82,7 +86,7 @@ public class Notifications {
         switch ((int) info.getStatus()) {
             case Manager.STATUS_STOPED: {
                 String progress = info.getCompleted() + " / " + info.getLoadingCount() + " ";
-                status = context.getResources().getString(R.string.status_load_stopped) +" "+ progress + Store.byteFmt(info.getLoadedBytes());
+                status = context.getResources().getString(R.string.status_load_stopped) + " " + progress + Store.byteFmt(info.getLoadedBytes());
                 break;
             }
             case Manager.STATUS_LOADING: {
@@ -126,7 +130,7 @@ public class Notifications {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             builder.setSmallIcon(R.drawable.ic_file_download_black_24dp);
         else
-            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSmallIcon(R.drawable.ic_launcher);
 
         Notification notification;
         if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)

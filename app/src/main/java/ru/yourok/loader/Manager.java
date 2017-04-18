@@ -30,10 +30,10 @@ public class Manager {
         Manager.manager = manager;
     }
 
-    static public String Add(String url, String name) {
+    static public String Add(String url, String name, String cookies, String useragent) {
         try {
             if (manager != null)
-                manager.add(url, name);
+                manager.add(url, name, cookies, useragent);
             return "";
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,10 +72,10 @@ public class Manager {
             manager.waitLoader(i);
     }
 
-    static public String SetLoaderUrl(String url, String name) {
+    static public String SetLoaderUrl(String url, String name, String cookies, String useragent) {
         if (manager != null)
             try {
-                manager.setLoaderUrl(url, name);
+                manager.setLoaderUrl(url, name, cookies, useragent);
             } catch (Exception e) {
                 e.printStackTrace();
                 return e.getMessage();

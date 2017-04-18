@@ -12,6 +12,7 @@
         android:layout_below="@+id/textViewName"
         android:ellipsize="middle"
         android:maxLines="1"
+        android:singleLine="true"
         android:text=""
         android:textAppearance="@android:style/TextAppearance.Small" />
 

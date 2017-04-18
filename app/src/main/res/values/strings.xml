@@ -27,6 +27,7 @@
     <string name="delete_with_files">Delete with files</string>
     <string name="remove_from_list">Remove from list</string>
     <string name="status_label">Status</string>
+    <string name="settings">Settings</string>
 
     <string name="status_load_stopped">Idle</string>
     <string name="status_load_loading">Loading</string>

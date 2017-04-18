@@ -27,6 +27,7 @@
     <string name="delete_with_files">Удалить с файлами</string>
     <string name="remove_from_list">Удалить из списка</string>
     <string name="status_label">Статус</string>
+    <string name="settings">Параметры</string>
 
     <string name="status_load_stopped">Бездействует</string>
     <string name="status_load_loading">Загружается</string>
