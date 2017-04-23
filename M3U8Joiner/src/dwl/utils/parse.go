@@ -4,6 +4,7 @@ import (
 	"net/url"
 	"path/filepath"
 	"strings"
+	"unicode"
 )
 
 func isRelativeUrl(path string) bool {
@@ -42,4 +43,14 @@ func JoinUrl(BaseUrl, PartUrl string) (string, error) {
 	}
 	ret := uri.Scheme + "://" + uri.Host + filepath.Join(uri.Path, PartUrl)
 	return ret, nil
+}
+
+func IsBinarySafe(buffer []byte) int {
+	isg := len(buffer)
+	for _, c := range string(buffer) {
+		if unicode.IsGraphic(rune(c)) || unicode.IsSpace(rune(c)) {
+			isg--
+		}
+	}
+	return (isg * 100) / len(buffer)
 }

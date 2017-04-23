@@ -29,7 +29,8 @@ func main() {
 	//url := "https://video.twimg.com/ext_tw_video/849602250762850304/pu/pl/MO3vtWhlBE0lBL6l.m3u8"
 	//url := "http://localhost:8090/files/crypted/crypted.m3u8"
 	//url := "file:///home/yourok/tmp/gear.m3u"
-	url := "https://prod-video-us-west-2.pscp.tv/21AOdYwnKBJeoxS1u7IUwralcEF1DWhmV1eha5fjBCprXAnPl80Hw6xW_T0XzTM1BzV0vF7IqsGTnybdpPuKMw==/replay/us-west-2/periscope-replay-direct-live/playlist_1468610713465809275.m3u8"
+	//url := "https://prod-video-us-west-2.pscp.tv/21AOdYwnKBJeoxS1u7IUwralcEF1DWhmV1eha5fjBCprXAnPl80Hw6xW_T0XzTM1BzV0vF7IqsGTnybdpPuKMw==/replay/us-west-2/periscope-replay-direct-live/playlist_1468610713465809275.m3u8"
+	url := "http://c1.kinokong.cc/files/L2y29RfXm7nU8jLe_NzDMA/1492969805/Forever2014.1_LostFilm.mp4"
 	name := "test"
 
 	manager, err := dwl.OpenManager("/home/yourok/tmp/config/")
@@ -42,7 +43,7 @@ func main() {
 	manager.SaveSettings()
 
 	if manager.Len() == 0 {
-		err = manager.Add(url, name, "Token=1492582676; Service=proxsee; Digest=ToHLzuPSFh9788bM-4tSQsk6_AlgYDODLNv_UldQ7mE", "")
+		err = manager.Add(url, name, "", "") //"Token=1492582676; Service=proxsee; Digest=ToHLzuPSFh9788bM-4tSQsk6_AlgYDODLNv_UldQ7mE", "")
 		if err != nil {
 			fmt.Println("Error add:", err)
 			return

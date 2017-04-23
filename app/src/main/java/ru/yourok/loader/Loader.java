@@ -89,7 +89,7 @@ public class Loader {
                     Manager.Wait(index);
                     notifyLoader(index);
                     LoaderInfo info = Manager.GetLoaderInfo(index);
-                    if (!info.getError().isEmpty()){
+                    if (info != null && !info.getError().isEmpty()) {
                         synchronized (lock) {
                             loaderList.clear();
                         }
@@ -107,18 +107,19 @@ public class Loader {
             return;
         Handler handler = new Handler(Looper.getMainLooper());
         final LoaderInfo stat = Manager.GetLoaderInfo(index);
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (stat.getStatus() == Manager.STATUS_COMPLETE) {
-                    String msg = MyApplication.getContext().getString(R.string.status_load_complete) + ": " + stat.getName();
-                    Toast.makeText(MyApplication.getContext(), msg, Toast.LENGTH_SHORT).show();
+        if (stat != null)
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (stat.getStatus() == Manager.STATUS_COMPLETE) {
+                        String msg = MyApplication.getContext().getString(R.string.status_load_complete) + ": " + stat.getName();
+                        Toast.makeText(MyApplication.getContext(), msg, Toast.LENGTH_SHORT).show();
+                    }
+                    if (stat.getStatus() == Manager.STATUS_ERROR) {
+                        String msg = MyApplication.getContext().getString(R.string.status_load_error) + ": " + stat.getName() + ", " + stat.getError();
+                        Toast.makeText(MyApplication.getContext(), msg, Toast.LENGTH_SHORT).show();
+                    }
                 }
-                if (stat.getStatus() == Manager.STATUS_ERROR) {
-                    String msg = MyApplication.getContext().getString(R.string.status_load_error) + ": " + stat.getName() + ", " + stat.getError();
-                    Toast.makeText(MyApplication.getContext(), msg, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+            });
     }
 }

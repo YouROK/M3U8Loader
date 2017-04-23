@@ -36,7 +36,7 @@ func (p *ParseList) GetLists() []*List {
 }
 
 func (p *ParseList) parse(url string) ([]*List, error) {
-	buf, err := utils.ReadBuf(url, p.header)
+	buf, err := utils.ReadBufText(url, p.header)
 	if err != nil {
 		return nil, err
 	}
@@ -146,7 +146,7 @@ func (p *ParseList) parse(url string) ([]*List, error) {
 }
 
 func (p *ParseList) parseKey(url, iv string) (*crypto.Key, error) {
-	buf, err := utils.ReadBuf(url, p.header)
+	buf, err := utils.ReadBufBinary(url, p.header)
 	if err != nil {
 		return nil, err
 	}

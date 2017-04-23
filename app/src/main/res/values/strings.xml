@@ -45,6 +45,7 @@
     <string name="donation_msg">If this app makes you happier, you can give me a</string>
 
     <string name="error">Error</string>
+    <string name="error_url_wrong_format">Wrong url format, must be m3u8 or m3u</string>
     <string name="error_file_notexist">File not found</string>
     <string name="error_directory_permission">Directory permission denied</string>
     <string name="error_create_folder">Error create folder</string>

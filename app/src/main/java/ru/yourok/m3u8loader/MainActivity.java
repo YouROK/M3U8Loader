@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import java.io.File;
 
+import dwl.LoaderInfo;
 import ru.yourok.loader.Loader;
 import ru.yourok.loader.Manager;
 import ru.yourok.m3u8loader.utils.*;
@@ -250,7 +251,10 @@ public class MainActivity extends AppCompatActivity {
         if (sel != -1) {
             if (Manager.GetLoaderStatus(sel) == Manager.STATUS_COMPLETE) {
                 String fn = Manager.GetFileName(sel);
-                String title = Manager.GetLoaderInfo(sel).getName();
+                LoaderInfo info = Manager.GetLoaderInfo(sel);
+                if (info == null)
+                    return;
+                String title = info.getName();
                 if (!new File(fn).exists()) {
                     Toast.makeText(this, getText(R.string.error_file_notexist) + ": " + fn, Toast.LENGTH_SHORT).show();
                     return;

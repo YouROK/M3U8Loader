@@ -4,11 +4,11 @@ import (
 	"dwl/client"
 	"dwl/crypto"
 	"dwl/stats"
+	"dwl/utils"
 	"errors"
 	"fmt"
 	"io"
 	"net/http"
-	"unicode"
 )
 
 var Error_TextData = errors.New("loading not media data")
@@ -97,13 +97,7 @@ func (l *List) load(itm *stats.Item, header http.Header) error {
 		itm.MeasureSpeed(n)
 		if n > 0 {
 			if len(itm.GetBuffer()) == 0 {
-				isg := 0
-				for _, c := range string(buffer) {
-					if unicode.IsGraphic(rune(c)) {
-						isg++
-					}
-				}
-				if isg*100/n > 99 {
+				if utils.IsBinarySafe(buffer[:n]) < 2 {
 					fmt.Println("Error loaded page than media", string(buffer))
 					err = Error_TextData
 					break

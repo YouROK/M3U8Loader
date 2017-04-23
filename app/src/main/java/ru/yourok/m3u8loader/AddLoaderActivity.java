@@ -13,6 +13,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+
 import dwl.LoaderInfo;
 import ru.yourok.loader.Loader;
 import ru.yourok.loader.Manager;
@@ -151,6 +153,7 @@ public class AddLoaderActivity extends AppCompatActivity {
         final String Url = urlEdit.getText().toString().trim();
         final String Cookies = cookieEdit.getText().toString().trim();
         final String UserAgent = useragentEdit.getText().toString().trim();
+
         if (Url.isEmpty()) {
             toastRes(R.string.error_empty_url);
             return;
