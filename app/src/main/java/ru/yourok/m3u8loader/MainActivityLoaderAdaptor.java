@@ -1,7 +1,12 @@
 package ru.yourok.m3u8loader;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +20,7 @@ import org.json.JSONObject;
 import dwl.LoaderInfo;
 import ru.yourok.loader.Manager;
 import ru.yourok.loader.Store;
+import ru.yourok.m3u8loader.utils.ThemeChanger;
 
 /**
  * Created by yourok on 23.03.17.
@@ -63,7 +69,7 @@ public class MainActivityLoaderAdaptor extends BaseAdapter {
 
         ((TextView) view.findViewById(R.id.textViewName)).setText(String.valueOf(position));
         if (selected == position) {
-            view.setBackgroundColor(ContextCompat.getColor(context, android.R.color.holo_blue_bright));
+            view.setBackgroundColor(Color.parseColor("#cccccccc"));
             view.getBackground().setAlpha(75);
         } else
             view.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
@@ -79,7 +85,7 @@ public class MainActivityLoaderAdaptor extends BaseAdapter {
                     view.findViewById(R.id.textViewError).setVisibility(View.VISIBLE);
 
                 if (info.getSpeed() > 0)
-                    ((TextView) view.findViewById(R.id.textViewSpeed)).setText(Store.byteFmt(info.getSpeed())+"/sec");
+                    ((TextView) view.findViewById(R.id.textViewSpeed)).setText(Store.byteFmt(info.getSpeed()) + "/sec");
                 else
                     ((TextView) view.findViewById(R.id.textViewSpeed)).setText("");
 
@@ -88,9 +94,10 @@ public class MainActivityLoaderAdaptor extends BaseAdapter {
                     ((ProgressBar) view.findViewById(R.id.progressBar)).setProgress((int) (info.getCompleted() * 100 / info.getLoadingCount()));
                 else
                     ((ProgressBar) view.findViewById(R.id.progressBar)).setProgress(0);
+                ((ProgressBar) view.findViewById(R.id.progressBar)).getProgressDrawable().setColorFilter(ThemeChanger.getProgressBarColor(context), PorterDuff.Mode.SRC_IN);
 
                 TextView stView = (TextView) view.findViewById(R.id.textViewStatus);
-                switch ((int)info.getStatus()) {
+                switch ((int) info.getStatus()) {
                     case 0: {
                         stView.setText(R.string.status_load_stopped);
                         break;

@@ -30,7 +30,8 @@ func main() {
 	//url := "http://localhost:8090/files/crypted/crypted.m3u8"
 	//url := "file:///home/yourok/tmp/gear.m3u"
 	//url := "https://prod-video-us-west-2.pscp.tv/21AOdYwnKBJeoxS1u7IUwralcEF1DWhmV1eha5fjBCprXAnPl80Hw6xW_T0XzTM1BzV0vF7IqsGTnybdpPuKMw==/replay/us-west-2/periscope-replay-direct-live/playlist_1468610713465809275.m3u8"
-	url := "http://c1.kinokong.cc/files/L2y29RfXm7nU8jLe_NzDMA/1492969805/Forever2014.1_LostFilm.mp4"
+	url := "http://techslides.com/demos/sample-videos/small.mp4"
+	//url := "file:///home/yourok/tmp/1 - MyHit. Винил Vinyl.m3u"
 	name := "test"
 
 	manager, err := dwl.OpenManager("/home/yourok/tmp/config/")
@@ -38,7 +39,7 @@ func main() {
 		fmt.Println("Error open manager", err)
 	}
 
-	manager.SetSettingsThreads(20)
+	manager.SetSettingsThreads(100)
 	manager.SetSettingsDownloadPath("/home/yourok/tmp/")
 	manager.SaveSettings()
 

@@ -13,6 +13,7 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="colorButtonNormal">@color/button_color_light</item>
+        <item name="android:colorButtonNormal">@color/button_color_light</item>
     </style>
 
     <style name="AppThemeDark" parent="Theme.AppCompat.NoActionBar">
@@ -21,6 +22,7 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="colorButtonNormal">@color/button_color_dark</item>
+        <item name="android:colorButtonNormal">@color/button_color_dark</item>
         <item name="android:textColorPrimary">@color/colorListSelectLight</item>
         <item name="android:colorForeground">@color/colorAccent</item>
     </style>

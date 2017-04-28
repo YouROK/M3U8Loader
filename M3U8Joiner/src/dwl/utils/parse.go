@@ -46,11 +46,12 @@ func JoinUrl(BaseUrl, PartUrl string) (string, error) {
 }
 
 func IsBinarySafe(buffer []byte) int {
-	isg := len(buffer)
-	for _, c := range string(buffer) {
-		if unicode.IsGraphic(rune(c)) || unicode.IsSpace(rune(c)) {
+	str := []rune(string(buffer))
+	isg := len(str)
+	for _, c := range str {
+		if unicode.IsGraphic(c) || unicode.IsSpace(c) {
 			isg--
 		}
 	}
-	return (isg * 100) / len(buffer)
+	return (isg * 100) / len(str)
 }

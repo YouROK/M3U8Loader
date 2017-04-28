@@ -1,6 +1,8 @@
 package ru.yourok.m3u8loader.utils;
 
 import android.app.Activity;
+import android.content.Context;
+import android.support.v4.content.res.ResourcesCompat;
 
 import ru.yourok.loader.Store;
 import ru.yourok.m3u8loader.R;
@@ -27,5 +29,14 @@ public class ThemeChanger {
 
     public static void SetLightTheme(Activity activity) {
         activity.setTheme(R.style.AppTheme);
+    }
+
+    public static int getProgressBarColor(Context context) {
+        switch (Store.getTheme(context)) {
+            case "0":
+                return ResourcesCompat.getColor(context.getResources(), R.color.button_color_light, null);
+            default:
+                return ResourcesCompat.getColor(context.getResources(), R.color.button_color_dark, null);
+        }
     }
 }
