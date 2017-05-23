@@ -5,6 +5,8 @@ type Settings struct {
 	ErrorRepeat  int
 	DownloadPath string
 
+	DynamicSize     bool
+
 	Useragent string
 	Cookies   string
 }
@@ -16,6 +18,7 @@ func (m *Manager) GetSettings() *Settings {
 	sets.DownloadPath = m.Settings.DownloadPath
 	sets.Useragent = m.Settings.Useragent
 	sets.Cookies = m.Settings.Cookies
+	sets.DynamicSize = m.Settings.DynamicSize
 	return sets
 }
 
@@ -37,6 +40,10 @@ func (m *Manager) SetSettingsThreads(val int) {
 
 func (m *Manager) SetSettingsErrorRepeat(val int) {
 	m.Settings.ErrorRepeat = val
+}
+
+func (m *Manager) SetSettingsDynamicSize(val bool) {
+	m.Settings.DynamicSize = val
 }
 
 func (m *Manager) SaveSettings() string {

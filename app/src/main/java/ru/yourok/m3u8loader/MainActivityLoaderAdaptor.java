@@ -30,6 +30,8 @@ public class MainActivityLoaderAdaptor extends BaseAdapter {
 
     private int selected;
     private Context context;
+    private static long delayTime;
+    private static boolean isTime = true;
 
     public MainActivityLoaderAdaptor(Context ctx) {
         this.context = ctx;
@@ -88,8 +90,22 @@ public class MainActivityLoaderAdaptor extends BaseAdapter {
                     ((TextView) view.findViewById(R.id.textViewSpeed)).setText(Store.byteFmt(info.getSpeed()) + "/sec");
                 else
                     ((TextView) view.findViewById(R.id.textViewSpeed)).setText("");
+                if (delayTime < System.currentTimeMillis()) {
+                    isTime = !isTime;
+                    if (isTime)
+                        delayTime = System.currentTimeMillis() + 3000;
+                    else
+                        delayTime = System.currentTimeMillis() + 5000;
+                }
+                if (isTime && (int) info.getDuration() > 0) {
+                    double loadedD = info.getLoadedDuration();
+                    double duration = info.getDuration();
+                    String progTime = secondsFormatter(loadedD) + " / " + secondsFormatter(duration);
+                    ((TextView) view.findViewById(R.id.textViewCount)).setText(progTime);
+                } else
+                    ((TextView) view.findViewById(R.id.textViewCount)).setText(info.getCompleted() + "/" + info.getLoadingCount() + " " + Store.byteFmt(info.getLoadedBytes()));
 
-                ((TextView) view.findViewById(R.id.textViewCount)).setText(info.getCompleted() + "/" + info.getLoadingCount() + " " + Store.byteFmt(info.getLoadedBytes()));
+
                 if (info.getLoadingCount() > 0)
                     ((ProgressBar) view.findViewById(R.id.progressBar)).setProgress((int) (info.getCompleted() * 100 / info.getLoadingCount()));
                 else
@@ -128,5 +144,12 @@ public class MainActivityLoaderAdaptor extends BaseAdapter {
         }
 
         return view;
+    }
+
+    private static String secondsFormatter(double seconds) {
+        int hours = (int) (seconds / 3600);
+        int minutes = (int) ((seconds % 3600) / 60);
+        int secs = (int) ((seconds % 3600) % 60);
+        return String.format("%02d:%02d:%02d", hours, minutes, secs);
     }
 }

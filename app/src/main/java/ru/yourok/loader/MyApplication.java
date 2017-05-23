@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Environment;
 
+import dwl.Settings;
+
 /**
  * Created by yourok on 23.03.17.
  */
@@ -20,10 +22,13 @@ public class MyApplication extends Application {
     public void onCreate() {
         context = getApplicationContext();
         Store.Init(this);
-        String dp = Manager.GetSettings().getDownloadPath();
-        if (dp.isEmpty()) {
-            dp = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
-            Manager.SetSettingsDownloadPath(dp);
+        Settings sets = Manager.GetSettings();
+        if (sets != null) {
+            String dp = sets.getDownloadPath();
+            if (dp.isEmpty()) {
+                dp = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+                Manager.SetSettingsDownloadPath(dp);
+            }
         }
         super.onCreate();
     }

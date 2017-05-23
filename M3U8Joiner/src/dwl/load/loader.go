@@ -45,6 +45,7 @@ func (l *Loader) Load(update func(loader *Loader)) {
 	defer func() {
 		l.isLoading = false
 		if l.file != nil {
+
 			l.file.Close()
 		}
 		l.done <- true
@@ -67,6 +68,9 @@ func (l *Loader) Load(update func(loader *Loader)) {
 			index = l.getLoadIndex(index)
 			isPush := pool.Push(index, func() {
 				l.file.WriteAt(l.list)
+				if l.sets.DynamicSize {
+					l.file.Truncate(l.list)
+				}
 				if update != nil {
 					update(l)
 				}

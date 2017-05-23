@@ -3,10 +3,11 @@ package stats
 import "runtime"
 
 type Item struct {
-	Index  int
-	Url    string
-	IsLoad bool
-	err    error
+	Index    int
+	Url      string
+	IsLoad   bool
+	Duration float64
+	err      error
 
 	buffer []byte
 

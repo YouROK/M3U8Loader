@@ -40,30 +40,26 @@ func (h *Http) Connect() error {
 		return h.err
 	}
 
-	h.req.Header.Set("Accept", "*/*")
-	h.req.Header.Set("UserAgent", "DWL/1.0.0 ("+runtime.GOOS+")")
-
 	if h.header != nil {
 		h.req.Header = (http.Header)(h.header)
 	}
 
+	if h.req.Header.Get("UserAgent") == "" {
+		h.req.Header.Set("UserAgent", "DWL/1.0.0 ("+runtime.GOOS+")")
+	}
+
+	if h.req.Header.Get("Accept") == "" {
+		h.req.Header.Set("Accept", "*/*")
+	}
+
+	if h.req.Header.Get("Accept-Encoding") == "" {
+		h.req.Header.Set("Accept-Encoding", "identity")
+	}
+
 	h.mutex.Lock()
-	/*if h.timeout > 0 {
-		h.client.Timeout = time.Millisecond * time.Duration(h.timeout)
-		var netTransport = &http.Transport{
-			Dial: (&net.Dialer{
-				Timeout: h.client.Timeout,
-			}).Dial,
-			TLSHandshakeTimeout:   h.client.Timeout,
-			ResponseHeaderTimeout: h.client.Timeout,
-			ExpectContinueTimeout: h.client.Timeout,
-			IdleConnTimeout:       h.client.Timeout,
-		}
-		h.client.Transport = netTransport
-	}*/
 	h.resp, h.err = h.client.Do(h.req)
 	if h.resp != nil && (h.resp.StatusCode != http.StatusOK && h.resp.StatusCode != http.StatusPartialContent) {
-		h.err = errors.New(h.resp.Request.URL.String() + " " + h.resp.Status)
+		h.err = errors.New(h.resp.Request.URL.String() + " " + strconv.Itoa(h.resp.StatusCode) + " " + h.resp.Status)
 	}
 	h.mutex.Unlock()
 

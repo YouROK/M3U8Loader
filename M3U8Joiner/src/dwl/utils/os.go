@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"io"
 	"os"
 )
@@ -29,4 +30,13 @@ func WriteFileSave(filename string, data []byte) error {
 		err = err1
 	}
 	return err
+}
+
+func LogFile(filename string, args ...interface{}) {
+	ff, err := os.OpenFile(filename, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
+	if err != nil {
+		return
+	}
+	defer ff.Close()
+	ff.WriteString(fmt.Sprintln(args...))
 }

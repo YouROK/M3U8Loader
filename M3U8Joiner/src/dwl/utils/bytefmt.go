@@ -1,10 +1,9 @@
 package utils
 
 import (
-	"errors"
 	"fmt"
-	"regexp"
 	"strings"
+	"time"
 )
 
 const (
@@ -15,17 +14,6 @@ const (
 	TERABYTE = 1024 * GIGABYTE
 )
 
-var bytesPattern *regexp.Regexp = regexp.MustCompile(`(?i)^(-?\d+)([KMGT]B?|B)$`)
-
-var invalidByteQuantityError = errors.New("Byte quantity must be a positive integer with a unit of measurement like M, MB, G, or GB")
-
-// ByteSize returns a human-readable byte string of the form 10M, 12.5K, and so forth.  The following units are available:
-//	T: Terabyte
-//	G: Gigabyte
-//	M: Megabyte
-//	K: Kilobyte
-//	B: Byte
-// The unit that results in the smallest number greater than or equal to 1 is always chosen.
 func ByteSize(bytes int64) string {
 	unit := ""
 	value := float32(bytes)
@@ -52,4 +40,9 @@ func ByteSize(bytes int64) string {
 	stringValue := fmt.Sprintf("%.1f", value)
 	stringValue = strings.TrimSuffix(stringValue, ".0")
 	return fmt.Sprintf("%s %s", stringValue, unit)
+}
+
+func TimeSize(seconds float64) string {
+	tm := time.Unix(int64(seconds), 0)
+	return tm.UTC().Format("15:04:05")
 }

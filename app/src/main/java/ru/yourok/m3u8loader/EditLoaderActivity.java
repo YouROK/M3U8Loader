@@ -38,6 +38,8 @@ public class EditLoaderActivity extends AppCompatActivity {
 
         final SeekBar left = (SeekBar) findViewById(R.id.rangeSeekbarLeft);
         final SeekBar right = (SeekBar) findViewById(R.id.rangeSeekbarRight);
+        if (left == null || right == null)
+            finish();
         left.setMax((int) info.getAll() - 1);
         right.setMax((int) info.getAll() - 1);
 

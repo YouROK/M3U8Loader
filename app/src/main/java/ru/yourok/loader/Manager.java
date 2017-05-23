@@ -145,7 +145,9 @@ public class Manager {
     ////Settings
 
     static public Settings GetSettings() {
-        return manager.getSettings();
+        if (manager != null)
+            return manager.getSettings();
+        return null;
     }
 
     static public String SaveSettings() {
@@ -177,5 +179,10 @@ public class Manager {
     static public void SetSettingsErrorRepeat(int val) {
         if (manager != null)
             manager.setSettingsErrorRepeat(val);
+    }
+
+    static public void SetSettingsDynamicSize(boolean val) {
+        if (manager != null)
+            manager.setSettingsDynamicSize(val);
     }
 }

@@ -35,7 +35,9 @@ public class Store {
     }
 
     static public String getDownloadPath() {
-        return Manager.GetSettings().getDownloadPath();
+        if (Manager.GetSettings() != null)
+            return Manager.GetSettings().getDownloadPath();
+        return "";
     }
 
     static public String getTheme(Context context) {

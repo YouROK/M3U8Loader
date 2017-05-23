@@ -10,6 +10,7 @@
     <string name="cookies">Cookies:</string>
     <string name="download_path">Папка загрузки:</string>
     <string name="set_def_settings">Установить настройки по умолчанию</string>
+    <string name="dynamic_file_size">Динамический размер файла (экспериментальный)</string>
 
     <string name="selected_folder_label">Выберите папку:</string>
     <string name="new_directory_title">Новая папка</string>

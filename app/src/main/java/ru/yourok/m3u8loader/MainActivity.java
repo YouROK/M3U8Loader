@@ -88,12 +88,25 @@ public class MainActivity extends AppCompatActivity {
         if (sel == -1)
             findViewById(R.id.itemLoaderMenu).setVisibility(View.GONE);
         else {
-            if (Manager.GetLoaderStatus(sel) == Manager.STATUS_COMPLETE)
+            if (isPlayButton(sel))
                 ((ImageButton) findViewById(R.id.buttonItemMenuStart)).setImageResource(R.drawable.ic_play_circle_outline_black_24dp);
             else
                 ((ImageButton) findViewById(R.id.buttonItemMenuStart)).setImageResource(R.drawable.ic_file_download_black_24dp);
             findViewById(R.id.itemLoaderMenu).setVisibility(View.VISIBLE);
         }
+    }
+
+    private boolean isPlayButton(int sel) {
+        LoaderInfo info = Manager.GetLoaderInfo(sel);
+        if (info == null)
+            return false;
+        if (info.getStatus() == Manager.STATUS_COMPLETE)
+            return true;
+        if (Manager.GetSettings()==null)
+            return false;
+        if (info.getStatus() == Manager.STATUS_LOADING && Manager.GetSettings().getDynamicSize() && (int) info.getLoadedDuration() > 10)
+            return true;
+        return false;
     }
 
     private final Object lock = new Object();
@@ -103,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 ((BaseAdapter) loadersList.getAdapter()).notifyDataSetChanged();
+                updateMenu();
             }
         });
 
@@ -131,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                         if (Loader.isLoading())
                             Thread.sleep(500);
                         else {
-                            for (int i = 0; i < 100; i++) {
+                            for (int i = 0; i < 30; i++) {
                                 Thread.sleep(100);
                                 if (!isUpdateList || Loader.isLoading())
                                     break;
@@ -249,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
     public void onLoadItemClick(View view) {
         int sel = ((MainActivityLoaderAdaptor) loadersList.getAdapter()).getSelected();
         if (sel != -1) {
-            if (Manager.GetLoaderStatus(sel) == Manager.STATUS_COMPLETE) {
+            if (isPlayButton(sel)) {
                 String fn = Manager.GetFileName(sel);
                 LoaderInfo info = Manager.GetLoaderInfo(sel);
                 if (info == null)

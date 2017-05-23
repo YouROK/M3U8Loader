@@ -103,6 +103,7 @@ func (p *ParseList) parse(url string) ([]*List, error) {
 					itm := stats.Item{}
 					itm.Url = itemUrl
 					itm.IsLoad = true
+					itm.Duration = i.Duration
 					itm.Index = len(list.Items)
 					list.Items = append(list.Items, &itm)
 				}

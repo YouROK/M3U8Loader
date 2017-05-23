@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -57,11 +58,14 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void loadSettings() {
         Settings sets = Manager.GetSettings();
+        if (sets==null)
+            finish();
         ((EditText) findViewById(R.id.editTextDirectoryPath)).setText(Store.getDownloadPath());
         ((EditText) findViewById(R.id.editTextThreads)).setText(String.valueOf(sets.getThreads()));
         ((EditText) findViewById(R.id.editTextRepeatError)).setText(String.valueOf(sets.getErrorRepeat()));
         ((EditText) findViewById(R.id.editTextCookies)).setText(sets.getCookies());
         ((EditText) findViewById(R.id.editTextUseragent)).setText(sets.getUseragent());
+        ((CheckBox) findViewById(R.id.checkboxDynamicFileSize)).setChecked(sets.getDynamicSize());
         ((Spinner) findViewById(R.id.spinnerChooseTheme)).setSelection(Integer.parseInt(Store.getTheme(this)));
         ((Spinner) findViewById(R.id.spinnerChoosePlayer)).setSelection(Integer.parseInt(Store.getPlayer(this)));
     }
@@ -72,6 +76,7 @@ public class SettingsActivity extends AppCompatActivity {
         String errRepeat = ((EditText) findViewById(R.id.editTextRepeatError)).getText().toString();
         String useragent = ((EditText) findViewById(R.id.editTextUseragent)).getText().toString();
         String cookies = ((EditText) findViewById(R.id.editTextCookies)).getText().toString();
+        boolean dynamicFileSize = ((CheckBox) findViewById(R.id.checkboxDynamicFileSize)).isChecked();
         int theme = ((Spinner) findViewById(R.id.spinnerChooseTheme)).getSelectedItemPosition();
         int player = ((Spinner) findViewById(R.id.spinnerChoosePlayer)).getSelectedItemPosition();
         Manager.SetSettingsDownloadPath(dirout);
@@ -79,6 +84,7 @@ public class SettingsActivity extends AppCompatActivity {
         Manager.SetSettingsErrorRepeat(Integer.parseInt(errRepeat));
         Manager.SetSettingsUseragent(useragent);
         Manager.SetSettingsCookies(cookies);
+        Manager.SetSettingsDynamicSize(dynamicFileSize);
         Manager.SaveSettings();
         Store.setTheme(this, String.valueOf(theme));
         Store.setPlayer(this, String.valueOf(player));

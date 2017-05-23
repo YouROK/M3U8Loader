@@ -1,11 +1,13 @@
 package dwl
 
 type LoaderInfo struct {
-	Url         string
-	Name        string
-	Threads     int
-	Speed       int64
-	LoadedBytes int64
+	Url            string
+	Name           string
+	Threads        int
+	Speed          int64
+	LoadedBytes    int64
+	LoadedDuration float64
+	Duration       float64
 
 	Completed    int
 	LoadingCount int
@@ -44,14 +46,18 @@ func (m *Manager) GetLoaderInfo(index int) *LoaderInfo {
 			if loaded == 0 {
 				loaded = itm.Size
 			}
+			if itm.Duration > 0 {
+				if itm.IsComplete {
+					li.LoadedDuration += itm.Duration
+				}
+				li.Duration += itm.Duration
+			}
 			li.LoadedBytes += loaded
 			li.Speed += itm.GetSpeed()
 			li.LoadingCount++
 			if itm.IsLoading() {
 				li.Threads++
 			}
-		} else {
-
 		}
 	}
 	return li
