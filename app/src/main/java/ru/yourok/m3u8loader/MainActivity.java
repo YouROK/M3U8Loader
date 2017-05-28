@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     private ListView loadersList;
     private boolean isUpdateList;
 
+    private final Object lock = new Object();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
                 updateMenu();
             }
         });
-        updateMenu();
         requestPermissionWithRationale();
     }
 
@@ -84,16 +85,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateMenu() {
-        int sel = ((MainActivityLoaderAdaptor) loadersList.getAdapter()).getSelected();
-        if (sel == -1)
-            findViewById(R.id.itemLoaderMenu).setVisibility(View.GONE);
-        else {
-            if (isPlayButton(sel))
-                ((ImageButton) findViewById(R.id.buttonItemMenuStart)).setImageResource(R.drawable.ic_play_circle_outline_black_24dp);
-            else
-                ((ImageButton) findViewById(R.id.buttonItemMenuStart)).setImageResource(R.drawable.ic_file_download_black_24dp);
-            findViewById(R.id.itemLoaderMenu).setVisibility(View.VISIBLE);
-        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(300);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        synchronized (lock) {
+                            int sel = ((MainActivityLoaderAdaptor) loadersList.getAdapter()).getSelected();
+                            if (sel == -1)
+                                findViewById(R.id.itemLoaderMenu).setVisibility(View.GONE);
+                            else {
+                                if (isPlayButton(sel))
+                                    ((ImageButton) findViewById(R.id.buttonItemMenuStart)).setImageResource(R.drawable.ic_play_circle_outline_black_24dp);
+                                else
+                                    ((ImageButton) findViewById(R.id.buttonItemMenuStart)).setImageResource(R.drawable.ic_file_download_black_24dp);
+                                findViewById(R.id.itemLoaderMenu).setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+                });
+            }
+        }).start();
     }
 
     private boolean isPlayButton(int sel) {
@@ -102,24 +121,15 @@ public class MainActivity extends AppCompatActivity {
             return false;
         if (info.getStatus() == Manager.STATUS_COMPLETE)
             return true;
-        if (Manager.GetSettings()==null)
+        if (Manager.GetSettings() == null)
             return false;
         if (info.getStatus() == Manager.STATUS_LOADING && Manager.GetSettings().getDynamicSize() && (int) info.getLoadedDuration() > 10)
             return true;
         return false;
     }
 
-    private final Object lock = new Object();
-
     private void updateList() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ((BaseAdapter) loadersList.getAdapter()).notifyDataSetChanged();
-                updateMenu();
-            }
-        });
-
+        updateMenu();
         synchronized (lock) {
             if (isUpdateList)
                 return;
@@ -138,12 +148,11 @@ public class MainActivity extends AppCompatActivity {
                                 adaptorList.setSelected(Manager.Length() - 1);
                             if (Manager.Length() == 0)
                                 adaptorList.setSelected(-1);
-                            updateList();
                         }
                     });
                     try {
                         if (Loader.isLoading())
-                            Thread.sleep(500);
+                            Thread.sleep(200);
                         else {
                             for (int i = 0; i < 30; i++) {
                                 Thread.sleep(100);
@@ -174,15 +183,15 @@ public class MainActivity extends AppCompatActivity {
                 Loader.Add(i);
         }
         Loader.Start();
-        updateList();
         view.setEnabled(true);
+        updateMenu();
     }
 
     public void onStopAllClick(View view) {
         view.setEnabled(false);
         Loader.Clear();
-        updateList();
         view.setEnabled(true);
+        updateMenu();
     }
 
     public void onClearListClick(View view) {
@@ -199,7 +208,6 @@ public class MainActivity extends AppCompatActivity {
             Loader.Clear();
             while (Manager.Length() > 0)
                 Manager.Remove(0);
-            updateList();
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(getString(R.string.delete_label) + "?");
@@ -212,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
                         Manager.Remove(0);
                         new File(outFileName).delete();
                     }
-                    updateList();
+                    updateMenu();
                 }
             });
             builder.setNegativeButton(R.string.remove_from_list, new DialogInterface.OnClickListener() {
@@ -221,13 +229,14 @@ public class MainActivity extends AppCompatActivity {
                     Loader.Clear();
                     while (Manager.Length() > 0)
                         Manager.Remove(0);
-                    updateList();
+                    updateMenu();
                 }
             });
             builder.setNeutralButton(" ", null);
             builder.create().show();
         }
         view.setEnabled(true);
+        updateMenu();
     }
 
     public void onSettingsClick(View view) {
@@ -281,8 +290,8 @@ public class MainActivity extends AppCompatActivity {
                 view.setEnabled(false);
                 Loader.Add(sel);
                 Loader.Start();
-                updateList();
                 view.setEnabled(true);
+                updateMenu();
             }
         }
     }
@@ -293,9 +302,9 @@ public class MainActivity extends AppCompatActivity {
             view.setEnabled(false);
             Loader.Rem(sel);
             Manager.Stop(sel);
-            updateList();
             view.setEnabled(true);
         }
+        updateMenu();
     }
 
     public void onRemoveItemClick(View view) {
@@ -309,7 +318,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         Loader.Rem(sel);
                         Manager.Remove(sel);
-                        updateList();
+                        updateMenu();
                     }
                 }).start();
             } else {
@@ -321,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
                         Loader.Rem(sel);
                         Manager.Remove(sel);
                         new File(outFileName).delete();
-                        updateList();
+                        updateMenu();
                     }
                 });
                 builder.setNegativeButton(R.string.remove_from_list, new DialogInterface.OnClickListener() {
@@ -329,7 +338,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Loader.Rem(sel);
                         Manager.Remove(sel);
-                        updateList();
+                        updateMenu();
                     }
                 });
                 builder.setNeutralButton(" ", null);

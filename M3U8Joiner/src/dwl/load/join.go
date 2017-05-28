@@ -103,11 +103,17 @@ func (w *File) Truncate(list *list.List) {
 	if countItems == 0 || loadedItems < 9 || loadedBytes == 0 {
 		return
 	}
-	allSize := GetFileSize(90, loadedItems, countItems, loadedBytes)
-	st, _ := w.file.Stat()
-	if w.file != nil && st != nil && allSize > loadedBytes && allSize != st.Size() {
-		w.file.Truncate(allSize)
+
+	if countItems == loadedItems {
+		w.file.Truncate(loadedBytes)
 		w.file.Sync()
+	} else {
+		allSize := GetFileSize(90, loadedItems, countItems, loadedBytes)
+		st, _ := w.file.Stat()
+		if w.file != nil && st != nil && allSize > loadedBytes && allSize != st.Size() {
+			w.file.Truncate(allSize)
+			w.file.Sync()
+		}
 	}
 }
 

@@ -45,7 +45,9 @@ func (l *Loader) Load(update func(loader *Loader)) {
 	defer func() {
 		l.isLoading = false
 		if l.file != nil {
-
+			if l.sets.DynamicSize {
+				l.file.Truncate(l.list)
+			}
 			l.file.Close()
 		}
 		l.done <- true
@@ -91,8 +93,19 @@ func (l *Loader) Stop() {
 	l.isLoading = false
 }
 
-func (l *Loader) WaitLoading() {
-	<-l.done
+func (l *Loader) WaitLoading(timeout int) bool {
+	if timeout > 0 {
+		timer := time.NewTimer(time.Millisecond * time.Duration(timeout))
+		select {
+		case <-timer.C:
+			return false
+		case <-l.done:
+			return true
+		}
+	} else {
+		<-l.done
+		return true
+	}
 }
 
 func (l *Loader) Complete() bool {

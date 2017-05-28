@@ -111,11 +111,11 @@ func (m *Manager) Stop(index int) {
 	go m.loaders[index].Stop()
 }
 
-func (m *Manager) WaitLoader(index int) {
+func (m *Manager) WaitLoader(index int, timeout int) bool {
 	if m.errIndex(index) {
-		return
+		return true
 	}
 	m.mutex.Lock()
 	m.mutex.Unlock()
-	m.loaders[index].WaitLoading()
+	return m.loaders[index].WaitLoading(timeout)
 }

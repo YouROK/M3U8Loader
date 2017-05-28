@@ -68,8 +68,17 @@ public class Manager {
     }
 
     static public void Wait(int i) {
-        if (manager != null)
-            manager.waitLoader(i);
+        if (manager != null) {
+            boolean end = false;
+            while (!end) {
+                try {
+                    end = manager.waitLoader(i, 500);
+                    Thread.sleep(500);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     static public String SetLoaderUrl(String url, String name, String cookies, String useragent) {

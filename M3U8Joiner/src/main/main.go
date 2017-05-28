@@ -12,10 +12,8 @@ func main() {
 
 	//url := "http://localhost:8090/files/bipbop/gear4/prog_index.m3u8"
 	//url := "http://localhost:8090/files/bipbop/bipbopall.m3u8"
-	//url := "https://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear1/prog_index.m3u8"
+	url := "https://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear1/prog_index.m3u8"
 	//url := "http://localhost:8090/files/crypted/crypted.m3u8"
-
-	url := "http://185.38.12.42/sec/1495571032/3635343139b0568db311d9a491b9bfcc9292d3826b7cd9b2/ivs/49/b2/6ef2a13275f8/hls/tracks-3,4/index.m3u8"
 	name := "test"
 
 	manager, err := dwl.OpenManager("/home/yourok/tmp/video/config/")
@@ -83,7 +81,9 @@ func main() {
 			fmt.Println()
 		}
 	}() /**/
-	manager.WaitLoader(0)
+	for !manager.WaitLoader(0, 2000) {
+		fmt.Println("TIMEOUT")
+	}
 	fmt.Println("FINISH")
 	time.Sleep(time.Second * 2)
 }
