@@ -1,6 +1,7 @@
 package utils
 
 import (
+	//"fmt"
 	"net/url"
 	"path/filepath"
 	"strings"
@@ -24,6 +25,27 @@ func DirUrl(Url string) (string, error) {
 	return uri.String(), nil
 }
 
+func copyUrlArgs(dst, src string) string {
+	dsturl, err := url.Parse(dst)
+	if err != nil {
+		return dst
+	}
+
+	srcurl, err := url.Parse(src)
+	if err != nil || srcurl.RawQuery == "" {
+		return dst
+	}
+
+	dstquery := strings.ToLower(dsturl.RawQuery)
+	if dstquery == "" || dstquery == "null=0" {
+		dsturl.RawQuery = srcurl.RawQuery
+		dsturl.ForceQuery = srcurl.ForceQuery
+		dsturl.Fragment = srcurl.Fragment
+		return dsturl.String()
+	}
+	return dst
+}
+
 func JoinUrl(BaseUrl, PartUrl string) (string, error) {
 	//if not relative return part url
 	if !isRelativeUrl(PartUrl) {
@@ -34,6 +56,7 @@ func JoinUrl(BaseUrl, PartUrl string) (string, error) {
 			}
 			PartUrl = Url.Scheme + "://" + Url.Host + PartUrl
 		}
+		PartUrl = copyUrlArgs(PartUrl, BaseUrl)
 		return PartUrl, nil
 	}
 
@@ -42,6 +65,7 @@ func JoinUrl(BaseUrl, PartUrl string) (string, error) {
 		return "", err
 	}
 	ret := uri.Scheme + "://" + uri.Host + filepath.Join(uri.Path, PartUrl)
+	ret = copyUrlArgs(ret, BaseUrl)
 	return ret, nil
 }
 

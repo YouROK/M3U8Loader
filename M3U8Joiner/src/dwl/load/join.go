@@ -85,7 +85,7 @@ func (w *File) WriteAt(list *list.List) error {
 	return err
 }
 
-func (w *File) Truncate(list *list.List) {
+func (w *File) TruncateAuto(list *list.List, threads int) {
 	w.mutex.Lock()
 	defer w.mutex.Unlock()
 	countItems := 0
@@ -100,7 +100,7 @@ func (w *File) Truncate(list *list.List) {
 			}
 		}
 	}
-	if countItems == 0 || loadedItems < 9 || loadedBytes == 0 {
+	if countItems == 0 || loadedItems < threads || loadedBytes == 0 {
 		return
 	}
 
@@ -111,8 +111,17 @@ func (w *File) Truncate(list *list.List) {
 		allSize := GetFileSize(90, loadedItems, countItems, loadedBytes)
 		st, _ := w.file.Stat()
 		if w.file != nil && st != nil && allSize > loadedBytes && allSize != st.Size() {
-			w.file.Truncate(allSize)
-			w.file.Sync()
+			prc := 100
+			if st.Size() > 0 {
+				prc = 100 - int(allSize*100/st.Size())
+				if prc < 0 {
+					prc = -prc
+				}
+			}
+			if prc > 2 {
+				w.file.Truncate(allSize)
+				w.file.Sync()
+			}
 		}
 	}
 }
@@ -126,28 +135,11 @@ func (w *File) Close() error {
 	return nil
 }
 
-//Высчитываем приблизительный размер файла
-//так как при открытии недокаченного файла в плеере, он играет до того момента, на сколько он был скачан при открытии
-//пример, файл на момент открытия в плеере был закача на 10% и приблизительно 10 минут, плеер проиграет 10 минут и закончит воспроизведение,
-//а файл в этот момент может уже скачатся, по этому нужно заранее задать размер файла и чтобы он был не меньше оригинала
-//Алгоритм:
-//0 - 70% прибавляем проценты к приблизительному размеру
-//70 - 100% считаем как есть
-//
-//1 вычисляем сколько файлов в 70% и берем его за конечную точку
-//2 далее вычисляем процент скачанных(N) и вычисляем сколько нужно прибавить (100-N)
-//в начале скачки, файл будет в 2 раза больше
-
 func GetFileSize(endPerc, index, count int, bytes int64) int64 {
 	if index == 0 || count == 0 || bytes == 0 {
 		return 0
 	}
-	fakeEnd := (count / 100) * endPerc
-	if index >= fakeEnd {
-		return int64((float64(count) / float64(index) * float64(bytes)) + .5)
-	}
 
-	tmp := float64(index*100) / float64(fakeEnd)
-	tmp = 100 - tmp
-	return int64((float64(count) / float64(index) * (float64(bytes) + (float64(bytes) / float64(100) * float64(tmp)))) + .5)
+	ret := int64(float64(count) * float64(bytes) / float64(index) * 1.5)
+	return ret
 }

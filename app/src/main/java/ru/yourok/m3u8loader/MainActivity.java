@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     adapter.setSelected(i);
                 }
-                adapter.notifyDataSetChanged();
                 updateMenu();
             }
         });
@@ -123,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         if (Manager.GetSettings() == null)
             return false;
-        if (info.getStatus() == Manager.STATUS_LOADING && Manager.GetSettings().getDynamicSize() && (int) info.getLoadedDuration() > 10)
+        if (info.getStatus() == Manager.STATUS_LOADING && Manager.GetSettings().getDynamicSize() && (int) info.getLoadedDuration() > Manager.GetSettings().getThreads())
             return true;
         return false;
     }
@@ -142,12 +141,16 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            ((BaseAdapter) loadersList.getAdapter()).notifyDataSetChanged();
-                            MainActivityLoaderAdaptor adaptorList = ((MainActivityLoaderAdaptor) loadersList.getAdapter());
-                            if (Manager.Length() > 0 && adaptorList.getSelected() >= Manager.Length())
-                                adaptorList.setSelected(Manager.Length() - 1);
-                            if (Manager.Length() == 0)
-                                adaptorList.setSelected(-1);
+                            try {
+                                ((MainActivityLoaderAdaptor) loadersList.getAdapter()).notifyDataSetChanged();
+                                MainActivityLoaderAdaptor adaptorList = ((MainActivityLoaderAdaptor) loadersList.getAdapter());
+                                if (Manager.Length() > 0 && adaptorList.getSelected() >= Manager.Length())
+                                    adaptorList.setSelected(Manager.Length() - 1);
+                                if (Manager.Length() == 0)
+                                    adaptorList.setSelected(-1);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
                     try {
@@ -160,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
                                     break;
                             }
                         }
-                    } catch (InterruptedException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -371,7 +374,6 @@ public class MainActivity extends AppCompatActivity {
                 if (adapter.getSelected() < 0)
                     adapter.setSelected(adapter.getCount() - 1);
                 updateMenu();
-                adapter.notifyDataSetChanged();
                 return true;
             case KeyEvent.KEYCODE_DPAD_DOWN:
             case KeyEvent.ACTION_DOWN:
@@ -379,7 +381,6 @@ public class MainActivity extends AppCompatActivity {
                 if (adapter.getSelected() >= adapter.getCount())
                     adapter.setSelected(0);
                 updateMenu();
-                adapter.notifyDataSetChanged();
                 return true;
         }
         return super.onKeyUp(keyCode, event);
