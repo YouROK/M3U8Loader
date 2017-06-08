@@ -6,6 +6,7 @@
 
     <string name="threads">Потоков:</string>
     <string name="repeat_error">Повторить при ошибке:</string>
+    <string name="subtitles_url">URL субтитров:</string>
     <string name="useragent">User agent:</string>
     <string name="cookies">Cookies:</string>
     <string name="download_path">Папка загрузки:</string>
@@ -46,6 +47,7 @@
     <string name="donation_msg">Если это приложение делает вас счастливее, можете угостить меня</string>
 
     <string name="error">Ошибка</string>
+    <string name="error_load_subs">Ошибка при загрузки субтитров</string>
     <string name="error_url_wrong_format">Неправильный формат url, должен быть m3u8 или m3u</string>
     <string name="error_file_notexist">Файл не найден</string>
     <string name="error_create_folder">Ошибка при создании папки</string>

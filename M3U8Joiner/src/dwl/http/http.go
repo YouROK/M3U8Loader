@@ -59,7 +59,12 @@ func (h *Http) Connect() error {
 	h.mutex.Lock()
 	h.resp, h.err = h.client.Do(h.req)
 	if h.resp != nil && (h.resp.StatusCode != http.StatusOK && h.resp.StatusCode != http.StatusPartialContent) {
-		h.err = errors.New(h.resp.Request.URL.String() + " " + strconv.Itoa(h.resp.StatusCode) + " " + h.resp.Status)
+		status := h.resp.Status
+		errCode := strconv.Itoa(h.resp.StatusCode)
+		if !strings.Contains(status, errCode) {
+			status = errCode + " " + status
+		}
+		h.err = errors.New(h.resp.Request.URL.String() + " " + status)
 	}
 	h.mutex.Unlock()
 

@@ -2,9 +2,11 @@ package ru.yourok.m3u8loader;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
@@ -24,6 +26,7 @@ public class AddLoaderActivity extends AppCompatActivity {
 
     private EditText urlEdit;
     private EditText fileEdit;
+    private EditText subtitlesEdit;
     private EditText cookieEdit;
     private EditText useragentEdit;
 
@@ -40,44 +43,73 @@ public class AddLoaderActivity extends AppCompatActivity {
         fileEdit = (EditText) findViewById(R.id.editTextFileName);
         cookieEdit = (EditText) findViewById(R.id.editTextCookies);
         useragentEdit = (EditText) findViewById(R.id.editTextUseragent);
+        subtitlesEdit = (EditText) findViewById(R.id.editTextSubtitles);
         Intent intent = getIntent();
 
-        if (intent.getExtras() != null) {
-            Bundle bundle = intent.getExtras();
-            for (String key : bundle.keySet()) {
-                if (key.toLowerCase().contains("name") || key.toLowerCase().contains("title")) {
-                    Object value = bundle.get(key);
-                    if (value != null) {
-                        String name = cleanFileName(value.toString().trim());
-                        if (!name.isEmpty())
-                            fileEdit.setText(name);
+        try {
+            if (intent.getExtras() != null) {
+                Bundle bundle = intent.getExtras();
+                for (String key : bundle.keySet()) {
+                    Log.i("KEY", key);
+                    Log.i("VAL", bundle.get(key).toString());
+                    if (key.toLowerCase().contains("name") || key.toLowerCase().contains("title")) {
+                        Object value = bundle.get(key);
+                        if (value != null) {
+                            String name = cleanFileName(value.toString().trim());
+                            if (!name.isEmpty())
+                                fileEdit.setText(name);
+                        }
                     }
-                }
-                if (key.toLowerCase().contains("cookie")) {
-                    Object value = bundle.get(key);
-                    if (value != null)
-                        cookieEdit.setText(value.toString().trim());
-                }
-                if (key.toLowerCase().contains("useragent")) {
-                    Object value = bundle.get(key);
-                    if (value != null)
-                        useragentEdit.setText(value.toString().trim());
+                    if (key.toLowerCase().contains("headers")) {
+                        String[] headres = bundle.getStringArray(key);
+                        if (headres != null) {
+                            for (int i = 0; i < headres.length; i++) {
+                                if (headres[i].toLowerCase().equalsIgnoreCase("User-Agent") && i + 1 < headres.length) {
+                                    useragentEdit.setText(headres[i + 1]);
+                                    i++;
+                                }
+                                if (headres[i].toLowerCase().equalsIgnoreCase("Cookie") && i + 1 < headres.length) {
+                                    cookieEdit.setText(headres[i + 1]);
+                                    i++;
+                                }
+                            }
+                        }
+                    }
+                    if (key.toLowerCase().contains("cookie")) {
+                        Object value = bundle.get(key);
+                        if (value != null)
+                            cookieEdit.setText(value.toString().trim());
+                    }
+                    if (key.toLowerCase().contains("useragent")) {
+                        Object value = bundle.get(key);
+                        if (value != null)
+                            useragentEdit.setText(value.toString().trim());
+                    }
+                    if (key.toLowerCase().contains("subs") || key.toLowerCase().contains("subtitles")) {
+                        Object value = bundle.get(key);
+                        if (value != null)
+                            subtitlesEdit.setText(value.toString().trim());
+                    }
+
                 }
             }
-        }
 
-        if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_SEND)) {
-            if (intent.getStringExtra(Intent.EXTRA_TEXT) != null)
-                urlEdit.setText(intent.getStringExtra(Intent.EXTRA_TEXT));
-            if (intent.getExtras().get(Intent.EXTRA_STREAM) != null)
-                urlEdit.setText(intent.getExtras().get(Intent.EXTRA_STREAM).toString());
-        }
+            if (intent.getAction() != null && intent.getAction().equals(Intent.ACTION_SEND)) {
+                if (intent.getStringExtra(Intent.EXTRA_TEXT) != null)
+                    urlEdit.setText(intent.getStringExtra(Intent.EXTRA_TEXT));
+                if (intent.getExtras().get(Intent.EXTRA_STREAM) != null)
+                    urlEdit.setText(intent.getExtras().get(Intent.EXTRA_STREAM).toString());
+            }
 
-        if (intent.getData() != null)
-            urlEdit.setText(intent.getDataString());
+            if (intent.getData() != null)
+                urlEdit.setText(intent.getDataString());
 
-        if (intent.getExtras() == null && intent.getData() == null) {
-            Toast.makeText(this, "Error: not found url", Toast.LENGTH_SHORT).show();
+            if (intent.getExtras() == null && intent.getData() == null) {
+                Toast.makeText(this, "Error: not found url", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             finish();
         }
     }
@@ -191,8 +223,13 @@ public class AddLoaderActivity extends AppCompatActivity {
                     return;
                 }
 
+                int start = Manager.Length() - (Manager.Length() - oldLength);
+
+                String subs = subtitlesEdit.getText().toString().trim();
+                if (!subs.isEmpty())
+                    Manager.SetSubtitles(start, subs);
+
                 if (load && oldLength != Manager.Length()) {
-                    int start = Manager.Length() - (Manager.Length() - oldLength);
                     for (int i = start; i < Manager.Length(); i++)
                         Loader.Add(i);
                     Loader.Start();

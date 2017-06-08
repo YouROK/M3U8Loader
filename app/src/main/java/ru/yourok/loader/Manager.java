@@ -2,6 +2,7 @@ package ru.yourok.loader;
 
 
 import android.content.Context;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,6 +11,7 @@ import org.json.JSONObject;
 import dwl.Dwl;
 import dwl.LoaderInfo;
 import dwl.Settings;
+import ru.yourok.m3u8loader.R;
 //import dwl.Options;
 
 
@@ -58,8 +60,14 @@ public class Manager {
     }
 
     static public void Load(int i) {
-        if (manager != null)
+        if (manager != null) {
+            try{
+                manager.loadSubtitles(i);
+            }catch (Exception e){
+                Toast.makeText(MyApplication.getContext(),MyApplication.getContext().getText(R.string.error_load_subs)+": "+e.getMessage(),Toast.LENGTH_SHORT).show();
+            }
             manager.load(i);
+        }
     }
 
     static public void Stop(int i) {
@@ -107,6 +115,11 @@ public class Manager {
             manager.setLoaderRange(index, from, to);
     }
 
+    static public void SetSubtitles(int index, String subtitles) {
+        if (manager != null)
+            manager.setSubtitles(index, subtitles);
+    }
+
     static public String GetLoaderUseragent(int index) {
         if (manager != null)
             return manager.getLoaderUserAgent(index);
@@ -151,6 +164,9 @@ public class Manager {
         return manager.getLoaderFileName(i);
     }
 
+    static public String GetSubtitlesFileName(int i) {
+        return manager.getSubtitlesFile(i);
+    }
     ////Settings
 
     static public Settings GetSettings() {

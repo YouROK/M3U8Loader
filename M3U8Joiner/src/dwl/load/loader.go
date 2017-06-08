@@ -3,7 +3,10 @@ package load
 import (
 	"dwl/list"
 	"dwl/settings"
+	"dwl/utils"
 	"errors"
+	"os"
+	"path/filepath"
 	"time"
 )
 
@@ -33,6 +36,32 @@ func NewLoader(sets *settings.Settings, list *list.List) *Loader {
 	return l
 }
 
+func (l *Loader) LoadSubtitles() error {
+	if l.list.Subtitles == "" {
+		return nil
+	}
+	if l.sets.DownloadPath == "" {
+		err := errors.New("download path not set")
+		return err
+	}
+	ext := filepath.Ext(l.list.Subtitles)
+	if ext == "" {
+		ext = ".srt"
+	}
+	subsFN := filepath.Join(l.sets.DownloadPath, l.list.Name) + ext
+	buf, err := utils.ReadBufText(l.list.Subtitles, l.list.Headers)
+	if err != nil {
+		return err
+	}
+	fn, err := os.Create(subsFN)
+	if err != nil {
+		return err
+	}
+	defer fn.Close()
+	_, err = fn.Write(buf)
+	return err
+}
+
 func (l *Loader) Load(update func(loader *Loader)) {
 	if l.sets.DownloadPath == "" {
 		l.err = errors.New("download path not set")
@@ -55,6 +84,7 @@ func (l *Loader) Load(update func(loader *Loader)) {
 	if l.err != nil {
 		return
 	}
+
 	pool := NewPool(l.sets, l.list)
 	pool.Start()
 	for l.isLoading {

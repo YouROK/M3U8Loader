@@ -93,6 +93,15 @@ func (m *Manager) Len() int {
 	return len(m.loaders)
 }
 
+func (m *Manager) LoadSubtitles(index int) error {
+	if m.errIndex(index) {
+		return nil
+	}
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	return m.loaders[index].LoadSubtitles()
+}
+
 func (m *Manager) Load(index int) {
 	if m.errIndex(index) {
 		return

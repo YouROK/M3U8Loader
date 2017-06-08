@@ -21,6 +21,7 @@ type List struct {
 	Name      string
 	Bandwidth int
 	Headers   http.Header
+	Subtitles string
 }
 
 func (l *List) Get(index int) *stats.Item {

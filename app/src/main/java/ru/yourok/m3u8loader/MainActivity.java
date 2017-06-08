@@ -220,8 +220,12 @@ public class MainActivity extends AppCompatActivity {
                     Loader.Clear();
                     while (Manager.Length() > 0) {
                         String outFileName = Manager.GetFileName(0);
+                        String subsFileName = Manager.GetSubtitlesFileName(0);
                         Manager.Remove(0);
-                        new File(outFileName).delete();
+                        if (!outFileName.isEmpty())
+                            new File(outFileName).delete();
+                        if (!subsFileName.isEmpty())
+                            new File(subsFileName).delete();
                     }
                     updateMenu();
                 }
@@ -315,7 +319,8 @@ public class MainActivity extends AppCompatActivity {
         final int sel = ((MainActivityLoaderAdaptor) loadersList.getAdapter()).getSelected();
         if (sel != -1) {
             final String outFileName = Manager.GetFileName(sel);
-            if (!new File(outFileName).exists()) {
+            final String subsFileName = Manager.GetSubtitlesFileName(sel);
+            if (!new File(outFileName).exists() && !new File(subsFileName).exists()) {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -332,7 +337,10 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Loader.Rem(sel);
                         Manager.Remove(sel);
-                        new File(outFileName).delete();
+                        if (!outFileName.isEmpty())
+                            new File(outFileName).delete();
+                        if (!subsFileName.isEmpty())
+                            new File(subsFileName).delete();
                         updateMenu();
                     }
                 });

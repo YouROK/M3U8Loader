@@ -37,6 +37,12 @@ func main() {
 		manager.Clean(0)
 	}
 
+	manager.SetSubtitles(0,"http://185.38.12.39/static/srt/uploads/srt_master_file/219769/d87add9d880b4ab8.srt")
+	err = manager.LoadSubtitles(0)
+	if err != nil {
+		fmt.Println("Error load subtitles:", err)
+	}
+
 	manager.Load(0)
 	if manager.GetLoaderInfo(0).Status == load.STATUS_STOPED {
 		for {

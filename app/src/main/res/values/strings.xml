@@ -6,6 +6,7 @@
 
     <string name="threads">Threads:</string>
     <string name="repeat_error">Repeat on error:</string>
+    <string name="subtitles_url">Subtitles url:</string>
     <string name="useragent">User agent:</string>
     <string name="cookies">Cookies:</string>
     <string name="download_path">Download path:</string>
@@ -46,6 +47,7 @@
     <string name="donation_msg">If this app makes you happier, you can give me a</string>
 
     <string name="error">Error</string>
+    <string name="error_load_subs">Error load subtitles</string>
     <string name="error_url_wrong_format">Wrong url format, must be m3u8 or m3u</string>
     <string name="error_file_notexist">File not found</string>
     <string name="error_directory_permission">Directory permission denied</string>

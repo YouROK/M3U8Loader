@@ -3,6 +3,7 @@ package dwl
 import (
 	"errors"
 	"net/http"
+	"path/filepath"
 )
 
 func (m *Manager) SetLoaderUrl(url, name, cookies, useragent string) error {
@@ -84,6 +85,18 @@ func (m *Manager) SetLoaderCookies(index int, cookies string) {
 	m.update(loader)
 }
 
+func (m *Manager) SetSubtitles(index int, subs string) {
+	if m.errIndex(index) {
+		return
+	}
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
+	loader := m.loaders[index]
+	loader.GetList().Subtitles = subs
+	m.update(loader)
+}
+
 func (m *Manager) GetLoaderUserAgent(index int) string {
 	if m.errIndex(index) {
 		return ""
@@ -152,4 +165,32 @@ func (m *Manager) GetLoaderRangeTo(index int) int {
 		}
 	}
 	return to
+}
+
+func (m *Manager) GetSubtitlesUrl(index int) string {
+	if m.errIndex(index) {
+		return ""
+	}
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	loader := m.loaders[index]
+	return loader.GetList().Subtitles
+}
+
+func (m *Manager) GetSubtitlesFile(index int) string {
+	if m.errIndex(index) {
+		return ""
+	}
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+	loader := m.loaders[index]
+	if loader.GetList().Subtitles == "" {
+		return ""
+	}
+
+	ext := filepath.Ext(loader.GetList().Subtitles)
+	if ext == "" {
+		ext = ".srt"
+	}
+	return filepath.Join(m.Settings.DownloadPath, loader.GetList().Name) + ext
 }
