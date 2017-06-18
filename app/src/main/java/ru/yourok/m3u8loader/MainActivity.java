@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
                     adapter.setSelected(i);
                 }
                 updateMenu();
+                adapter.notifyDataSetChanged();
             }
         });
         requestPermissionWithRationale();

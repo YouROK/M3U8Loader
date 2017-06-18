@@ -1,7 +1,10 @@
 package ru.yourok.loader;
 
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -12,6 +15,7 @@ import dwl.Dwl;
 import dwl.LoaderInfo;
 import dwl.Settings;
 import ru.yourok.m3u8loader.R;
+import ru.yourok.m3u8loader.utils.Notifications;
 //import dwl.Options;
 
 
@@ -34,8 +38,12 @@ public class Manager {
 
     static public String Add(String url, String name, String cookies, String useragent) {
         try {
-            if (manager != null)
+            if (manager != null) {
+                if (url.toLowerCase().startsWith("content://"))
+                    url = "file" + url.substring(7);
+
                 manager.add(url, name, cookies, useragent);
+            }
             return "";
         } catch (Exception e) {
             e.printStackTrace();
@@ -61,10 +69,10 @@ public class Manager {
 
     static public void Load(int i) {
         if (manager != null) {
-            try{
+            try {
                 manager.loadSubtitles(i);
-            }catch (Exception e){
-                Toast.makeText(MyApplication.getContext(),MyApplication.getContext().getText(R.string.error_load_subs)+": "+e.getMessage(),Toast.LENGTH_SHORT).show();
+            } catch (final Exception e) {
+                Notifications.ToastMsg(MyApplication.getContext().getText(R.string.error_load_subs) + ": " + e.getMessage());
             }
             manager.load(i);
         }

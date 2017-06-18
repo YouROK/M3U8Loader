@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Environment;
 
 import dwl.Settings;
+import ru.yourok.m3u8loader.utils.Notifications;
 
 /**
  * Created by yourok on 23.03.17.
@@ -20,6 +21,7 @@ public class MyApplication extends Application {
 
     @Override
     public void onCreate() {
+//        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
         context = getApplicationContext();
         Store.Init(this);
         Settings sets = Manager.GetSettings();

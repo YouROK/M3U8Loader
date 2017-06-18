@@ -71,8 +71,8 @@ public class MainActivityLoaderAdaptor extends BaseAdapter {
 
         ((TextView) view.findViewById(R.id.textViewName)).setText(String.valueOf(position));
         if (selected == position) {
-            view.setBackgroundColor(Color.parseColor("#cccccccc"));
-            view.getBackground().setAlpha(75);
+            view.setBackgroundColor(Color.parseColor("#cccccc"));
+            view.getBackground().setAlpha(128);
         } else
             view.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
 

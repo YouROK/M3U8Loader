@@ -10,7 +10,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.NotificationCompat;
+import android.widget.Toast;
 
 import dwl.LoaderInfo;
 import ru.yourok.loader.Manager;
@@ -144,5 +147,19 @@ public class Notifications {
     public static void RemoveNotification() {
         Context context = MyApplication.getContext();
         ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(NOTIFY_ID);
+    }
+
+    public static void ToastMsg(final String msg) {
+        try {
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(MyApplication.getContext(), msg, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

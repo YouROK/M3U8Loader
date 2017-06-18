@@ -1,5 +1,6 @@
 package ru.yourok.loader;
 
+import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
@@ -107,19 +108,15 @@ public class Loader {
             return;
         Handler handler = new Handler(Looper.getMainLooper());
         final LoaderInfo stat = Manager.GetLoaderInfo(index);
-        if (stat != null)
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (stat.getStatus() == Manager.STATUS_COMPLETE) {
-                        String msg = MyApplication.getContext().getString(R.string.status_load_complete) + ": " + stat.getName();
-                        Toast.makeText(MyApplication.getContext(), msg, Toast.LENGTH_SHORT).show();
-                    }
-                    if (stat.getStatus() == Manager.STATUS_ERROR) {
-                        String msg = MyApplication.getContext().getString(R.string.status_load_error) + ": " + stat.getName() + ", " + stat.getError();
-                        Toast.makeText(MyApplication.getContext(), msg, Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+        if (stat != null) {
+            if (stat.getStatus() == Manager.STATUS_COMPLETE) {
+                String msg = MyApplication.getContext().getString(R.string.status_load_complete) + ": " + stat.getName();
+                Notifications.ToastMsg(msg);
+            }
+            if (stat.getStatus() == Manager.STATUS_ERROR) {
+                String msg = MyApplication.getContext().getString(R.string.status_load_error) + ": " + stat.getName() + ", " + stat.getError();
+                Notifications.ToastMsg(msg);
+            }
+        }
     }
 }

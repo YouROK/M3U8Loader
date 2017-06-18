@@ -50,8 +50,6 @@ public class AddLoaderActivity extends AppCompatActivity {
             if (intent.getExtras() != null) {
                 Bundle bundle = intent.getExtras();
                 for (String key : bundle.keySet()) {
-                    Log.i("KEY", key);
-                    Log.i("VAL", bundle.get(key).toString());
                     if (key.toLowerCase().contains("name") || key.toLowerCase().contains("title")) {
                         Object value = bundle.get(key);
                         if (value != null) {
@@ -108,6 +106,7 @@ public class AddLoaderActivity extends AppCompatActivity {
                 Toast.makeText(this, "Error: not found url", Toast.LENGTH_SHORT).show();
                 finish();
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             finish();
