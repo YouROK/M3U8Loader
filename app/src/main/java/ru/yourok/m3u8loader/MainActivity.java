@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -12,7 +14,6 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import java.io.File;
 import dwl.LoaderInfo;
 import ru.yourok.loader.Loader;
 import ru.yourok.loader.Manager;
+import ru.yourok.loader.Store;
 import ru.yourok.m3u8loader.utils.*;
 
 
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isUpdateList;
 
     private final Object lock = new Object();
+    private static long lastViewDonate = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         updateList();
+        showDonate();
     }
 
     public void requestPermissionWithRationale() {
@@ -426,5 +430,43 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void showDonate() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (MainActivity.this.getText(R.string.error).toString().equals("Ошибка"))
+                    return;
+
+                if (System.currentTimeMillis() - lastViewDonate < 3 * 1000)
+                    return;
+                lastViewDonate = System.currentTimeMillis();
+
+                final long oneweek = 518400000l;
+
+                long last = Store.getLastDonationView(MainActivity.this);
+                if (last == -1)
+                    return;
+                if (System.currentTimeMillis() - last > oneweek) {//раз в неделю
+                    final Handler handler = new Handler(Looper.getMainLooper());
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Snackbar.make(findViewById(R.id.main_layout), getText(R.string.donation) + "?", Snackbar.LENGTH_INDEFINITE)
+                                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Store.setLastDonationView(MainActivity.this, System.currentTimeMillis());
+                                            Intent intent = new Intent(MainActivity.this, DonationActivity.class);
+                                            startActivity(intent);
+                                        }
+                                    })
+                                    .show();
+                        }
+                    }, 2000);
+                }
+            }
+        }).start();
     }
 }

@@ -161,6 +161,7 @@ public class AddLoaderActivity extends AppCompatActivity {
     }
 
     public void cancelBtnClick(View view) {
+        setResult(RESULT_CANCELED);
         finish();
     }
 
@@ -233,6 +234,7 @@ public class AddLoaderActivity extends AppCompatActivity {
                         Loader.Add(i);
                     Loader.Start();
                 }
+                AddLoaderActivity.this.setResult(RESULT_OK);
                 AddLoaderActivity.this.finish();
             }
         }).start();

@@ -58,6 +58,15 @@ public class Store {
         }
     }
 
+    static public long getLastDonationView(Context context) {
+        try {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            return prefs.getLong("LastDonationView", 0);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
     static public void setTheme(Context context, String val) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         prefs.edit().putString("Theme", val).apply();
@@ -66,6 +75,11 @@ public class Store {
     static public void setPlayer(Context context, String val) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         prefs.edit().putString("Player", val).apply();
+    }
+
+    static public void setLastDonationView(Context context, long val) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        prefs.edit().putLong("LastDonationView", val).apply();
     }
 
     static public String byteFmt(long bytes) {

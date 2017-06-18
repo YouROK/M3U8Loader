@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import java.util.Random;
 
+import ru.yourok.loader.Store;
 import ru.yourok.m3u8loader.utils.ThemeChanger;
 
 public class DonationActivity extends AppCompatActivity {
@@ -57,12 +58,14 @@ public class DonationActivity extends AppCompatActivity {
     public void onDonEURClick(View view) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6MQ5S274L3TEQ"));
         startActivity(browserIntent);
+        Store.setLastDonationView(this, -1);
         finish();
     }
 
     public void onDonRUBClick(View view) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VPYLMA6PJ8F98"));
         startActivity(browserIntent);
+        Store.setLastDonationView(this, -1);
         finish();
     }
 }
