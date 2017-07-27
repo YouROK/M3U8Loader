@@ -91,8 +91,8 @@ public class EditLoaderActivity extends AppCompatActivity {
     }
 
     private void refresh() {
-        ((TextView) findViewById(R.id.textViewUrl)).setText(info.getUrl());
-        ((TextView) findViewById(R.id.textViewName)).setText(info.getName());
+        ((TextView) findViewById(R.id.textViewUrlItem)).setText(info.getUrl());
+        ((TextView) findViewById(R.id.textViewNameItem)).setText(info.getName());
         ((EditText) findViewById(R.id.editTextUseragent)).setText(Manager.GetLoaderUseragent(Index));
         ((EditText) findViewById(R.id.editTextCookies)).setText(Manager.GetLoaderCookies(Index));
         SeekBar left = (SeekBar) findViewById(R.id.rangeSeekbarLeft);

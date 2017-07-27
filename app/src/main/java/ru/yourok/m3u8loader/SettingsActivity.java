@@ -91,15 +91,19 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void okBtnClick(View view) {
-        String lastTheme = Store.getTheme(this);
-        saveSettings();
-        Intent intent = new Intent();
-        setResult(RESULT_OK, intent);
-        if (!lastTheme.equals(Store.getTheme(this)))
-            intent.putExtra("recreate", true);
-        else
-            intent.putExtra("recreate", false);
-        finish();
+        try {
+            String lastTheme = Store.getTheme(this);
+            saveSettings();
+            Intent intent = new Intent();
+            setResult(RESULT_OK, intent);
+            if (!lastTheme.equals(Store.getTheme(this)))
+                intent.putExtra("recreate", true);
+            else
+                intent.putExtra("recreate", false);
+            finish();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void cancelBtnClick(View view) {

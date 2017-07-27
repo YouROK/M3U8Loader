@@ -44,6 +44,7 @@
     <string name="replace_url_msg">Загрузка с таким именем существует, заменить в ней ссылку?</string>
 
     <string name="donation">Пожертвование</string>
+    <string name="donat_label">Пожертвовать</string>
     <string name="donation_msg">Если это приложение делает вас счастливее, можете угостить меня</string>
 
     <string name="error">Ошибка</string>

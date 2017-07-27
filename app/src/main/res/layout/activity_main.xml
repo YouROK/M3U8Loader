@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:id="@+id/main_layout"
     android:divider="?android:attr/dividerVertical"
     android:orientation="vertical"
     tools:context="ru.yourok.m3u8loader.MainActivity">
@@ -76,45 +76,128 @@
         style="@android:style/DeviceDefault.ButtonBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:visibility="gone">
 
-        <ImageButton
-            android:id="@+id/buttonItemMenuStart"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/ic_play_circle_outline_black_24dp"
-            android:onClick="onLoadItemClick"/>
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:padding="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <ImageButton
-            android:id="@+id/buttonItemMenuStop"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="onStopItemClick"
-            app:srcCompat="@drawable/ic_pause_circle_outline_black_24dp" />
+            <TextView
+                android:id="@+id/textViewName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:text=""
+                android:textAppearance="@android:style/TextAppearance.Medium" />
 
-        <ImageButton
-            android:id="@+id/buttonItemMenuRemove"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="onRemoveItemClick"
-            app:srcCompat="@drawable/ic_remove_circle_outline_black_24dp" />
+            <TextView
+                android:id="@+id/textViewStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/textViewName"
+                android:layout_toLeftOf="@+id/textViewSpeed"
+                android:layout_toStartOf="@+id/textViewSpeed"
+                android:text=""
+                android:textAppearance="@android:style/TextAppearance.Small" />
 
-        <ImageButton
-            android:id="@+id/buttonItemMenuEdit"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/textViewSpeed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/textViewStatus"
+                android:layout_centerHorizontal="true"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/textViewTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/textViewName"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/textViewItems"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/textViewSpeed"
+                android:text="" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="@android:style/Widget.DeviceDefault.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/textViewError"
+                android:maxHeight="20dp"
+                android:minHeight="20dp"
+                android:progress="0"
+                android:scaleY="2" />
+
+            <TextView
+                android:id="@+id/textViewError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/textViewStatus"
+                android:text=""
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="onEditItemClick"
-            app:srcCompat="@drawable/ic_mode_edit_black_24dp" />
+            android:layout_weight="0"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/buttonItemMenuStart"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="onLoadItemClick"
+                app:srcCompat="@drawable/ic_play_circle_outline_black_24dp" />
+
+            <ImageButton
+                android:id="@+id/buttonItemMenuStop"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="onStopItemClick"
+                app:srcCompat="@drawable/ic_pause_circle_outline_black_24dp" />
+
+            <ImageButton
+                android:id="@+id/buttonItemMenuRemove"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="onRemoveItemClick"
+                app:srcCompat="@drawable/ic_remove_circle_outline_black_24dp" />
+
+            <ImageButton
+                android:id="@+id/buttonItemMenuEdit"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="onEditItemClick"
+                app:srcCompat="@drawable/ic_mode_edit_black_24dp" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

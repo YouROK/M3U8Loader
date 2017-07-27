@@ -44,6 +44,7 @@
     <string name="replace_url_msg">Loading with the same name exists, replace his URL?</string>
 
     <string name="donation">Donation</string>
+    <string name="donat_label">Donate</string>
     <string name="donation_msg">If this app makes you happier, you can give me a</string>
 
     <string name="error">Error</string>

@@ -22,12 +22,12 @@ func (m *Manager) GetLoaderInfo(index int) *LoaderInfo {
 		return nil
 	}
 	m.mutex.Lock()
-	defer m.mutex.Unlock()
 
 	list := m.loaders[index].GetList()
 	if list == nil {
 		return nil
 	}
+	m.mutex.Unlock()
 
 	li := new(LoaderInfo)
 	li.Url = list.Url

@@ -88,8 +88,6 @@ func (m *Manager) Clean(index int) {
 }
 
 func (m *Manager) Len() int {
-	m.mutex.Lock()
-	defer m.mutex.Unlock()
 	return len(m.loaders)
 }
 

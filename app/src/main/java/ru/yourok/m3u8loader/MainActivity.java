@@ -3,6 +3,7 @@ package ru.yourok.m3u8loader;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,6 +17,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -31,7 +34,10 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
 
     private ListView loadersList;
+    private MainActivityLoaderAdaptor adaptorList;
     private boolean isUpdateList;
+    private boolean updateOnce;
+    private long lastTimeUpdate;
 
     private final Object lock = new Object();
     private static long lastViewDonate = 0;
@@ -43,18 +49,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         loadersList = (ListView) findViewById(R.id.listViewLoaders);
-        final MainActivityLoaderAdaptor adapter = new MainActivityLoaderAdaptor(this);
-        loadersList.setAdapter(adapter);
+        adaptorList = new MainActivityLoaderAdaptor(this);
+        loadersList.setAdapter(adaptorList);
         loadersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (adapter.getSelected() == i) {
-                    adapter.setSelected(-1);
+                if (adaptorList.getSelected() == i) {
+                    adaptorList.setSelected(-1);
                 } else {
-                    adapter.setSelected(i);
+                    adaptorList.setSelected(i);
                 }
                 updateMenu();
-                adapter.notifyDataSetChanged();
+                adaptorList.notifyDataSetChanged();
             }
         });
         requestPermissionWithRationale();
@@ -69,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        updateList();
+        updateStatus();
         showDonate();
     }
 
@@ -89,11 +95,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateMenu() {
-
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
+                    updateOnce = true;
                     Thread.sleep(300);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -112,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
                                     ((ImageButton) findViewById(R.id.buttonItemMenuStart)).setImageResource(R.drawable.ic_file_download_black_24dp);
                                 findViewById(R.id.itemLoaderMenu).setVisibility(View.VISIBLE);
                             }
+                            adaptorList.notifyDataSetChanged();
                         }
                     }
                 });
@@ -132,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    private void updateList() {
+    private void updateStatus() {
         updateMenu();
         synchronized (lock) {
             if (isUpdateList)
@@ -143,28 +150,40 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 for (; isUpdateList; ) {
+                    updateOnce = false;
+
+                    final MainActivityLoaderAdaptor adaptorList = ((MainActivityLoaderAdaptor) loadersList.getAdapter());
+                    if (Manager.Length() > 0 && adaptorList.getSelected() >= Manager.Length())
+                        adaptorList.setSelected(Manager.Length() - 1);
+                    if (Manager.Length() == 0)
+                        adaptorList.setSelected(-1);
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                ((MainActivityLoaderAdaptor) loadersList.getAdapter()).notifyDataSetChanged();
-                                MainActivityLoaderAdaptor adaptorList = ((MainActivityLoaderAdaptor) loadersList.getAdapter());
-                                if (Manager.Length() > 0 && adaptorList.getSelected() >= Manager.Length())
-                                    adaptorList.setSelected(Manager.Length() - 1);
-                                if (Manager.Length() == 0)
-                                    adaptorList.setSelected(-1);
+                                updateStatus(adaptorList.getSelected());
+                                if (Loader.isLoading() && (System.currentTimeMillis() - lastTimeUpdate > 5000)) {
+                                    adaptorList.notifyDataSetChanged();
+                                    lastTimeUpdate = System.currentTimeMillis();
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
                     });
+
                     try {
-                        if (Loader.isLoading())
-                            Thread.sleep(200);
+                        if (Loader.isLoading() && adaptorList.getSelected() != -1)
+                            for (int i = 0; i < 10; i++) {
+                                Thread.sleep(10);
+                                if (!isUpdateList || updateOnce)
+                                    break;
+                            }
                         else {
-                            for (int i = 0; i < 30; i++) {
-                                Thread.sleep(100);
-                                if (!isUpdateList || Loader.isLoading())
+                            for (int i = 0; i < 100; i++) {
+                                Thread.sleep(10);
+                                if (!isUpdateList || Loader.isLoading() || updateOnce)
                                     break;
                             }
                         }
@@ -182,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
         intent.setData(Uri.parse(""));
         startActivity(intent);
         view.setEnabled(true);
+        updateOnce = true;
     }
 
     public void onDownloadAllClick(View view) {
@@ -193,6 +213,7 @@ public class MainActivity extends AppCompatActivity {
         Loader.Start();
         view.setEnabled(true);
         updateMenu();
+        updateOnce = true;
     }
 
     public void onStopAllClick(View view) {
@@ -200,6 +221,7 @@ public class MainActivity extends AppCompatActivity {
         Loader.Clear();
         view.setEnabled(true);
         updateMenu();
+        updateOnce = true;
     }
 
     public void onClearListClick(View view) {
@@ -279,6 +301,7 @@ public class MainActivity extends AppCompatActivity {
                 }).start();
             }
         }
+        updateOnce = true;
     }
 
     public void onLoadItemClick(View view) {
@@ -436,9 +459,6 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (MainActivity.this.getText(R.string.error).toString().equals("Ошибка"))
-                    return;
-
                 if (System.currentTimeMillis() - lastViewDonate < 3 * 1000)
                     return;
                 lastViewDonate = System.currentTimeMillis();
@@ -449,11 +469,11 @@ public class MainActivity extends AppCompatActivity {
                 if (last == -1)
                     return;
                 if (System.currentTimeMillis() - last > oneweek) {//раз в неделю
-                    final Handler handler = new Handler(Looper.getMainLooper());
-                    handler.postDelayed(new Runnable() {
+                    final Snackbar snackbar = Snackbar.make(findViewById(R.id.main_layout), getText(R.string.donation) + "?", Snackbar.LENGTH_INDEFINITE);
+                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            Snackbar.make(findViewById(R.id.main_layout), getText(R.string.donation) + "?", Snackbar.LENGTH_INDEFINITE)
+                            snackbar
                                     .setAction(android.R.string.ok, new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
@@ -464,9 +484,85 @@ public class MainActivity extends AppCompatActivity {
                                     })
                                     .show();
                         }
-                    }, 2000);
+                    }, 5000);
+                    new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (snackbar.isShown())
+                                snackbar.dismiss();
+                        }
+                    }, 25000);
                 }
             }
         }).start();
+    }
+
+    private void updateStatus(int position) {
+        if (position < 0)
+            return;
+        LoaderInfo info = Manager.GetLoaderInfo(position);
+        if (info != null) {
+            try {
+                ((TextView) findViewById(R.id.textViewName)).setText(info.getName());
+                if (info.getError().isEmpty())
+                    findViewById(R.id.textViewError).setVisibility(View.GONE);
+                else
+                    findViewById(R.id.textViewError).setVisibility(View.VISIBLE);
+
+                if (info.getSpeed() > 0)
+                    ((TextView) findViewById(R.id.textViewSpeed)).setText(Store.byteFmt(info.getSpeed()) + "/sec");
+                else
+                    ((TextView) findViewById(R.id.textViewSpeed)).setText("");
+
+                if ((int) info.getDuration() > 0) {
+                    double loadedD = info.getLoadedDuration();
+                    double duration = info.getDuration();
+                    String progTime = secondsFormatter(loadedD) + " / " + secondsFormatter(duration);
+                    ((TextView) findViewById(R.id.textViewTime)).setText(progTime);
+                    ((TextView) findViewById(R.id.textViewItems)).setText(info.getCompleted() + "/" + info.getLoadingCount() + " " + Store.byteFmt(info.getLoadedBytes()));
+                }
+
+                if (info.getLoadingCount() > 0)
+                    ((ProgressBar) findViewById(R.id.progressBar)).setProgress((int) (info.getCompleted() * 100 / info.getLoadingCount()));
+                else
+                    ((ProgressBar) findViewById(R.id.progressBar)).setProgress(0);
+                ((ProgressBar) findViewById(R.id.progressBar)).getProgressDrawable().setColorFilter(ThemeChanger.getProgressBarColor(this), PorterDuff.Mode.SRC_IN);
+
+                TextView stView = (TextView) findViewById(R.id.textViewStatus);
+                switch ((int) info.getStatus()) {
+                    case 0: {
+                        stView.setText(R.string.status_load_stopped);
+                        break;
+                    }
+                    case 1: {
+                        stView.setText(R.string.status_load_loading);
+                        break;
+                    }
+                    case 2: {
+                        stView.setText(R.string.status_load_complete);
+                        break;
+                    }
+                    case 3: {
+                        stView.setText(R.string.status_load_error);
+                        ((TextView) findViewById(R.id.textViewError)).setText(info.getError());
+                        break;
+                    }
+                    default:
+                        stView.setText(R.string.status_load_unknown);
+                        break;
+                }
+                if (info.getThreads() > 0)
+                    stView.setText(stView.getText().toString() + " " + info.getThreads());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static String secondsFormatter(double seconds) {
+        int hours = (int) (seconds / 3600);
+        int minutes = (int) ((seconds % 3600) / 60);
+        int secs = (int) ((seconds % 3600) % 60);
+        return String.format("%02d:%02d:%02d", hours, minutes, secs);
     }
 }
