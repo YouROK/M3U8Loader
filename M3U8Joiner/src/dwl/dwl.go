@@ -106,6 +106,9 @@ func (m *Manager) Load(index int) {
 	}
 	m.mutex.Lock()
 	defer m.mutex.Unlock()
+
+
+
 	go m.loaders[index].Load(m.update)
 }
 

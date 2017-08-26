@@ -99,6 +99,7 @@ public class Loader {
                 }
                 loading = false;
                 Notifications.Update(index);
+                LoaderService.stopService();
             }
         }).start();
     }

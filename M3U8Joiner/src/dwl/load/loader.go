@@ -161,7 +161,7 @@ func (l *Loader) Status() int {
 ///////////////////////////////////////////////////////////////
 
 func (l *Loader) dynamicSize() {
-	if l.sets.DynamicSize {
+	if l.sets.DynamicSize && !l.sets.LoadItemsSize {
 		l.file.TruncateAuto(l.list, l.sets.Threads)
 	}
 }

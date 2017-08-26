@@ -14,7 +14,8 @@ func main() {
 	//url := "http://localhost:8090/files/bipbop/bipbopall.m3u8"
 	//url := "https://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear1/prog_index.m3u8"
 	//url := "http://localhost:8090/files/crypted/crypted.m3u8"
-	url := "http://185.38.12.34/sec/1496458923/323131357cecbe77d0ac3da12733b01d3c9e4f8d9a5ccbd3/ivs/14/b2/cd247efb5db6.mp4/hls/tracks-3,4/index.m3u8"
+	//url := "http://185.38.12.34/sec/1496458923/323131357cecbe77d0ac3da12733b01d3c9e4f8d9a5ccbd3/ivs/14/b2/cd247efb5db6.mp4/hls/tracks-3,4/index.m3u8"
+	url := "http://185.38.12.57/sec/1503638410/3837333428f3075f0647ee52b9dc7dbb353bbd50f480c462/ivs/9d/6e/6e1dedb079d7.mp4/hls/tracks-1,7/index.m3u8"
 	name := "test"
 
 	manager, err := dwl.OpenManager("/home/yourok/tmp/video/config/")
@@ -22,9 +23,10 @@ func main() {
 		fmt.Println("Error open manager", err)
 	}
 
-	manager.SetSettingsThreads(20)
+	manager.SetSettingsThreads(30)
 	manager.SetSettingsDownloadPath("/home/yourok/tmp/video/")
-	manager.SetSettingsDynamicSize(true)
+	//manager.SetSettingsDynamicSize(true)
+	//manager.SetSettingsLoadItemsSize(true)
 	manager.SaveSettings()
 
 	if manager.Len() == 0 {
@@ -37,11 +39,13 @@ func main() {
 		manager.Clean(0)
 	}
 
-	manager.SetSubtitles(0,"http://185.38.12.39/static/srt/uploads/srt_master_file/219769/d87add9d880b4ab8.srt")
-	err = manager.LoadSubtitles(0)
-	if err != nil {
-		fmt.Println("Error load subtitles:", err)
-	}
+	fmt.Println(utils.ByteSize(manager.GetLoaderInfo(0).Size))
+
+	//manager.SetSubtitles(0,"http://185.38.12.39/static/srt/uploads/srt_master_file/219769/d87add9d880b4ab8.srt")
+	//err = manager.LoadSubtitles(0)
+	//if err != nil {
+	//	fmt.Println("Error load subtitles:", err)
+	//}
 
 	manager.Load(0)
 	if manager.GetLoaderInfo(0).Status == load.STATUS_STOPED {

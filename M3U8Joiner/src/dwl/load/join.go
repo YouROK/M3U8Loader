@@ -31,6 +31,18 @@ func (l *Loader) openFile() (*File, error) {
 	}
 	ff := new(File)
 	ff.file = f
+	if l.sets.LoadItemsSize {
+		var size int64
+		for _, i := range l.list.Items {
+			if i.IsLoad {
+				size += i.Size
+			}
+		}
+		if size>0 {
+			f.Truncate(size)
+			f.Sync()
+		}
+	}
 	return ff, nil
 }
 

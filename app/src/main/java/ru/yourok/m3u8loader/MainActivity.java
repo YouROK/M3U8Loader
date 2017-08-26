@@ -1,12 +1,16 @@
 package ru.yourok.m3u8loader;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -25,6 +29,7 @@ import java.io.File;
 
 import dwl.LoaderInfo;
 import ru.yourok.loader.Loader;
+import ru.yourok.loader.LoaderService;
 import ru.yourok.loader.Manager;
 import ru.yourok.loader.Store;
 import ru.yourok.m3u8loader.utils.*;
@@ -49,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         loadersList = (ListView) findViewById(R.id.listViewLoaders);
+
         adaptorList = new MainActivityLoaderAdaptor(this);
         loadersList.setAdapter(adaptorList);
         loadersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -63,7 +69,9 @@ public class MainActivity extends AppCompatActivity {
                 adaptorList.notifyDataSetChanged();
             }
         });
+
         requestPermissionWithRationale();
+
     }
 
     @Override
@@ -134,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         if (Manager.GetSettings() == null)
             return false;
-        if (info.getStatus() == Manager.STATUS_LOADING && Manager.GetSettings().getDynamicSize() && (int) info.getLoadedDuration() > Manager.GetSettings().getThreads())
+        if (info.getStatus() == Manager.STATUS_LOADING && (Manager.GetSettings().getDynamicSize() || Manager.GetSettings().getLoadItemsSize()) && (int) info.getLoadedDuration() > Manager.GetSettings().getThreads())
             return true;
         return false;
     }
@@ -210,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
             if (Manager.GetLoaderStatus(i) != Manager.STATUS_COMPLETE)
                 Loader.Add(i);
         }
-        Loader.Start();
+        LoaderService.startServiceLoad();
         view.setEnabled(true);
         updateMenu();
         updateOnce = true;
@@ -324,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
             if (Manager.GetLoaderStatus(sel) != Manager.STATUS_LOADING) {
                 view.setEnabled(false);
                 Loader.Add(sel);
-                Loader.Start();
+                LoaderService.startServiceLoad();
                 view.setEnabled(true);
                 updateMenu();
             }
@@ -509,17 +517,21 @@ public class MainActivity extends AppCompatActivity {
                 else
                     findViewById(R.id.textViewError).setVisibility(View.VISIBLE);
 
+                String speed = "";
                 if (info.getSpeed() > 0)
-                    ((TextView) findViewById(R.id.textViewSpeed)).setText(Store.byteFmt(info.getSpeed()) + "/sec");
-                else
-                    ((TextView) findViewById(R.id.textViewSpeed)).setText("");
+                    speed = Store.byteFmt(info.getSpeed()) + "/sec";
 
                 if ((int) info.getDuration() > 0) {
                     double loadedD = info.getLoadedDuration();
                     double duration = info.getDuration();
                     String progTime = secondsFormatter(loadedD) + " / " + secondsFormatter(duration);
                     ((TextView) findViewById(R.id.textViewTime)).setText(progTime);
-                    ((TextView) findViewById(R.id.textViewItems)).setText(info.getCompleted() + "/" + info.getLoadingCount() + " " + Store.byteFmt(info.getLoadedBytes()));
+                    String size = "";
+                    if (Manager.GetSettings().getLoadItemsSize())
+                        size = Store.byteFmt(info.getLoadedBytes()) + "/" + Store.byteFmt(info.getSize());
+                    else
+                        size = Store.byteFmt(info.getLoadedBytes());
+                    ((TextView) findViewById(R.id.textViewItems)).setText(info.getCompleted() + "/" + info.getLoadingCount() + " " + size);
                 }
 
                 if (info.getLoadingCount() > 0)
@@ -535,7 +547,10 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                     case 1: {
-                        stView.setText(R.string.status_load_loading);
+                        if (speed.isEmpty())
+                            stView.setText(R.string.status_load_loading);
+                        else
+                            stView.setText(getText(R.string.status_load_loading) + " " + speed);
                         break;
                     }
                     case 2: {
@@ -551,8 +566,7 @@ public class MainActivity extends AppCompatActivity {
                         stView.setText(R.string.status_load_unknown);
                         break;
                 }
-                if (info.getThreads() > 0)
-                    stView.setText(stView.getText().toString() + " " + info.getThreads());
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -12,6 +12,7 @@
     <string name="download_path">Download path:</string>
     <string name="set_def_settings">Set the default settings</string>
     <string name="dynamic_file_size">Dynamic file size (experimental)</string>
+    <string name="load_items_size">Load segments size on add (can take a long time)</string>
 
     <string name="selected_folder_label">Selected folder:</string>
     <string name="new_directory_title">New folder</string>
@@ -38,6 +39,7 @@
     <string name="status_load_unknown">Unknown</string>
 
     <string name="permission_storage_msg">Storage permission is needed to download and write files</string>
+    <string name="permission_doze_mode_msg">Request permission, to work in doze mode</string>
     <string name="permission_btn">GRANT</string>
 
     <string name="replace_url">Replace the url in loading?</string>

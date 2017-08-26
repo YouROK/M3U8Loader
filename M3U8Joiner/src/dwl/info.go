@@ -12,6 +12,7 @@ type LoaderInfo struct {
 	Completed    int
 	LoadingCount int
 	All          int
+	Size         int64
 
 	Status int
 	Error  string
@@ -41,19 +42,19 @@ func (m *Manager) GetLoaderInfo(index int) *LoaderInfo {
 		if itm.IsLoad {
 			if itm.IsComplete {
 				li.Completed++
+				li.LoadedBytes += itm.Size
+			} else {
+				li.LoadedBytes += itm.GetLoadedBytes()
 			}
-			loaded := itm.GetLoadedBytes()
-			if loaded == 0 {
-				loaded = itm.Size
-			}
+
 			if itm.Duration > 0 {
 				if itm.IsComplete {
 					li.LoadedDuration += itm.Duration
 				}
 				li.Duration += itm.Duration
 			}
-			li.LoadedBytes += loaded
 			li.Speed += itm.GetSpeed()
+			li.Size += itm.Size
 			li.LoadingCount++
 			if itm.IsLoading() {
 				li.Threads++

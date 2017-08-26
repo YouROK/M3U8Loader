@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Environment;
 
 import dwl.Settings;
-import ru.yourok.m3u8loader.utils.Notifications;
 
 /**
  * Created by yourok on 23.03.17.

@@ -9,7 +9,7 @@ import (
 )
 
 func (m *Manager) parse(url, name string, header http.Header) ([]*list.List, error) {
-	parseList, err := list.ParseUrl(url, name, header)
+	parseList, err := list.ParseUrl(url, name, m.Settings.LoadItemsSize, header)
 	if err != nil {
 		return nil, err
 	}

@@ -1,12 +1,9 @@
 package ru.yourok.m3u8loader;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Environment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -38,7 +35,7 @@ public class SettingsActivity extends AppCompatActivity {
         try {
             PackageInfo pInfo;
             pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            String version = "YouROK "+getText(R.string.app_name) + " " + pInfo.versionName;
+            String version = "YouROK " + getText(R.string.app_name) + " " + pInfo.versionName;
             ((TextView) findViewById(R.id.textViewVersion)).setText(version);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -58,7 +55,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void loadSettings() {
         Settings sets = Manager.GetSettings();
-        if (sets==null)
+        if (sets == null)
             finish();
         ((EditText) findViewById(R.id.editTextDirectoryPath)).setText(Store.getDownloadPath());
         ((EditText) findViewById(R.id.editTextThreads)).setText(String.valueOf(sets.getThreads()));
@@ -66,6 +63,7 @@ public class SettingsActivity extends AppCompatActivity {
         ((EditText) findViewById(R.id.editTextCookies)).setText(sets.getCookies());
         ((EditText) findViewById(R.id.editTextUseragent)).setText(sets.getUseragent());
         ((CheckBox) findViewById(R.id.checkboxDynamicFileSize)).setChecked(sets.getDynamicSize());
+        ((CheckBox) findViewById(R.id.checkboxLoadItemsSize)).setChecked(sets.getLoadItemsSize());
         ((Spinner) findViewById(R.id.spinnerChooseTheme)).setSelection(Integer.parseInt(Store.getTheme(this)));
         ((Spinner) findViewById(R.id.spinnerChoosePlayer)).setSelection(Integer.parseInt(Store.getPlayer(this)));
     }
@@ -77,6 +75,7 @@ public class SettingsActivity extends AppCompatActivity {
         String useragent = ((EditText) findViewById(R.id.editTextUseragent)).getText().toString();
         String cookies = ((EditText) findViewById(R.id.editTextCookies)).getText().toString();
         boolean dynamicFileSize = ((CheckBox) findViewById(R.id.checkboxDynamicFileSize)).isChecked();
+        boolean loaditemssize = ((CheckBox) findViewById(R.id.checkboxLoadItemsSize)).isChecked();
         int theme = ((Spinner) findViewById(R.id.spinnerChooseTheme)).getSelectedItemPosition();
         int player = ((Spinner) findViewById(R.id.spinnerChoosePlayer)).getSelectedItemPosition();
         Manager.SetSettingsDownloadPath(dirout);
@@ -85,6 +84,7 @@ public class SettingsActivity extends AppCompatActivity {
         Manager.SetSettingsUseragent(useragent);
         Manager.SetSettingsCookies(cookies);
         Manager.SetSettingsDynamicSize(dynamicFileSize);
+        Manager.SetLoadItemsSize(loaditemssize);
         Manager.SaveSettings();
         Store.setTheme(this, String.valueOf(theme));
         Store.setPlayer(this, String.valueOf(player));
@@ -101,7 +101,7 @@ public class SettingsActivity extends AppCompatActivity {
             else
                 intent.putExtra("recreate", false);
             finish();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

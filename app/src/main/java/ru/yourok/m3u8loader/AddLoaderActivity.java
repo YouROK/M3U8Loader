@@ -19,6 +19,7 @@ import java.io.File;
 
 import dwl.LoaderInfo;
 import ru.yourok.loader.Loader;
+import ru.yourok.loader.LoaderService;
 import ru.yourok.loader.Manager;
 import ru.yourok.m3u8loader.utils.ThemeChanger;
 
@@ -232,7 +233,7 @@ public class AddLoaderActivity extends AppCompatActivity {
                 if (load && oldLength != Manager.Length()) {
                     for (int i = start; i < Manager.Length(); i++)
                         Loader.Add(i);
-                    Loader.Start();
+                    LoaderService.startServiceLoad();
                 }
                 AddLoaderActivity.this.setResult(RESULT_OK);
                 AddLoaderActivity.this.finish();

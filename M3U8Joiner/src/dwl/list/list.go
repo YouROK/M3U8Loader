@@ -87,9 +87,11 @@ func (l *List) load(itm *stats.Item, header http.Header) error {
 
 	buffer := make([]byte, 32768)
 	n := 0
-	itm.Size = cli.GetSize()
 	if itm.Size <= 0 {
-		return errors.New("get wrong size: " + itm.Url + " 0 bytes")
+		itm.Size = cli.GetSize()
+		if itm.Size <= 0 {
+			return errors.New("get wrong size: " + itm.Url + " 0 bytes")
+		}
 	}
 	itm.InitBuffer(itm.Size)
 	itm.StartSpeed()
@@ -115,7 +117,6 @@ func (l *List) load(itm *stats.Item, header http.Header) error {
 		itm.SetLoadComplete(true)
 	}
 	if err != nil {
-		itm.Size = 0
 		itm.CleanBuffer()
 	}
 	itm.SetError(err)

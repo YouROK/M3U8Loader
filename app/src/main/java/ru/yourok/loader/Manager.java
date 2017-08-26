@@ -218,4 +218,9 @@ public class Manager {
         if (manager != null)
             manager.setSettingsDynamicSize(val);
     }
+
+    static public void SetLoadItemsSize(boolean val) {
+        if (manager != null)
+            manager.setSettingsLoadItemsSize(val);
+    }
 }

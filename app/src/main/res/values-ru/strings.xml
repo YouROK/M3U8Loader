@@ -12,6 +12,7 @@
     <string name="download_path">Папка загрузки:</string>
     <string name="set_def_settings">Установить настройки по умолчанию</string>
     <string name="dynamic_file_size">Динамический размер файла (экспериментальный)</string>
+    <string name="load_items_size">Загружать размер сегментов при добавлении (может занять много времени)</string>
 
     <string name="selected_folder_label">Выберите папку:</string>
     <string name="new_directory_title">Новая папка</string>
@@ -38,6 +39,7 @@
     <string name="status_load_unknown">Неизвестно</string>
 
     <string name="permission_storage_msg">Доступ к памяти требуется для загрузки и записи файлов</string>
+    <string name="permission_doze_mode_msg">Запросить разрешение, для работы в режиме doze</string>
     <string name="permission_btn">РАЗРЕШИТЬ</string>
 
     <string name="replace_url">Заменить ссылку в загрузке?</string>

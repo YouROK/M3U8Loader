@@ -101,18 +101,9 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/textViewName"
-                android:layout_toLeftOf="@+id/textViewSpeed"
-                android:layout_toStartOf="@+id/textViewSpeed"
                 android:text=""
                 android:textAppearance="@android:style/TextAppearance.Small" />
 
-            <TextView
-                android:id="@+id/textViewSpeed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/textViewStatus"
-                android:layout_centerHorizontal="true"
-                android:text="" />
 
             <TextView
                 android:id="@+id/textViewTime"
@@ -129,7 +120,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignTop="@+id/textViewSpeed"
+                android:layout_alignTop="@+id/textViewStatus"
                 android:text="" />
 
             <ProgressBar

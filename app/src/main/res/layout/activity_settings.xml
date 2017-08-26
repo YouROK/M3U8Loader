@@ -112,9 +112,20 @@
 
             <CheckBox
                 android:id="@+id/checkboxDynamicFileSize"
-                android:text="@string/dynamic_file_size"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="@string/dynamic_file_size" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:background="@android:color/transparent" />
+
+            <CheckBox
+                android:id="@+id/checkboxLoadItemsSize"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/load_items_size" />
 
             <View
                 android:layout_width="match_parent"

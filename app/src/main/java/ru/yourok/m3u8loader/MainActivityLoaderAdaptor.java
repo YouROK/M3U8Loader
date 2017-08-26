@@ -74,11 +74,12 @@ public class MainActivityLoaderAdaptor extends BaseAdapter {
                 TextView stView = (TextView) view.findViewById(R.id.textViewStatusItem);
                 ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progressBarItem);
                 if (info.getLoadingCount() > 0 && info.getCompleted() > 0) {
-                    progressBar.getProgressDrawable().setColorFilter(ThemeChanger.getProgressBarColor(context), PorterDuff.Mode.SRC_IN);
                     progressBar.setVisibility(View.VISIBLE);
                     progressBar.setProgress((int) (info.getCompleted() * 100 / info.getLoadingCount()));
                 } else
                     progressBar.setVisibility(View.GONE);
+
+                progressBar.getProgressDrawable().setColorFilter(ThemeChanger.getProgressBarColor(context), PorterDuff.Mode.SRC_IN);
                 switch ((int) info.getStatus()) {
                     case 0: {
                         stView.setText(R.string.status_load_stopped);

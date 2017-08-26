@@ -2,6 +2,7 @@ package list
 
 import (
 	"bytes"
+	"dwl/client"
 	"dwl/crypto"
 	"dwl/stats"
 	"dwl/utils"
@@ -10,19 +11,22 @@ import (
 	"github.com/grafov/m3u8"
 	"net/http"
 	"strings"
+	"sync"
 )
 
 type ParseList struct {
 	url, name string
 	header    http.Header
 	lists     []*List
+	readSize  bool
 }
 
-func ParseUrl(url, name string, header http.Header) (*ParseList, error) {
+func ParseUrl(url, name string, readSize bool, header http.Header) (*ParseList, error) {
 	p := new(ParseList)
 	p.url = url
 	p.name = name
 	p.header = header
+	p.readSize = readSize
 	lists, err := p.parse(url)
 	if err != nil {
 		return nil, err
@@ -72,7 +76,9 @@ func (p *ParseList) parse(url string) ([]*List, error) {
 				list.EncKey = key
 			}
 
-			for _, i := range mlist.Segments {
+			var waitSize sync.WaitGroup
+
+			for c, i := range mlist.Segments {
 				if i == nil || i.URI == "" {
 					continue
 				}
@@ -105,9 +111,29 @@ func (p *ParseList) parse(url string) ([]*List, error) {
 					itm.IsLoad = true
 					itm.Duration = i.Duration
 					itm.Index = len(list.Items)
+
+					if p.readSize {
+						waitSize.Add(1)
+						go func() {
+							waitSize.Add(1)
+							cli, err := client.GetClient(itemUrl, p.header)
+							if err == nil {
+								if cli.Connect() == nil {
+									itm.Size = cli.GetSize()
+									cli.Close()
+								}
+							}
+							waitSize.Done()
+						}()
+						waitSize.Done()
+					}
 					list.Items = append(list.Items, &itm)
+					if c%10 == 0 {
+						waitSize.Wait()
+					}
 				}
 			}
+			waitSize.Wait()
 			if len(list.Items) > 0 {
 				retLists = append(retLists, list)
 			}

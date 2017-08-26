@@ -137,7 +137,11 @@
         <activity android:name=".SettingsActivity" />
         <activity android:name=".DirectoryListActivity" />
         <activity android:name=".EditLoaderActivity" />
-        <activity android:name=".DonationActivity"></activity>
+        <activity android:name=".DonationActivity" />
+
+        <service
+            android:name="ru.yourok.loader.LoaderService"
+            android:exported="false" />
     </application>
 
 </manifest>

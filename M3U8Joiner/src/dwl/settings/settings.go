@@ -7,7 +7,8 @@ type Settings struct {
 	ErrorRepeat  int
 	DownloadPath string
 
-	DynamicSize bool
+	DynamicSize   bool
+	LoadItemsSize bool
 
 	Useragent string
 	Cookies   string
