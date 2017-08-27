@@ -3,9 +3,13 @@ package ru.yourok.m3u8loader;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
+import android.support.v4.provider.DocumentFile;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -141,6 +145,7 @@ public class DirectoryListActivity extends AppCompatActivity {
         if (DirectoryPath == null)
             return;
         if (!DirectoryPath.canWrite()) {
+//            requestPerm(DirectoryPath.getPath());
             Toast.makeText(DirectoryListActivity.this, getText(R.string.error_directory_permission), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -224,6 +229,21 @@ public class DirectoryListActivity extends AppCompatActivity {
         }
     }
 
+    private void requestPerm(String path) {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        intent.setData(Uri.fromFile(DirectoryPath));
+        startActivityForResult(intent,42);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        if (resultCode == RESULT_OK && requestCode==42) {
+            Uri treeUri = resultData.getData();
+            DocumentFile pickedDir = DocumentFile.fromTreeUri(this, treeUri);
+            if (pickedDir.getUri().getPath().equals(DirectoryPath.getPath()) && pickedDir.canWrite()){
+
+            }
+        }
+    }
 
     public class HomeDirsAdapter extends BaseAdapter {
 

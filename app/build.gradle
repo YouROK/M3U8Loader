@@ -7,8 +7,8 @@ android {
         applicationId "ru.yourok.m3u8loader"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 144
-        versionName "1.2.144"
+        versionCode 145
+        versionName "1.2.145"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {

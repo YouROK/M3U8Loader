@@ -2,34 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3ae3a074-7304-456a-8c02-da3b37fe6a0c" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../dwl/dwl.aar" afterPath="$PROJECT_DIR$/../dwl/dwl.aar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../.idea/misc.xml" afterPath="$PROJECT_DIR$/../.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/dwl/dwl.go" afterPath="$PROJECT_DIR$/src/dwl/dwl.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/dwl/info.go" afterPath="$PROJECT_DIR$/src/dwl/info.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/dwl/list/list.go" afterPath="$PROJECT_DIR$/src/dwl/list/list.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/dwl/list/parse.go" afterPath="$PROJECT_DIR$/src/dwl/list/parse.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/dwl/load/join.go" afterPath="$PROJECT_DIR$/src/dwl/load/join.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/dwl/load/loader.go" afterPath="$PROJECT_DIR$/src/dwl/load/loader.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/dwl/save.go" afterPath="$PROJECT_DIR$/src/dwl/save.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/dwl/settings.go" afterPath="$PROJECT_DIR$/src/dwl/settings.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/dwl/settings/settings.go" afterPath="$PROJECT_DIR$/src/dwl/settings/settings.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/dwl/utils.go" afterPath="$PROJECT_DIR$/src/dwl/utils.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/main.go" afterPath="$PROJECT_DIR$/src/main/main.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../app/build.gradle" afterPath="$PROJECT_DIR$/../app/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../app/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/../app/src/main/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../app/src/main/java/ru/yourok/loader/Loader.java" afterPath="$PROJECT_DIR$/../app/src/main/java/ru/yourok/loader/Loader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../app/src/main/java/ru/yourok/loader/Manager.java" afterPath="$PROJECT_DIR$/../app/src/main/java/ru/yourok/loader/Manager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../app/src/main/java/ru/yourok/loader/MyApplication.java" afterPath="$PROJECT_DIR$/../app/src/main/java/ru/yourok/loader/MyApplication.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../app/src/main/java/ru/yourok/m3u8loader/AddLoaderActivity.java" afterPath="$PROJECT_DIR$/../app/src/main/java/ru/yourok/m3u8loader/AddLoaderActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../app/src/main/java/ru/yourok/m3u8loader/MainActivity.java" afterPath="$PROJECT_DIR$/../app/src/main/java/ru/yourok/m3u8loader/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../app/src/main/java/ru/yourok/m3u8loader/MainActivityLoaderAdaptor.java" afterPath="$PROJECT_DIR$/../app/src/main/java/ru/yourok/m3u8loader/MainActivityLoaderAdaptor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../app/src/main/java/ru/yourok/m3u8loader/SettingsActivity.java" afterPath="$PROJECT_DIR$/../app/src/main/java/ru/yourok/m3u8loader/SettingsActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../app/src/main/res/layout/activity_main.xml" afterPath="$PROJECT_DIR$/../app/src/main/res/layout/activity_main.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../app/src/main/res/layout/activity_main_loader_adaptorlist_item.xml" afterPath="$PROJECT_DIR$/../app/src/main/res/layout/activity_main_loader_adaptorlist_item.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../app/src/main/res/layout/activity_settings.xml" afterPath="$PROJECT_DIR$/../app/src/main/res/layout/activity_settings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../app/src/main/res/values-ru/strings.xml" afterPath="$PROJECT_DIR$/../app/src/main/res/values-ru/strings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/../app/src/main/res/values/strings.xml" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -44,7 +18,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/main.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="440">
-              <caret line="43" column="34" lean-forward="true" selection-start-line="43" selection-start-column="34" selection-end-line="43" selection-end-column="34" />
+              <caret line="43" column="34" lean-forward="false" selection-start-line="43" selection-start-column="34" selection-end-line="43" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -113,8 +87,8 @@
     </navigator>
     <panes>
       <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -210,10 +184,10 @@
     <option name="remove_strategy" value="false" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="-4" width="1301" height="772" extended-state="6" />
+    <frame x="65" y="24" width="1303" height="780" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27773345" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28252193" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -245,6 +219,22 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/main/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/dwl/info.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="828">
+          <caret line="46" column="44" lean-forward="false" selection-start-line="46" selection-start-column="44" selection-end-line="46" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -477,7 +467,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/main.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="440">
-          <caret line="43" column="34" lean-forward="true" selection-start-line="43" selection-start-column="34" selection-end-line="43" selection-end-column="34" />
+          <caret line="43" column="34" lean-forward="false" selection-start-line="43" selection-start-column="34" selection-end-line="43" selection-end-column="34" />
           <folding />
         </state>
       </provider>

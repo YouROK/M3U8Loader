@@ -11,6 +11,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+
 import dwl.Dwl;
 import dwl.LoaderInfo;
 import dwl.Settings;

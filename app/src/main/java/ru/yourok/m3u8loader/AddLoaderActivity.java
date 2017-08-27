@@ -1,8 +1,14 @@
 package ru.yourok.m3u8loader;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +22,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import dwl.LoaderInfo;
 import ru.yourok.loader.Loader;
@@ -100,16 +111,37 @@ public class AddLoaderActivity extends AppCompatActivity {
                     urlEdit.setText(intent.getExtras().get(Intent.EXTRA_STREAM).toString());
             }
 
-            if (intent.getData() != null)
-                urlEdit.setText(intent.getDataString());
+            if (intent.getData() != null) {
+                String path = getFileNameByUri(this, intent.getData());
+                urlEdit.setText(path);
+            }
 
             if (intent.getExtras() == null && intent.getData() == null) {
                 Toast.makeText(this, "Error: not found url", Toast.LENGTH_SHORT).show();
                 finish();
             }
 
+            if (fileEdit.getText().toString().isEmpty()) {
+                int count = 0;
+                boolean found = true;
+                while (found) {
+                    found = false;
+                    for (int i = 0; i < Manager.Length(); i++) {
+                        LoaderInfo info = Manager.GetLoaderInfo(i);
+                        String name = info.getName();
+                        if (name.equals("video" + count)) {
+                            count++;
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                fileEdit.setText("video" + count);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(this, "Error: " + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             finish();
         }
     }
@@ -119,6 +151,23 @@ public class AddLoaderActivity extends AppCompatActivity {
         String ret = file.replaceAll(ReservedCharsReg, "_").replaceAll("_+", "_");
         ret = ret.trim();
         return ret;
+    }
+
+    public static String getFileNameByUri(Context context, Uri uri) throws IOException {
+        String fileName;
+        if (uri.getScheme().toString().compareTo("content") == 0) {
+            File file = new File(context.getCacheDir(), "temp.m3u8");
+            InputStream inputStream = context.getContentResolver().openInputStream(uri);
+            byte[] buffer = new byte[inputStream.available()];
+            inputStream.read(buffer);
+            OutputStream outStream = new FileOutputStream(file);
+            outStream.write(buffer);
+            fileName = "file://" + file.getPath();
+            file.deleteOnExit();
+        } else {
+            fileName = uri.toString();
+        }
+        return fileName;
     }
 
     public void addBtnClick(View view) {
