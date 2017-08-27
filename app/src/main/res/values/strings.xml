@@ -27,6 +27,7 @@
     <string name="add_label">Add</string>
     <string name="download_label">Download</string>
     <string name="delete_label">Delete</string>
+    <string name="delete_all_label">Delete all items</string>
     <string name="delete_with_files">Delete with files</string>
     <string name="remove_from_list">Remove from list</string>
     <string name="status_label">Status</string>

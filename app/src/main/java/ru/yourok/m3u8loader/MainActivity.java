@@ -248,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
                 Manager.Remove(0);
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(getString(R.string.delete_label) + "?");
+            builder.setTitle(getString(R.string.delete_all_label) + "?");
             builder.setPositiveButton(R.string.delete_with_files, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {

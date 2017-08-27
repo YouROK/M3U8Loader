@@ -111,7 +111,7 @@ public class AddLoaderActivity extends AppCompatActivity {
                     urlEdit.setText(intent.getExtras().get(Intent.EXTRA_STREAM).toString());
             }
 
-            if (intent.getData() != null) {
+            if (intent.getData() != null && !intent.getData().toString().isEmpty()) {
                 String path = getFileNameByUri(this, intent.getData());
                 urlEdit.setText(path);
             }
@@ -154,7 +154,7 @@ public class AddLoaderActivity extends AppCompatActivity {
     }
 
     public static String getFileNameByUri(Context context, Uri uri) throws IOException {
-        String fileName;
+        String fileName = "";
         if (uri.getScheme().toString().compareTo("content") == 0) {
             File file = new File(context.getCacheDir(), "temp.m3u8");
             InputStream inputStream = context.getContentResolver().openInputStream(uri);
