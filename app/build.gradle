@@ -1,47 +1,47 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
     defaultConfig {
-        applicationId "ru.yourok.m3u8loader"
-        minSdkVersion 15
-        targetSdkVersion 25
-        versionCode 146
-        versionName "1.2.146"
-        vectorDrawables.useSupportLibrary = true
+        applicationId "ru.yourok.m3u8loader.beta"
+        minSdkVersion 16
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            applicationVariants.all { variant ->
-                variant.outputs.each { output ->
-                    project.ext { appName = 'M3U8Loader' }
-                    def newName = output.outputFile.name
-                    newName = newName.replace("app-", "$project.ext.appName-")
-                    newName = newName.replace("-release", "-" + versionName)
-                    output.outputFile = new File(output.outputFile.parent, newName)
-                }
-            }
         }
     }
-
-//    splits {
-//        abi {
-//            enable true
-//            reset()
-//            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-//            universalApk false
-//        }
-//    }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+    }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':dwl')
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:design:25.3.1'
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.android.support:support-vector-drawable:25.3.1'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    //    compile "org.jetbrains.anko:anko:0.10.2"
+    compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0'
+    compile 'co.zsmb:materialdrawer-kt:1.2.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://maven.google.com' }
 }
