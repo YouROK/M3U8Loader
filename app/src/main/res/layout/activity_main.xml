@@ -8,11 +8,11 @@
     android:divider="?android:attr/dividerVertical"
     android:orientation="vertical"
     android:padding="5dp"
-    tools:context="ru.yourok.m3u8loader.activitys.MainActivity">
+    tools:context="ru.yourok.m3u8loader.activitys.mainActivity.MainActivity">
 
-    <FrameLayout
-        android:id="@+id/fragmentContainer"
+    <ListView
+        android:id="@+id/listViewLoader"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

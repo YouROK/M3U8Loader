@@ -18,7 +18,15 @@ class State {
     var duration: Float = 0.0F
     var loadedDuration: Float = 0.0F
 
+    var loadedItems: MutableList<ItemState> = mutableListOf()
+
     override fun toString(): String {
         return "State(name='$name', path='$path', threads=$threads, fragments=$fragments, loadedFragments=$loadedFragments, size=$size, loadedBytes=$loadedBytes, duration=$duration, loadedDuration=$loadedDuration)"
     }
+}
+
+class ItemState {
+    var loaded: Long = 0
+    var size: Long = 0
+    var complete: Boolean = false
 }

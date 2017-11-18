@@ -53,6 +53,12 @@ object Utils {
         }
     }
 
+    fun removeList(list: List) {
+        var path = Settings.context?.filesDir
+        path = java.io.File(path, list.info.title + ".lst")
+        if (path.exists()) path.delete()
+    }
+
     fun saveList(list: List) {
         var path = Settings.context?.filesDir?.path
         path = java.io.File(path, list.info.title + ".lst").path

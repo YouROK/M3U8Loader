@@ -54,6 +54,7 @@ class Downloader(val list: List) {
                     file.resize(size)
                 }
                 file.close()
+                Utils.saveList(list)
             }
 
             pool!!.onFinishWorker {
@@ -90,6 +91,12 @@ class Downloader(val list: List) {
         if (workers.size != 0)
             workers.forEach {
                 if (it.first.item.isLoad) {
+                    val itmState = ItemState()
+                    itmState.loaded = it.second.loadedBytes
+                    itmState.size = it.first.item.size
+                    itmState.complete = it.first.item.isCompleteLoad
+                    state.loadedItems.add(itmState)
+
                     state.size += it.first.item.size
                     state.loadedBytes += it.second.loadedBytes
                     state.duration += it.first.item.duration
@@ -104,6 +111,12 @@ class Downloader(val list: List) {
         else {
             list.items.forEach {
                 if (it.isLoad) {
+                    val itmState = ItemState()
+                    itmState.loaded = 0
+                    itmState.size = it.size
+                    itmState.complete = it.isCompleteLoad
+                    state.loadedItems.add(itmState)
+
                     state.fragments++
                     state.size += it.size
                     state.duration += it.duration

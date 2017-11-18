@@ -12,13 +12,14 @@
     <string name="download">Download</string>
     <string name="load_all">Load all</string>
     <string name="pause_all">Pause all</string>
-    <string name="clear_all">Clear all</string>
+    <string name="remove_all">Remove all</string>
 
     <string name="download_path">Download path</string>
     <string name="threads">Threads</string>
     <string name="repeat_error">Repeat on error</string>
     <string name="preload_fragments_size">Preload fragments size</string>
     <string name="convert_on_load_end">Convert on load end</string>
+    <string name="converting_configuration">Converting configuration</string>
     <string name="set_def_settings">Set the default settings</string>
     <string name="dark_theme">Dark theme</string>
 
@@ -26,6 +27,10 @@
 
     <string name="replace_url">Replace the url in loading?</string>
     <string name="replace_url_msg">Loading with the same name exists, replace his URL?</string>
+
+    <string name="delete_all_items">Delete all items</string>
+    <string name="delete_with_files">Delete with files</string>
+    <string name="remove_from_list">Remove from list</string>
 
     <string name="error">Error</string>
     <string name="error_load_subs">Error load subtitles</string>
@@ -45,5 +50,12 @@
         <item>Default player</item>
         <item>MX Player</item>
         <item>Kodi player</item>
+    </string-array>
+
+    <string name="ffmpeg_abi">FFMpeg ABI</string>
+    <string-array name="ffmpeg_list">
+        <item>Armeabi-v7a-neon</item>
+        <item>Armeabi-v7a</item>
+        <item>x86/x86_64</item>
     </string-array>
 </resources>
