@@ -1,15 +1,15 @@
 package ru.yourok.m3u8loader.fragments.loaderList
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Rect
+import android.graphics.*
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
 import ru.yourok.dwl.manager.Manager
+import ru.yourok.dwl.utils.Utils
 import ru.yourok.m3u8loader.R
+import java.util.*
+import kotlin.concurrent.schedule
 
 
 class ProgressView : View {
@@ -56,7 +56,7 @@ class ProgressView : View {
                         paint.style = Paint.Style.FILL
 
                         var prcItem = 0
-                        item?.let {
+                        item.let {
                             if (item.first.item.isCompleteLoad)
                                 prcItem = 255
                             else if (item.first.item.size > 0)
@@ -68,6 +68,41 @@ class ProgressView : View {
                 }
             }
         }
-        invalidate()
+
+        val stat = Manager.getLoaderStat(index!!)
+        stat?.let {
+            var frags = " %d / %d".format(stat.loadedFragments, stat.fragments)
+            var speed = ""
+            var size = ""
+            if (stat.speed > 0)
+                speed = "  %s/sec ".format(Utils.byteFmt(stat.speed))
+            if (stat.size > 0)
+                size = "  %s / %s".format(Utils.byteFmt(stat.loadedBytes), Utils.byteFmt(stat.size))
+
+            val color = Color.LTGRAY
+
+            val paint = Paint()
+            paint.isAntiAlias = true
+            paint.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
+            paint.color = color
+            paint.textSize = height.toFloat() * 0.9F
+
+            var rect = Rect()
+            paint.getTextBounds(frags, 0, frags.length, rect)
+            val yPos = (canvas.height / 2 - (paint.descent() + paint.ascent()) / 2)
+            canvas.drawText(frags, 0F, yPos, paint)
+
+            if (!speed.isNullOrEmpty()) {
+                paint.getTextBounds(speed, 0, speed.length, rect)
+                val xPos = width.toFloat() / 2 - rect.centerX().toFloat()
+                canvas.drawText(speed, xPos, yPos, paint)
+            }
+            if (!size.isNullOrEmpty()) {
+                paint.getTextBounds(size, 0, size.length, rect)
+                val xPos = width.toFloat() - rect.right.toFloat()
+                canvas.drawText(size, xPos - 5.0F, yPos, paint)
+            }
+        }
+        Timer().schedule(50) { postInvalidate() }
     }
 }

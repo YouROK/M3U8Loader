@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
  */
 @JsonIgnoreProperties("context")
 object Settings {
-    var threads: Int = 10
+    var threads: Int = 20
     var errorRepeat: Int = 5
     var downloadPath: String = ""
     var preloadSize: Boolean = false

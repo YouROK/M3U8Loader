@@ -23,7 +23,7 @@ class Http(url: String) : Client {
         do {
             var url = URL(currUrl)
             connection = url.openConnection() as HttpURLConnection
-            connection!!.setConnectTimeout(1000)
+            connection!!.setConnectTimeout(5000)
             connection!!.setReadTimeout(5000)
             connection!!.setRequestMethod("GET")
             connection!!.setDoInput(true)

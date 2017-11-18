@@ -25,11 +25,9 @@ object Theme {
     }
 
     fun changeNow(activity: Activity, dark: Boolean) {
-        if (Preferences.get("ThemeDark", true) as Boolean != dark) {
-            Preferences.set("ThemeDark", dark)
-            val intent = Intent(activity, activity::class.java)
-            activity.startActivity(intent)
-            activity.finish()
-        }
+        Preferences.set("ThemeDark", dark)
+        val intent = Intent(activity, activity::class.java)
+        activity.startActivity(intent)
+        activity.finish()
     }
 }

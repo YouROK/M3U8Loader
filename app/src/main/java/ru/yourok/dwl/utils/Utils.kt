@@ -2,6 +2,7 @@ package ru.yourok.dwl.utils
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import ru.yourok.dwl.list.List
 import ru.yourok.dwl.settings.Settings
 import java.io.File
 
@@ -26,13 +27,19 @@ object Utils {
         return byteFmt(bytes.toDouble())
     }
 
-    fun saveSettings(path: String) {
-        Saver.save(File(path, "settings.cfg").path, Settings)
+    fun saveSettings() {
+        val path = Settings.context?.filesDir?.path
+        if (!path.isNullOrEmpty())
+            Saver.save(File(path, "settings.cfg").path, Settings)
     }
 
-    fun loadSettings(path: String) {
-        val vals = Saver.load(File(path, "settings.cfg").path)
-        if (vals is LinkedHashMap<*, *>) {
+    fun loadSettings() {
+        val path = Settings.context?.filesDir?.path
+        if (!path.isNullOrEmpty()) {
+            val file = File(path, "settings.cfg")
+            if (!file.exists())
+                return
+            val vals = Saver.load<LinkedHashMap<*, *>>(file.path)
             Settings.threads = vals["threads"] as Int
             Settings.errorRepeat = vals["errorRepeat"] as Int
 
@@ -45,6 +52,32 @@ object Utils {
                 Settings.headers = (vals["headers"] as LinkedHashMap<String, String>).toMutableMap()
         }
     }
+
+    fun saveList(list: List) {
+        var path = Settings.context?.filesDir?.path
+        path = java.io.File(path, list.info.title + ".lst").path
+        Saver.save(path, list)
+    }
+
+    fun loadLists(): MutableList<List>? {
+        try {
+            val lists: MutableList<List> = mutableListOf()
+            var path = Settings.context?.filesDir
+            if (path != null)
+                path.walk().forEach {
+                    if (it.path.endsWith(".lst")) {
+                        if (it.isFile) {
+                            val list = Saver.load<List>(it.path)
+                            lists.add(list)
+                        }
+                    }
+                }
+            return lists
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
+    }
 }
 
 object Saver {
@@ -53,8 +86,8 @@ object Saver {
         mapper.writerWithDefaultPrettyPrinter().writeValue(File(filePath), clazz)
     }
 
-    fun load(path: String): Any {
+    inline fun <reified T : Any> load(path: String): T {
         val mapper = jacksonObjectMapper()
-        return mapper.readValue(File(path))
+        return mapper.readValue<T>(File(path))
     }
 }

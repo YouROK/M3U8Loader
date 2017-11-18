@@ -11,7 +11,7 @@
     tools:context="ru.yourok.m3u8loader.activitys.MainActivity">
 
     <FrameLayout
-        android:id="@+id/fragmentCntainer"
+        android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></FrameLayout>
 

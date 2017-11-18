@@ -10,6 +10,17 @@ import kotlin.concurrent.thread
 
 class LoaderListFragment : ListFragment() {
 
+    companion object {
+        fun newInstance(): LoaderListFragment {
+            return LoaderListFragment()
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        retainInstance = true
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         listAdapter = LoaderListAdapter(activity!!.baseContext)

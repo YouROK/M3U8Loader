@@ -1,13 +1,23 @@
 package ru.yourok.dwl.manager
 
 import ru.yourok.dwl.downloader.Downloader
+import ru.yourok.dwl.downloader.State
 import ru.yourok.dwl.list.List
+import ru.yourok.dwl.utils.Utils
 import kotlin.concurrent.thread
 
 
 object Manager {
     private var loaderList: MutableList<Downloader> = mutableListOf()
     private var queueList: MutableList<Int> = mutableListOf()
+
+    init {
+        val list = Utils.loadLists()
+        if (list != null)
+            list.forEach {
+                loaderList.add(Downloader(it))
+            }
+    }
 
     fun getLoader(index: Int): Downloader? {
         if (index in 0 until loaderList.size)
@@ -19,16 +29,44 @@ object Manager {
         return loaderList.size
     }
 
+    fun getLoaderStat(i: Int): State? {
+        return getLoader(i)?.getState()
+    }
+
     fun addList(list: MutableList<List>) {
         list.forEach {
-            loaderList.add(Downloader(it))
+            var isFindUrl = false
+            loaderList.forEach { item ->
+                if (it.url == item.list.url)
+                    isFindUrl = true
+            }
+            if (!isFindUrl) {
+                //find equal url
+                val flist = loaderList.find { downloader ->
+                    downloader.getState().name == it.info.title
+                }
+                //replace urls if find eq
+                if (flist != null) {
+                    flist.list.url = it.url
+                    if (flist.list.items.size != it.items.size) {
+                        it.items = flist.list.items
+                    } else
+                        flist.list.items.forEachIndexed { index, item ->
+                            if (index < it.items.size)
+                                item.url = it.items[index].url
+                        }
+
+                } else
+                    loaderList.add(Downloader(it))
+            }
         }
+        list.forEach { Utils.saveList(it) }
     }
 
     /////////Queue funcs
-    val lockQueue: Any = Any()
-    var loading: Boolean = false
-    var currentLoader = -1
+    private val lockQueue: Any = Any()
+    private var loading: Boolean = false
+    private var currentLoader = -1
 
     fun load(index: Int) {
         if (index in 0 until loaderList.size) {

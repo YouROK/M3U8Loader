@@ -1,6 +1,7 @@
 package ru.yourok.dwl.downloader
 
 import ru.yourok.dwl.list.List
+import ru.yourok.dwl.utils.Utils
 
 /**
  * Created by yourok on 09.11.17.
@@ -37,7 +38,8 @@ class Downloader(val list: List) {
             file.setWorkers(workers)
 
             pool = Pool(workers)
-            pool!!.start({
+            pool!!.start()
+            pool!!.onEnd {
                 complete = true
                 workers.forEach {
                     if (!it.first.item.isCompleteLoad)
@@ -52,7 +54,11 @@ class Downloader(val list: List) {
                     file.resize(size)
                 }
                 file.close()
-            })
+            }
+
+            pool!!.onFinishWorker {
+                Utils.saveList(list)
+            }
         } catch (e: Exception) {
             error = e.message ?: ""
         }

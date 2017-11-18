@@ -17,8 +17,9 @@ import java.util.concurrent.TimeUnit
  * Created by yourok on 09.11.17.
  */
 class ParseMedia {
-    val executor = Executors.newSingleThreadExecutor()!!
+    val executor = Executors.newFixedThreadPool(20)!!
     var stop = false
+    var error = ""
 
     fun parse(list: List) {
         val listUri = Uri.parse(list.url)
@@ -46,10 +47,21 @@ class ParseMedia {
 
             if (Settings.preloadSize) {
                 val worker = Runnable {
-                    val clientPS = ClientBuilder.new(Uri.parse(itm.url))
-                    clientPS.connect()
-                    itm.size = clientPS.getSize()
-                    clientPS.close()
+                    var err = ""
+                    for (i in 1..Settings.errorRepeat)
+                        try {
+                            val clientPS = ClientBuilder.new(Uri.parse(itm.url))
+                            clientPS.connect()
+                            itm.size = clientPS.getSize()
+                            clientPS.close()
+                            return@Runnable
+                        } catch (e: Exception) {
+                            err = e.message ?: ""
+                        }
+                    if (!err.isNullOrEmpty()) {
+                        error = err
+                        executor.shutdownNow()
+                    }
                 }
                 executor.execute(worker)
             }
@@ -60,6 +72,8 @@ class ParseMedia {
         if (Settings.preloadSize) {
             executor.shutdown()
             executor.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS)
+            if (!error.isNullOrEmpty())
+                throw IOException(error)
         }
     }
 

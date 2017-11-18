@@ -12,7 +12,18 @@ class Pool(private val workers: MutableList<Pair<Worker, DownloadStatus>>) {
     private var thread: Thread? = null
     private var lock: Any = Any()
 
-    fun start(onEnd: () -> Unit) {
+    private var onEnd: (() -> Unit)? = null
+    private var onFinish: (() -> Unit)? = null
+
+    fun onEnd(onEnd: () -> Unit) {
+        this.onEnd = onEnd
+    }
+
+    fun onFinishWorker(onFinish: () -> Unit) {
+        this.onFinish = onFinish
+    }
+
+    fun start() {
         stop = false
 
         this.thread = thread {
@@ -28,8 +39,10 @@ class Pool(private val workers: MutableList<Pair<Worker, DownloadStatus>>) {
                         Thread.sleep(10)
                         for (i in 0..Settings.errorRepeat)
                             try {
-                                if (!wrk.item.isCompleteLoad && !stop)
+                                if (!wrk.item.isCompleteLoad && !stop) {
                                     wrk.run()
+                                    onFinish?.invoke()
+                                }
                                 break
                             } catch (e: SocketTimeoutException) {
                                 if (i == Settings.errorRepeat)
@@ -48,10 +61,11 @@ class Pool(private val workers: MutableList<Pair<Worker, DownloadStatus>>) {
 
                 while (currentWorker > 0)
                     Thread.sleep(100)
-                onEnd()
+
+                onEnd?.invoke()
                 stop = true
             } catch (e: Exception) {
-                onEnd()
+                onEnd?.invoke()
                 stop = true
                 throw e
             }

@@ -21,6 +21,8 @@ object ClientBuilder {
     fun new(url: Uri): Client {
         if (url.scheme.startsWith("http", 0, true)) {
             return Http(url.toString())
+        } else if (url.scheme.startsWith("content", 0, true)) {
+            return Content(url)
         } else {
             return File(url.path)
         }
