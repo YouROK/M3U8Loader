@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ListView
+import com.mikepenz.materialdrawer.Drawer
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.yourok.dwl.manager.Manager
 import ru.yourok.dwl.settings.Preferences
@@ -21,12 +22,13 @@ import kotlin.concurrent.thread
 class MainActivity : AppCompatActivity() {
 
     private var isShow: Boolean = false
+    private lateinit var drawer: Drawer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Theme.set(this)
         setContentView(R.layout.activity_main)
-        val drawer = NavigationBar.setup(this)
+        drawer = NavigationBar.setup(this)
         listViewLoader.adapter = LoaderListAdapter(this)
         listViewLoader.setMultiChoiceModeListener(LoaderListSelectionMenu(this))
         listViewLoader.setOnItemClickListener { adapterView: AdapterView<*>, view1: View, i: Int, l: Long ->
@@ -45,16 +47,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         update()
-
-        if (Manager.getLoadersSize() == 0 && Preferences.get("isFirstRun", "") == "") {
-            Timer().schedule(1000) {
-                runOnUiThread { drawer.openDrawer() }
-                Timer().schedule(1000) {
-                    runOnUiThread { drawer.closeDrawer() }
-                    Preferences.set("isFirstRun", "nop")
-                }
-            }
-        }
+        showMenuHelp()
     }
 
     private fun update() {
@@ -67,6 +60,20 @@ class MainActivity : AppCompatActivity() {
             while (isShow) {
                 runOnUiThread { (listViewLoader.adapter as LoaderListAdapter).notifyDataSetChanged() }
                 Thread.sleep(500)
+            }
+        }
+    }
+
+    private fun showMenuHelp() {
+        if (Preferences.get("isFirstRun", "") == "") {
+            Timer().schedule(1000) {
+                runOnUiThread { drawer.openDrawer() }
+
+                if (Manager.getLoadersSize() != 0)
+                    Timer().schedule(1000) {
+                        runOnUiThread { drawer.closeDrawer() }
+                    }
+                Preferences.set("isFirstRun", "nop")
             }
         }
     }

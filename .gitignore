@@ -7,3 +7,5 @@
 /build
 /captures
 .externalNativeBuild
+KeyStore/joinerkeys.jks
+release/

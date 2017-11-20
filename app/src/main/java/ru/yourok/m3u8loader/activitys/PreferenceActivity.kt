@@ -1,8 +1,12 @@
 package ru.yourok.m3u8loader.activitys
 
+import android.Manifest
 import android.os.Bundle
 import android.os.Environment
+import android.support.design.widget.Snackbar
+import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import android.widget.*
 import kotlinx.android.synthetic.main.activity_preference.*
 import ru.yourok.dwl.settings.Preferences
@@ -29,8 +33,8 @@ class PreferenceActivity : AppCompatActivity() {
         Theme.set(this)
         setContentView(R.layout.activity_preference)
         lastTheme = Preferences.get("ThemeDark", true) as Boolean
-        if (savedInstanceState == null)
-            loadSettings()
+
+        requestPermissionWithRationale()
 
         findViewById<ImageButton>(R.id.imageButtonSearchDirectory).setOnClickListener {
             OpenFileDialog(this@PreferenceActivity)
@@ -64,6 +68,9 @@ class PreferenceActivity : AppCompatActivity() {
         findViewById<Button>(R.id.buttonDefOptions).setOnClickListener {
             defSettings()
         }
+
+        if (savedInstanceState == null)
+            loadSettings()
     }
 
     override fun onPause() {
@@ -113,5 +120,15 @@ class PreferenceActivity : AppCompatActivity() {
         findViewById<CheckBox>(R.id.checkboxLoadItemsSize)?.setChecked(false)
         findViewById<CheckBox>(R.id.checkBoxChooseTheme)?.setChecked(true)
         findViewById<Spinner>(R.id.spinnerChoosePlayer)?.setSelection(0)
+    }
+
+    private fun requestPermissionWithRationale() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Snackbar.make(findViewById<View>(R.id.main_layout), R.string.permission_storage_msg, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.permission_btn, { ActivityCompat.requestPermissions(this@PreferenceActivity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1) })
+                    .show()
+        } else {
+            ActivityCompat.requestPermissions(this@PreferenceActivity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+        }
     }
 }

@@ -86,18 +86,19 @@ class ProgressView : View {
             if (stat.size > 0)
                 size = "  %s/%s".format(Utils.byteFmt(stat.loadedBytes), Utils.byteFmt(stat.size))
 
-            val color = Color.LTGRAY
+            val color = Color.CYAN
 
             val paint = Paint()
             paint.isAntiAlias = true
             paint.typeface = Typeface.DEFAULT
             paint.color = color
             paint.textSize = height.toFloat() * 0.8F
+            paint.setShadowLayer(5.0F, 0.0F, 0.0F, Color.BLACK)
 
             var rect = Rect()
             paint.getTextBounds(frags, 0, frags.length, rect)
             val yPos = (canvas.height / 2 - (paint.descent() + paint.ascent()) / 2)
-            canvas.drawText(frags, 0F, yPos, paint)
+            canvas.drawText(frags, 5.0F, yPos, paint)
 
             if (!speed.isNullOrEmpty()) {
                 paint.getTextBounds(speed, 0, speed.length, rect)

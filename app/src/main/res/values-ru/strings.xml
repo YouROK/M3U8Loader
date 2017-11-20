@@ -27,6 +27,9 @@
     <string name="donation">Пожертвование</string>
     <string name="donation_msg">Если вам нравится M3U8Loader, я буду рад пожертвованию.\nИли вы можете сделать красивое фото и прислать автору на почту/телеграм &#128522;</string>
 
+    <string name="permission_storage_msg">Доступ к памяти требуется для загрузки и записи файлов</string>
+    <string name="permission_btn">РАЗРЕШИТЬ</string>
+
     <string name="delete_all_items">Удалить всё</string>
     <string name="delete_with_files">Удалить с файлами</string>
     <string name="remove_from_list">Удалить из списка</string>
