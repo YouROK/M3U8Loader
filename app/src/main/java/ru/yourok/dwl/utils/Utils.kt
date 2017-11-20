@@ -53,6 +53,10 @@ object Utils {
         }
     }
 
+    fun getFilesDir(): File {
+        return Settings.context?.filesDir ?: File("/")
+    }
+
     fun removeList(list: List) {
         var path = Settings.context?.filesDir
         path = java.io.File(path, list.info.title + ".lst")
@@ -73,8 +77,12 @@ object Utils {
                 path.walk().forEach {
                     if (it.path.endsWith(".lst")) {
                         if (it.isFile) {
-                            val list = Saver.load<List>(it.path)
-                            lists.add(list)
+                            try {
+                                val list = Saver.load<List>(it.path)
+                                lists.add(list)
+                            } catch (e: Exception) {
+                                it.delete()
+                            }
                         }
                     }
                 }

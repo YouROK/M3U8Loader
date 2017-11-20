@@ -1,10 +1,11 @@
 package ru.yourok.dwl.manager
 
 import android.app.Activity
-import org.jetbrains.anko.alert
+import android.support.v7.app.AlertDialog
 import ru.yourok.dwl.downloader.Downloader
 import ru.yourok.dwl.downloader.State
 import ru.yourok.dwl.list.List
+import ru.yourok.dwl.settings.Settings
 import ru.yourok.dwl.utils.Utils
 import ru.yourok.m3u8loader.R
 import java.io.File
@@ -12,9 +13,8 @@ import kotlin.concurrent.thread
 
 
 object Manager {
-    private var loaderList: MutableList<Downloader> = mutableListOf()
-    private var queueList: MutableList<Int> = mutableListOf()
-    private val lock: Any = Any()
+    @Volatile private var loaderList: MutableList<Downloader> = mutableListOf()
+    @Volatile private var queueList: MutableList<Int> = mutableListOf()
 
     init {
         val list = Utils.loadLists()
@@ -80,26 +80,28 @@ object Manager {
         synchronized(loaderList) {
             val loader = getLoader(index)
             if (loader != null) {
-                val file = File(loader.list.filePath)
+                val file = File(Settings.downloadPath, loader.list.filePath)
                 if (file.exists()) {
                     with(activity) {
-                        this.alert {
-                            title = this@with.getString(R.string.delete_all_items) + "?"
-                            positiveButton(R.string.delete_with_files, {
-                                loader.stop()
-                                loader.waitEnd()
-                                file.delete()
-                                Utils.removeList(loader.list)
-                                loaderList.removeAt(index)
-                            })
-                            negativeButton(R.string.remove_from_list, {
-                                loader.stop()
-                                loader.waitEnd()
-                                Utils.removeList(loader.list)
-                                loaderList.removeAt(index)
-                            })
-                            neutralPressed(" ", {})
-                        }.show()
+                        AlertDialog.Builder(activity)
+                                .setTitle(activity.getString(R.string.remove) + " " + loader.list.info.title)
+                                .setPositiveButton(R.string.delete_with_files) { _, _ ->
+                                    loader.stop()
+                                    loader.waitEnd()
+                                    file.delete()
+                                    if (loader.list.subsUrl.isNotEmpty())
+                                        File(Settings.downloadPath, loader.list.info.title + ".srt").delete()
+                                    Utils.removeList(loader.list)
+                                    loaderList.removeAt(index)
+                                }
+                                .setNegativeButton(R.string.remove_from_list) { _, _ ->
+                                    loader.stop()
+                                    loader.waitEnd()
+                                    Utils.removeList(loader.list)
+                                    loaderList.removeAt(index)
+                                }
+                                .setNeutralButton(" ", null)
+                                .show()
                     }
                 } else {
                     loader.stop()
@@ -115,35 +117,37 @@ object Manager {
         synchronized(loaderList) {
             var isFile = false
             loaderList.forEach {
-                if (File(it.list.filePath).exists()) {
+                if (File(Settings.downloadPath, it.list.filePath).exists()) {
                     isFile = true
                     return@forEach
                 }
             }
             if (isFile) {
                 with(activity) {
-                    this.alert {
-                        title = this@with.getString(R.string.delete_all_items) + "?"
-                        positiveButton(R.string.delete_with_files, {
-                            stopAll()
-                            loaderList.forEach {
-                                it.waitEnd()
-                                Utils.removeList(it.list)
-                                val f = File(it.list.filePath)
-                                if (f.exists()) f.delete()
+                    AlertDialog.Builder(activity)
+                            .setTitle(this@with.getString(R.string.delete_all_items) + "?")
+                            .setPositiveButton(R.string.delete_with_files) { _, _ ->
+                                stopAll()
+                                loaderList.forEach {
+                                    it.waitEnd()
+                                    Utils.removeList(it.list)
+                                    val f = File(Settings.downloadPath, it.list.filePath)
+                                    if (f.exists()) f.delete()
+                                    if (it.list.subsUrl.isNotEmpty())
+                                        File(Settings.downloadPath, it.list.info.title + ".srt").delete()
+                                }
+                                loaderList.clear()
                             }
-                            loaderList.clear()
-                        })
-                        negativeButton(R.string.remove_from_list, {
-                            stopAll()
-                            loaderList.forEach {
-                                it.waitEnd()
-                                Utils.removeList(it.list)
+                            .setNegativeButton(R.string.remove_from_list) { _, _ ->
+                                stopAll()
+                                loaderList.forEach {
+                                    it.waitEnd()
+                                    Utils.removeList(it.list)
+                                }
+                                loaderList.clear()
                             }
-                            loaderList.clear()
-                        })
-                        neutralPressed(" ", {})
-                    }.show()
+                            .setNeutralButton(" ", null)
+                            .show()
                 }
             } else {
                 stopAll()
@@ -162,78 +166,94 @@ object Manager {
     private var currentLoader = -1
 
     fun load(index: Int) {
-        if (index in 0 until loaderList.size) {
-            if (loaderList[index].isComplete())
-                return
-            if (!inQueue(index))
-                queueList.add(index)
+        synchronized(loaderList) {
+            if (index in 0 until loaderList.size) {
+                if (loaderList[index].isComplete())
+                    return
+                if (!inQueue(index))
+                    queueList.add(index)
+                synchronized(lockQueue) {
+                    thread { startLoading() }
+                }
+            }
+        }
+    }
+
+    fun loadAll() {
+        synchronized(loaderList) {
+            loaderList.forEachIndexed { index, downloader ->
+                if (!downloader.isComplete() && !inQueue(index))
+                    queueList.add(index)
+            }
             synchronized(lockQueue) {
                 thread { startLoading() }
             }
         }
     }
 
-    fun loadAll() {
-        loaderList.forEachIndexed { index, downloader ->
-            if (!downloader.isComplete() && !inQueue(index))
-                queueList.add(index)
-        }
-        synchronized(lockQueue) {
-            thread { startLoading() }
-        }
-    }
-
     fun stop(index: Int) {
-        synchronized(lockQueue) {
-            if (currentLoader == index)
-                loaderList[index].stop()
-            queueList.remove(index)
-            if (queueList.size == 0)
-                currentLoader = -1
+        synchronized(loaderList) {
+            loaderList[index].stop()
         }
     }
 
     fun stopAll() {
-        synchronized(lockQueue) {
-            queueList.clear()
-            loaderList.forEach { it.stop() }
-            currentLoader = -1
+        synchronized(loaderList) {
+            synchronized(lockQueue) {
+                queueList.clear()
+                loaderList.forEach { it.stop() }
+                currentLoader = -1
+            }
         }
     }
 
     private fun startLoading() {
-        synchronized(lockQueue) {
-            if (queueList.isEmpty())
-                return
-            if (loading)
-                return
-            loading = true
-        }
-        thread {
-            currentLoader = -1
-            while (queueList.size > 0) {
-                if (!loading)
-                    break
-                synchronized(lockQueue) {
-                    currentLoader = queueList[0]
-                    loaderList[currentLoader].load()
-                    queueList.removeAt(0)
-                }
-                Thread.sleep(100)
-                loaderList[currentLoader].waitEnd()
+        synchronized(loaderList) {
+            synchronized(lockQueue) {
+                if (queueList.isEmpty())
+                    return
+                if (loading)
+                    return
+                loading = true
             }
-            loading = false
-            currentLoader = -1
+            thread {
+                LoaderService.start()
+                currentLoader = -1
+                while (queueList.size > 0) {
+                    if (!loading)
+                        break
+                    synchronized(lockQueue) {
+                        currentLoader = queueList[0]
+                        thread { loaderList[currentLoader].load() }
+                        queueList.removeAt(0)
+                    }
+                    Thread.sleep(100)
+                    loaderList[currentLoader].waitEnd()
+                    if (!loaderList[currentLoader].isComplete()) {
+                        loading = false
+                        queueList.clear()
+                    }
+                }
+                loading = false
+                currentLoader = -1
+                LoaderService.stop()
+            }
         }
     }
 
     fun inQueue(index: Int): Boolean {
-        synchronized(lockQueue) {
-            if (index == currentLoader)
-                return true
-            if (index in 0 until loaderList.size)
-                queueList.forEach { if (it == index) return true }
-            return false
+        synchronized(loaderList) {
+            synchronized(lockQueue) {
+                if (index == currentLoader)
+                    return true
+                if (index in 0 until loaderList.size)
+                    queueList.forEach { if (it == index) return true }
+                return false
+            }
         }
+    }
+
+    fun getCurrentLoader(): Int {
+        return currentLoader
     }
 }

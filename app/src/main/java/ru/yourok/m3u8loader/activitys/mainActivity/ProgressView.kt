@@ -13,7 +13,8 @@ import kotlin.concurrent.schedule
 
 
 class ProgressView : View {
-    var background: Int = -1
+    private var background: Int = -1
+    private var autoUpdate = true
 
     constructor(context: Context) : super(context) {
     }
@@ -25,6 +26,11 @@ class ProgressView : View {
 
     fun setIndexList(index: Int) {
         this.index = index
+    }
+
+    fun setAutoUpdate(a: Boolean) {
+        autoUpdate = a
+        postInvalidate()
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -70,21 +76,23 @@ class ProgressView : View {
 
         val stat = Manager.getLoaderStat(index!!)
         stat?.let {
-            var frags = " %d / %d".format(stat.loadedFragments, stat.fragments)
+            var frags = "%d/%d".format(stat.loadedFragments, stat.fragments)
+            if (stat.threads > 0)
+                frags = "%-3d: %s".format(stat.threads, frags)
             var speed = ""
             var size = ""
             if (stat.speed > 0)
                 speed = "  %s/sec ".format(Utils.byteFmt(stat.speed))
             if (stat.size > 0)
-                size = "  %s / %s".format(Utils.byteFmt(stat.loadedBytes), Utils.byteFmt(stat.size))
+                size = "  %s/%s".format(Utils.byteFmt(stat.loadedBytes), Utils.byteFmt(stat.size))
 
             val color = Color.LTGRAY
 
             val paint = Paint()
             paint.isAntiAlias = true
-            paint.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
+            paint.typeface = Typeface.DEFAULT
             paint.color = color
-            paint.textSize = height.toFloat() * 0.9F
+            paint.textSize = height.toFloat() * 0.8F
 
             var rect = Rect()
             paint.getTextBounds(frags, 0, frags.length, rect)
@@ -102,6 +110,7 @@ class ProgressView : View {
                 canvas.drawText(size, xPos - 5.0F, yPos, paint)
             }
         }
-        Timer().schedule(50) { postInvalidate() }
+        if (autoUpdate)
+            Timer().schedule(50) { postInvalidate() }
     }
 }

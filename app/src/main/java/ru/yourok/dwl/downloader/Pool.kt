@@ -1,19 +1,22 @@
 package ru.yourok.dwl.downloader
 
+import android.util.Log
 import ru.yourok.dwl.settings.Settings
 import java.net.SocketTimeoutException
 import kotlin.concurrent.thread
 
 
-class Pool(private val workers: MutableList<Pair<Worker, DownloadStatus>>) {
+class Pool(private val workers: List<Pair<Worker, DownloadStatus>>) {
 
-    private var stop = true
+    @Volatile private var stop = true
     private var currentWorker = 0
     private var thread: Thread? = null
     private var lock: Any = Any()
+    private var error: String = ""
 
     private var onEnd: (() -> Unit)? = null
     private var onFinish: (() -> Unit)? = null
+    private var onError: ((err: String) -> Unit)? = null
 
     fun onEnd(onEnd: () -> Unit) {
         this.onEnd = onEnd
@@ -23,15 +26,20 @@ class Pool(private val workers: MutableList<Pair<Worker, DownloadStatus>>) {
         this.onFinish = onFinish
     }
 
+    fun onError(onError: (err: String) -> Unit) {
+        this.onError = onError
+    }
+
     fun start() {
         stop = false
 
         this.thread = thread {
             try {
                 currentWorker = 0
-                for ((wrk, _) in workers) {
-                    if (stop)
-                        break
+                workers.forEach { item ->
+                    val wrk = item.first
+                    if (stop || !error.isNullOrEmpty())
+                        return@forEach
                     synchronized(lock) {
                         currentWorker++
                     }
@@ -45,11 +53,15 @@ class Pool(private val workers: MutableList<Pair<Worker, DownloadStatus>>) {
                                 }
                                 break
                             } catch (e: SocketTimeoutException) {
-                                if (i == Settings.errorRepeat)
-                                    throw SocketTimeoutException("Error, connection timeout on loadList: url=" + wrk.item.url + " index=" + wrk.item.index)
+                                if (i == Settings.errorRepeat) {
+                                    error = "Error, connection timeout on load item " + wrk.item.index
+                                    onError?.invoke(error)
+                                }
                             } catch (e: Exception) {
-                                if (i == Settings.errorRepeat)
-                                    throw e
+                                if (i == Settings.errorRepeat) {
+                                    error = "Error connection: " + e.message
+                                    onError?.invoke(error)
+                                }
                             }
                         synchronized(lock) {
                             currentWorker--
@@ -61,13 +73,13 @@ class Pool(private val workers: MutableList<Pair<Worker, DownloadStatus>>) {
 
                 while (currentWorker > 0)
                     Thread.sleep(100)
-
                 onEnd?.invoke()
                 stop = true
             } catch (e: Exception) {
                 onEnd?.invoke()
                 stop = true
-                throw e
+                if (!error.isNullOrEmpty())
+                    onError?.invoke(e.message ?: "Error load items")
             }
         }
     }
@@ -76,6 +88,7 @@ class Pool(private val workers: MutableList<Pair<Worker, DownloadStatus>>) {
         stop = true
         for ((wrk, _) in workers)
             wrk.stop()
+        thread?.join()
     }
 
     fun waitEnd() {

@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import ru.yourok.dwl.settings.Preferences
 import ru.yourok.m3u8loader.R
+import java.util.*
+import kotlin.concurrent.schedule
 
 
 object Theme {
@@ -26,8 +28,11 @@ object Theme {
 
     fun changeNow(activity: Activity, dark: Boolean) {
         Preferences.set("ThemeDark", dark)
-        val intent = Intent(activity, activity::class.java)
-        activity.startActivity(intent)
-        activity.finish()
+        Timer().schedule(500) {
+            var intent = Intent(activity, activity::class.java)
+            activity.finish()
+            activity.overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out)
+            activity.startActivity(intent)
+        }
     }
 }

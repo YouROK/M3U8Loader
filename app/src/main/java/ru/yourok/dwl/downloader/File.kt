@@ -7,7 +7,7 @@ import java.io.RandomAccessFile
  */
 class File(pathName: String) {
 
-    private var workers: MutableList<Pair<Worker, DownloadStatus>> = mutableListOf()
+    private var workers: List<Pair<Worker, DownloadStatus>> = mutableListOf()
     private val file: RandomAccessFile = RandomAccessFile(pathName, "rwd")
     private val lock = Any()
 
@@ -19,7 +19,7 @@ class File(pathName: String) {
         file.close()
     }
 
-    fun setWorkers(workers: MutableList<Pair<Worker, DownloadStatus>>) {
+    fun setWorkers(workers: List<Pair<Worker, DownloadStatus>>) {
         this.workers = workers
     }
 

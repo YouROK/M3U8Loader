@@ -1,25 +1,24 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="AppThemeLight" parent="MaterialDrawerTheme.Light">
-        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
-        
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="colorButtonNormal">@color/button_color_light</item>
-        <item name="android:colorButtonNormal" tools:targetApi="lollipop">@color/button_color_light</item>
+        <item name="android:colorButtonNormal" tools:targetApi="lollipop">
+            @color/button_color_light
+        </item>
     </style>
 
     <style name="AppThemeDark" parent="MaterialDrawerTheme">
-        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
-
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="colorButtonNormal">@color/button_color_dark</item>
-        <item name="android:colorButtonNormal" tools:targetApi="lollipop">@color/button_color_dark</item>
+        <item name="android:colorButtonNormal" tools:targetApi="lollipop">@color/button_color_dark
+        </item>
     </style>
 
     <style name="MyDialog" parent="Theme.AppCompat.Dialog">
@@ -32,8 +31,9 @@
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
 
-    <style name="AppThemeDark.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
-    <style name="AppThemeDark.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+    <style name="AppThemeDark.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppThemeDark.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
 </resources>

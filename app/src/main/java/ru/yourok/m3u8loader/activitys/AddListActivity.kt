@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_add_list.*
-import org.jetbrains.anko.toast
 import ru.yourok.dwl.list.List
 import ru.yourok.dwl.manager.Manager
 import ru.yourok.dwl.parser.Parser
@@ -108,6 +107,7 @@ class AddListActivity : AppCompatActivity() {
     fun addList(download: Boolean) {
         val Name = cleanFileName(editTextFileName.getText().toString().trim())
         val Url = editTextUrl.getText().toString().trim()
+        val SubsUrl = editTextSubtitles.getText().toString().trim()
 
         if (Url.isEmpty()) {
             toastErr(R.string.error_empty_url)
@@ -122,6 +122,8 @@ class AddListActivity : AppCompatActivity() {
         thread {
             try {
                 val lists = Parser(Name, Url).parse()
+                if (!SubsUrl.isEmpty())
+                    lists.forEach { it.subsUrl = SubsUrl }
                 Manager.addList(lists)
                 if (download) {
                     val start = Manager.getLoadersSize() - lists.size
@@ -148,14 +150,14 @@ class AddListActivity : AppCompatActivity() {
     private fun toastErr(msg: String) {
         if (msg.isNotEmpty())
             runOnUiThread {
-                toast(msg)
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
                 textViewError.setText(msg)
             }
     }
 
     private fun toastErr(msg: Int) {
         runOnUiThread {
-            toast(msg)
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
             textViewError.setText(msg)
         }
     }

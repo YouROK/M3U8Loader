@@ -4,7 +4,10 @@ import android.net.Uri
 import ru.yourok.dwl.client.Client
 import ru.yourok.dwl.client.ClientBuilder
 import ru.yourok.dwl.list.Item
+import ru.yourok.dwl.settings.Settings
+import ru.yourok.m3u8loader.R
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 
 
 /**
@@ -42,14 +45,15 @@ class Worker(val item: Item, private val stat: DownloadStatus, private val file:
         }
         speed.stopRead()
         client!!.close()
-        
+
         if (!stop) {
             if (item.encData != null)
                 stat.buffer = item.encData!!.decrypt(outBuffer.toByteArray())
             else
                 stat.buffer = outBuffer.toByteArray()
 
-            //TODO check
+            if (stat.buffer != null && !isBinary(stat.buffer!!))
+                throw IOException(Settings.context?.getString(R.string.error_fragment_not_binary) ?: "Error, fragment is html page")
 
             item.size = stat.buffer!!.size.toLong()
             item.isCompleteLoad = true
@@ -65,13 +69,9 @@ class Worker(val item: Item, private val stat: DownloadStatus, private val file:
         client?.close()
     }
 
-//    private fun checkBinary(buf: ByteArray) {
-//        var count = 0
-//        var isBin = 0
-//        buf.forEach {
-//            val block = Character.UnicodeBlock.of(it.toChar())
-//
-//        }
-//
-//    }
+    private fun isBinary(buf: ByteArray): Boolean {
+//        return !Charset.forName("UTF-8").newEncoder().canEncode(String(buf, Charset.defaultCharset()))
+        return true
+        //TODO
+    }
 }

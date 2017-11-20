@@ -2,12 +2,10 @@ package ru.yourok.dwl.parser
 
 import android.net.Uri
 import com.iheartradio.m3u8.*
-import com.iheartradio.m3u8.data.Playlist
 import ru.yourok.dwl.client.Client
 import ru.yourok.dwl.client.ClientBuilder
 import ru.yourok.dwl.list.List
-import ru.yourok.dwl.settings.Settings
-import java.io.File
+import java.io.ByteArrayInputStream
 import java.io.IOException
 
 /**
@@ -19,45 +17,55 @@ class Parser(val name: String, val url: String) {
     var parseMedia: ParseMedia? = null
 
     fun parse(): MutableList<List> {
-        stop = false
-        val retList = mutableListOf<List>()
-        var playList: Playlist? = null
-        var client: Client? = null
+        var clientEx: Client? = null
         try {
-            client = ClientBuilder.new(Uri.parse(url))
-            client.connect()
-            val parser = PlaylistParser(client.getInputStream(), Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT)
-            playList = parser.parse()
-            client.close()
-        } catch (e: ParseException) {
-            throw java.text.ParseException("Error parse list: " + client!!.getUrl(), 0)
-        } catch (e: Exception) {
-            throw IOException("Error loadList list: " + client!!.getUrl() + " " + client!!.getErrorMessage() + " " + e.message)
-        }
+            stop = false
+            val retList = mutableListOf<List>()
 
-        if (playList.hasMasterPlaylist()) {
-            retList.addAll(ParseMaster().parse(Uri.parse(client.getUrl()), playList.masterPlaylist))
-        }
-        if (playList.hasMediaPlaylist()) {
-            val list = List()
-            list.url = client.getUrl()
-            list.info.title = name
-            list.filePath = File(Settings.downloadPath, list.info.title + ".mp4").path
-            retList.add(list)
-        }
-        retList.forEachIndexed { index, list ->
-            if (list.info.title.isNullOrEmpty()) {
-                var band = list.info.bandwidth
-                if (band == 0)
-                    band = index
-                list.info.title = name + "_" + band
+            val client = ClientBuilder.new(Uri.parse(url))
+            clientEx = client
+            client.connect()
+            val listStr = client.getInputStream()?.bufferedReader().use { it?.readText() ?: "" }
+            client.close()
+            val parser = PlaylistParser(ByteArrayInputStream(listStr.toByteArray()), Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT)
+            val playList = parser.parse()
+
+            if (playList.hasMasterPlaylist()) {
+                val mList = ParseMaster().parse(Uri.parse(client.getUrl()), playList.masterPlaylist)
+                retList.addAll(mList)
             }
-            list.filePath = File(Settings.downloadPath, list.info.title + ".mp4").path
-            parseMedia = ParseMedia()
-            parseMedia!!.parse(list)
-            if (stop) return@forEachIndexed
+            if (playList.hasMediaPlaylist()) {
+                val list = List()
+                list.url = client.getUrl()
+                list.info.title = name
+                list.filePath = list.info.title + ".mp4"
+                retList.add(list)
+            }
+            for (i in 0 until retList.size) {
+                val list = retList[i]
+                if (list.info.title.isNullOrEmpty()) {
+                    var band = list.info.bandwidth
+                    if (band == 0)
+                        band = i
+                    list.info.title = name + "_" + band
+                }
+                list.filePath = list.info.title + ".mp4"
+                parseMedia = ParseMedia()
+                retList.addAll(parseMedia!!.parse(list))
+                if (list.items.size == 0) {
+                    retList.remove(list)
+                }
+                if (stop) break
+            }
+            return retList
+
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            throw java.text.ParseException("Error parse list: " + clientEx?.getUrl() + " " + e.message, 0)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw IOException("Error loadList list: " + clientEx?.getUrl() + " " + clientEx?.getErrorMessage() + " " + e.message)
         }
-        return retList
     }
 
     fun stop() {

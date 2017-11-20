@@ -126,12 +126,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/convert_on_load_end" />
 
-            <Button
-                android:id="@+id/buttonConfConv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/converting_configuration" />
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="15dp"
@@ -168,12 +162,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/set_def_settings" />
-
-            <Button
-                android:id="@+id/buttonDonation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/donation" />
 
             <TextView
                 android:id="@+id/textViewVersion"

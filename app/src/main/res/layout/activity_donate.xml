@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp"
+    tools:context="ru.yourok.m3u8loader.DonationActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textViewDonTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/donation"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:background="@android:color/transparent" />
+
+        <TextView
+            android:id="@+id/textViewDonMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/donation_msg"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:background="@android:color/transparent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="EMail: " />
+
+            <TextView
+                android:id="@+id/textViewEMail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoLink="web|email"
+                android:text="8yourok8@gmail.com" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:background="@android:color/transparent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Telegram: " />
+
+            <TextView
+                android:id="@+id/textViewTelegram"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:text="https://t.me/M3U8Loader" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:background="@android:color/transparent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Forum RUS: " />
+
+            <TextView
+                android:id="@+id/textViewForum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="http://4pda.ru/forum/index.php?showtopic=785223" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/buttonDonPaypal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="onDonPaypalClick"
+                android:text="PayPal" />
+
+            <Button
+                android:id="@+id/buttonDonYand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="onDonYandClick"
+                android:text="Yandex" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/buttonDonUSD"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="onDonUSDClick"
+                android:text="USD" />
+            <Button
+                android:id="@+id/buttonDonEUR"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="onDonEURClick"
+                android:text="EUR" />
+            <Button
+                android:id="@+id/buttonDonRUB"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="onDonRUBClick"
+                android:text="RUB" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

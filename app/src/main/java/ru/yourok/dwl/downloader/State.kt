@@ -1,13 +1,22 @@
 package ru.yourok.dwl.downloader
 
+object LoadState {
+    const val ST_PAUSE = 0
+    const val ST_LOADING = 1
+    const val ST_CONVERTING = 2
+    const val ST_COMPLETE = 3
+    const val ST_ERROR = 4
+}
+
 class State {
     var url: String = ""
     var name: String = ""
-    var path: String = ""
+    var file: String = ""
     var threads: Int = 0
     var speed: Float = 0.0F
     var isComplete: Boolean = false
     var error: String = ""
+    var state: Int = 0
 
     var fragments: Int = 0
     var loadedFragments: Int = 0
@@ -15,13 +24,10 @@ class State {
     var size: Long = 0
     var loadedBytes: Long = 0
 
-    var duration: Float = 0.0F
-    var loadedDuration: Float = 0.0F
-
     var loadedItems: MutableList<ItemState> = mutableListOf()
 
     override fun toString(): String {
-        return "State(name='$name', path='$path', threads=$threads, fragments=$fragments, loadedFragments=$loadedFragments, size=$size, loadedBytes=$loadedBytes, duration=$duration, loadedDuration=$loadedDuration)"
+        return "State(name='$name', file='$file', threads=$threads, fragments=$fragments, loadedFragments=$loadedFragments, size=$size, loadedBytes=$loadedBytes)"
     }
 }
 

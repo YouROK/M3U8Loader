@@ -1,29 +1,31 @@
 package ru.yourok.m3u8loader.navigationBar
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.builders.footer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import co.zsmb.materialdrawerkt.draweritems.badgeable.secondaryItem
 import co.zsmb.materialdrawerkt.draweritems.divider
-import org.jetbrains.anko.intentFor
+import com.mikepenz.materialdrawer.Drawer
 import ru.yourok.dwl.manager.Manager
 import ru.yourok.m3u8loader.R
 import ru.yourok.m3u8loader.activitys.AddListActivity
+import ru.yourok.m3u8loader.activitys.DonateActivity
 import ru.yourok.m3u8loader.activitys.PreferenceActivity
 
 
 object NavigationBar {
-    fun setup(activity: AppCompatActivity) {
+    fun setup(activity: AppCompatActivity): Drawer {
         with(activity) {
-            drawer {
+            return drawer {
                 headerViewRes = R.layout.header
 
                 primaryItem(R.string.add) {
                     icon = R.drawable.ic_add_black_24dp
                     selectable = false
                     onClick { _ ->
-                        startActivity(intentFor<AddListActivity>())
+                        startActivity(Intent(activity, AddListActivity::class.java))
                         false
                     }
                 }
@@ -36,7 +38,7 @@ object NavigationBar {
                         false
                     }
                 }
-                primaryItem(R.string.pause_all) {
+                primaryItem(R.string.stop_all) {
                     icon = R.drawable.ic_pause_black_24dp
                     selectable = false
                     onClick { _ ->
@@ -55,11 +57,19 @@ object NavigationBar {
 
                 divider {}
                 footer {
-                    secondaryItem("Settings") {
+                    secondaryItem(R.string.donation) {
+                        icon = R.drawable.ic_donate_black
+                        selectable = false
+                        onClick { _ ->
+                            startActivity(Intent(activity, DonateActivity::class.java))
+                            false
+                        }
+                    }
+                    secondaryItem(R.string.settings) {
                         icon = R.drawable.ic_settings_black_24dp
                         selectable = false
                         onClick { _ ->
-                            startActivityForResult(intentFor<PreferenceActivity>(), PreferenceActivity.Result)
+                            startActivityForResult(Intent(activity, PreferenceActivity::class.java), PreferenceActivity.Result)
                             false
                         }
                     }

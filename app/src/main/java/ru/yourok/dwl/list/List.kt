@@ -1,20 +1,19 @@
 package ru.yourok.dwl.list
 
-import java.io.Serializable
-
 /**
  * Created by yourok on 07.11.17.
  */
-class List : Serializable {
+class List {
     var items: MutableList<Item> = mutableListOf()
     var url: String = ""
     var filePath: String = ""
     var info: Info = Info()
+    var isConverted: Boolean = false
+    var subsUrl: String = ""
 }
 
 class Info {
     var bandwidth: Int = 0
-    var frameRate: Float = 0.0F
     var title: String = ""
 }
 
@@ -24,7 +23,6 @@ class Item {
     var size: Long = 0
     var isLoad: Boolean = true
     var isCompleteLoad = false
-    var duration: Float = 0.0F
     var encData: EncKey? = null
 }
 

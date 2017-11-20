@@ -10,6 +10,7 @@
     android:padding="5dp"
     tools:context="ru.yourok.m3u8loader.activitys.mainActivity.MainActivity">
 
+
     <ListView
         android:id="@+id/listViewLoader"
         android:layout_width="match_parent"

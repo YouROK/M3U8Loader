@@ -7,10 +7,15 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import ru.yourok.dwl.downloader.LoadState
 import ru.yourok.dwl.manager.Manager
 import ru.yourok.m3u8loader.R
 
 class LoaderListAdapter(val context: Context) : BaseAdapter() {
+
+    fun autoupdate(a: Boolean) {
+        //TODO проверить идет ли update в фоне
+    }
 
     override fun getCount(): Int {
         return Manager.getLoadersSize()
@@ -29,18 +34,29 @@ class LoaderListAdapter(val context: Context) : BaseAdapter() {
         Manager.getLoader(index)?.let {
             vi.findViewById<TextView>(R.id.textViewNameItem).setText(it.list.info.title)
             val imgStatus = vi.findViewById<ImageView>(R.id.imageViewLoader)
+            val state = it.getState()
             when {
-                it.isLoading() -> {
+                state.state == LoadState.ST_PAUSE -> {
+                    if (Manager.inQueue(index))
+                        imgStatus.setImageResource(R.drawable.ic_pause_circle_outline_black_24dp)
+                    else
+                        imgStatus.setImageResource(R.drawable.ic_pause_black_24dp)
+                }
+                state.state == LoadState.ST_LOADING -> {
                     imgStatus.setImageResource(R.drawable.ic_file_download_black_24dp)
                 }
-                Manager.inQueue(index) ->
-                    imgStatus.setImageResource(R.drawable.ic_pause_circle_outline_black_24dp)
-                it.getState().isComplete ->
+                state.state == LoadState.ST_CONVERTING -> {
+                    imgStatus.setImageResource(R.drawable.ic_convert_black)
+                }
+                state.state == LoadState.ST_COMPLETE -> {
                     imgStatus.setImageResource(R.drawable.ic_check_black_24dp)
-                else ->
-                    imgStatus.setImageResource(R.drawable.ic_pause_black_24dp)
+                }
+                state.state == LoadState.ST_ERROR -> {
+                    imgStatus.setImageResource(R.drawable.ic_report_problem_black_24dp)
+                }
             }
-            val err = it.getState().error
+
+            val err = state.error
             if (!err.isNullOrEmpty())
                 vi.findViewById<TextView>(R.id.textViewError).setText(err)
             else

@@ -8,7 +8,7 @@ import android.net.Uri
 object Util {
     fun concatUriList(baseUrl: Uri, segment: String): String {
         if (segment.startsWith("http://") || segment.startsWith("https://") || segment.startsWith("file://") || segment.startsWith("content://"))
-            return copyArguments(baseUrl, segment)
+            return segment
 
         var path = baseUrl.path
 
