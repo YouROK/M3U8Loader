@@ -1,5 +1,7 @@
 package ru.yourok.dwl.list
 
+import ru.yourok.dwl.settings.Settings
+
 /**
  * Created by yourok on 07.11.17.
  */
@@ -9,6 +11,7 @@ class List {
     var filePath: String = ""
     var info: Info = Info()
     var isConverted: Boolean = false
+    var isConvert: Boolean = Settings.convertVideo
     var subsUrl: String = ""
 }
 

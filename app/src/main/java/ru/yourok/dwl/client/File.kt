@@ -1,20 +1,20 @@
 package ru.yourok.dwl.client
 
+import android.net.Uri
 import java.io.FileInputStream
 import java.io.InputStream
 
 /**
  * Created by yourok on 07.11.17.
  */
-class File(private val filePath: String) : Client {
+class File(private val filePath: Uri) : Client {
     private var isOpen: Boolean = false
-    private var file: java.io.File? = null
     private var input: FileInputStream? = null
     private var errMsg: String = ""
 
     override fun connect() {
-        file = java.io.File(filePath)
-        input = file!!.inputStream()
+        val br = FileInputStream(filePath.path)
+        input = br
         isOpen = true
     }
 
@@ -24,16 +24,22 @@ class File(private val filePath: String) : Client {
 
     override fun getSize(): Long {
         if (isOpen)
-            return file!!.length()
+            return input?.available()?.toLong() ?: 0
         return 0
     }
 
     override fun getUrl(): String {
-        return filePath
+        return filePath.toString()
     }
 
     override fun getInputStream(): InputStream? {
         return input
+    }
+
+    override fun read(b: ByteArray): Int {
+        if (!isOpen)
+            return -1
+        return input!!.read(b)
     }
 
     override fun getErrorMessage(): String {

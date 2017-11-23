@@ -5,6 +5,7 @@ import com.iheartradio.m3u8.*
 import ru.yourok.dwl.client.Client
 import ru.yourok.dwl.client.ClientBuilder
 import ru.yourok.dwl.list.List
+import ru.yourok.dwl.settings.Settings
 import java.io.ByteArrayInputStream
 import java.io.IOException
 
@@ -24,7 +25,17 @@ class Parser(val name: String, val url: String) {
 
             val client = ClientBuilder.new(Uri.parse(url))
             clientEx = client
-            client.connect()
+
+            for (i in 0..Settings.errorRepeat)
+                try {
+                    client.connect()
+                    break
+                } catch (e: Exception) {
+                    if (i == Settings.errorRepeat) {
+                        throw e
+                    }
+                }
+
             val listStr = client.getInputStream()?.bufferedReader().use { it?.readText() ?: "" }
             client.close()
             val parser = PlaylistParser(ByteArrayInputStream(listStr.toByteArray()), Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT)

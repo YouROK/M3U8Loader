@@ -21,7 +21,7 @@ class Speed(private val stat: DownloadStatus) {
         var speed = 0.0
         if (countTime > 0.0)
             speed = countBytes.toDouble() / countTime
-        if (countTime > 5)
+        if (countTime > 3)
             startRead()
 
         stat.speed = speed.toFloat()

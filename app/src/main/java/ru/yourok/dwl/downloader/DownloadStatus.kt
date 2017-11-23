@@ -5,6 +5,7 @@ class DownloadStatus {
     var speed: Float = 0.0F
     var loadedBytes: Long = 0
     var isLoading: Boolean = false
+    var isError: Boolean = false
 
     fun Clear() {
         buffer = null

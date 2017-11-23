@@ -173,6 +173,14 @@ public class OpenFileDialog extends AlertDialog.Builder {
         return this;
     }
 
+    public OpenFileDialog setCurrentDir(String dir) {
+        if (dir != null && !dir.isEmpty()) {
+            this.currentPath = dir;
+            changeTitle();
+        }
+        return this;
+    }
+
     private static Display getDefaultDisplay(Context context) {
         return ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
     }
@@ -222,15 +230,17 @@ public class OpenFileDialog extends AlertDialog.Builder {
         TextView textView = createTextView(context, android.R.style.TextAppearance_DeviceDefault_Small);
         Drawable drawable = getContext().getResources().getDrawable(R.drawable.ic_folder_up_black_24dp);
         drawable.setBounds(5, 5, 95, 95);
+        textView.setMinWidth(textView.getMinHeight());
         textView.setCompoundDrawables(drawable, null, null, null);
-        textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         textView.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 File file = new File(currentPath);
                 File parentDirectory = file.getParentFile();
-                if (parentDirectory != null) {
+                String root = Environment.getExternalStorageDirectory().getPath();
+                if (parentDirectory != null && !file.getPath().equals(root)) {
                     currentPath = parentDirectory.getPath();
                     RebuildFiles(((FileAdapter) listView.getAdapter()));
                 }
@@ -249,7 +259,7 @@ public class OpenFileDialog extends AlertDialog.Builder {
         String titleText = currentPath;
         int screenWidth = getScreenSize(getContext()).x;
         int maxWidth = (int) (screenWidth * 0.99);
-        if (getTextWidth(titleText, title.getPaint()) > maxWidth) {
+        if (getTextWidth(titleText, title.getPaint()) >= maxWidth) {
             while (getTextWidth("..." + titleText, title.getPaint()) > maxWidth) {
                 int start = titleText.indexOf("/", 2);
                 if (start > 0)

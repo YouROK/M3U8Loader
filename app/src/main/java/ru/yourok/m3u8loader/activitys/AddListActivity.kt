@@ -10,8 +10,11 @@ import kotlinx.android.synthetic.main.activity_add_list.*
 import ru.yourok.dwl.list.List
 import ru.yourok.dwl.manager.Manager
 import ru.yourok.dwl.parser.Parser
+import ru.yourok.dwl.settings.Settings
+import ru.yourok.dwl.utils.Utils
 import ru.yourok.m3u8loader.R
 import ru.yourok.m3u8loader.theme.Theme
+import java.io.File
 import kotlin.concurrent.thread
 
 
@@ -89,6 +92,12 @@ class AddListActivity : AppCompatActivity() {
         }
         if (download)
             downloadBtnClick(buttonDownload)
+
+        checkboxConvert.isChecked = Settings.convertVideo
+        textViewDirectoryPathAdd.setText(Settings.downloadPath)
+        val dfile = File(Settings.downloadPath)
+        textViewDiskSize.text = "%s / %s".format(Utils.byteFmt(dfile.totalSpace - dfile.usableSpace), Utils.byteFmt(dfile.totalSpace))
+        progressBarFreeSpace.progress = 100 - (dfile.usableSpace * 100 / (dfile.totalSpace + 1)).toInt()
     }
 
     fun addBtnClick(view: View) {
@@ -122,16 +131,18 @@ class AddListActivity : AppCompatActivity() {
         thread {
             try {
                 val lists = Parser(Name, Url).parse()
-                if (!SubsUrl.isEmpty())
-                    lists.forEach { it.subsUrl = SubsUrl }
+                lists.forEach {
+                    it.subsUrl = SubsUrl
+                    it.isConvert = checkboxConvert?.isChecked ?: Settings.convertVideo
+                }
                 Manager.addList(lists)
                 if (download) {
                     val start = Manager.getLoadersSize() - lists.size
                     for (i in start until Manager.getLoadersSize())
                         Manager.load(i)
                 }
-                waitView(false)
-                finish()
+                this.setResult(RESULT_OK)
+                this.finish()
             } catch (e: Exception) {
                 if (e.message != null)
                     toastErr(e.message!!)

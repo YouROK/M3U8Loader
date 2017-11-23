@@ -3,7 +3,6 @@ package ru.yourok.dwl.downloader
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
 import ru.yourok.dwl.client.ClientBuilder
 import ru.yourok.dwl.converter.Converter
@@ -26,7 +25,8 @@ class Downloader(val list: List) {
     private var executor: ExecutorService? = null
 
     private var error: String = ""
-    private var complete: Boolean = false
+
+    private var completeLoad: Boolean = false
     private var isLoading: Boolean = false
     private var isConverting: Boolean = false
     private var stop: Boolean = false
@@ -40,7 +40,7 @@ class Downloader(val list: List) {
                 return@forEach
             }
         }
-        complete = ncomp
+        completeLoad = ncomp
     }
 
     fun load() {
@@ -54,7 +54,7 @@ class Downloader(val list: List) {
                 stop = false
                 isConverting = false
                 isLoading = true
-                complete = false
+                completeLoad = false
                 error = ""
                 val file = File(java.io.File(Settings.downloadPath, list.filePath).path)
                 var resize = true
@@ -92,13 +92,13 @@ class Downloader(val list: List) {
                 pool = Pool(workers!!)
                 pool!!.start()
                 pool!!.onEnd {
-                    complete = true
+                    completeLoad = true
                     workers!!.forEach {
                         if (!it.first.item.isCompleteLoad)
-                            complete = false
+                            completeLoad = false
                     }
 
-                    if (!resize && complete) {
+                    if (!resize && completeLoad) {
                         size = 0L
                         workers!!.forEach {
                             size += it.first.item.size
@@ -107,22 +107,10 @@ class Downloader(val list: List) {
                     }
                     file.close()
                     Utils.saveList(list)
-                    if (Settings.useFFMpeg && !list.isConverted && complete) {
-                        isConverting = true
-                        val oldFile = java.io.File(Settings.downloadPath, list.filePath)
-                        val newFile = java.io.File(Settings.downloadPath, oldFile.nameWithoutExtension + ".non.mp4")
-                        if (oldFile.renameTo(newFile)) {
-                            list.filePath = newFile.path
-                            Converter.convert(newFile.path, oldFile.path, {
-                                list.filePath = oldFile.path
-                                list.isConverted = true
-                                newFile.delete()
-                                isConverting = false
-                            })
-                        }
-                    }
+                    if (list.isConvert && !list.isConverted && completeLoad)
+                        convertAsync()
                     isLoading = false
-                    Notifyer.toastEnd(list, complete, error)
+                    Notifyer.toastEnd(list, completeLoad, error)
                 }
 
                 pool!!.onFinishWorker {
@@ -158,7 +146,49 @@ class Downloader(val list: List) {
         return isConverting
     }
 
-    fun isComplete(): Boolean = complete
+    fun isComplete(): Boolean = completeLoad
+
+    private fun convertAsync() {
+
+        synchronized(completeLoad) {
+            if (!completeLoad)
+                return
+        }
+
+        synchronized(list.isConverted) {
+            if (list.isConverted)
+                return
+            isConverting = true
+        }
+
+        while (Converter.isConverting()) {
+            Thread.sleep(200)
+        }
+
+        val oldFile = java.io.File(Settings.downloadPath, list.filePath)
+        val newFile = java.io.File(Settings.downloadPath, oldFile.nameWithoutExtension + ".non.mp4")
+        if (oldFile.renameTo(newFile)) {
+            list.filePath = newFile.path
+            Converter.convert(newFile.path, oldFile.path, {
+                //on Finish
+                list.filePath = oldFile.path
+                list.isConverted = true
+                isConverting = false
+                newFile.delete()
+            }, { message ->
+                //on Error
+                oldFile.delete()
+                newFile.renameTo(oldFile)
+                list.filePath = oldFile.path
+                error = message
+                Toast.makeText(Settings.context, "Error convert: " + message, Toast.LENGTH_SHORT).show()
+            })
+
+            while (Converter.isConverting()) {
+                Thread.sleep(200)
+            }
+        }
+    }
 
     fun getState(): State {
         val state = State()
@@ -168,16 +198,16 @@ class Downloader(val list: List) {
             state.file = java.io.File(Settings.downloadPath, list.filePath).path
             state.threads = pool?.size() ?: 0
             state.error = error
-            state.isComplete = complete
-            state.state = LoadState.ST_PAUSE
+            state.isComplete = completeLoad
             if (isLoading)
                 state.state = LoadState.ST_LOADING
             else if (isConverting)
                 state.state = LoadState.ST_CONVERTING
-            else if (complete)
+            else if (completeLoad)
                 state.state = LoadState.ST_COMPLETE
-            else if (!error.isNullOrEmpty())
+            else if (!error.isEmpty())
                 state.state = LoadState.ST_ERROR
+
 
             if (workers?.size != 0 && pool?.isWorking() == true) {
                 state.fragments = workers!!.size
@@ -187,6 +217,7 @@ class Downloader(val list: List) {
                         itmState.loaded = it.second.loadedBytes
                         itmState.size = it.first.item.size
                         itmState.complete = it.first.item.isCompleteLoad
+                        itmState.error = it.second.isError
                         state.loadedItems.add(itmState)
 
                         state.size += it.first.item.size

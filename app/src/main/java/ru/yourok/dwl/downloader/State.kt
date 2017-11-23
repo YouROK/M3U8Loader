@@ -35,4 +35,5 @@ class ItemState {
     var loaded: Long = 0
     var size: Long = 0
     var complete: Boolean = false
+    var error: Boolean = false
 }

@@ -16,6 +16,7 @@ class File(pathName: String) {
     }
 
     fun close() {
+        file.fd.sync()
         file.close()
     }
 
@@ -33,6 +34,7 @@ class File(pathName: String) {
                 if (it.second.buffer != null) {
                     file.seek(off)
                     file.write(it.second.buffer, 0, it.second.buffer!!.size)
+                    file.fd.sync()
                     it.second.buffer = null
                 }
                 off += it.first.item.size

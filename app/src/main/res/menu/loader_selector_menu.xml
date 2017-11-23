@@ -2,11 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/itemPlay"
-        android:icon="@drawable/ic_play_arrow_black_24dp"
-        android:title="@string/play"
-        app:showAsAction="ifRoom" />
-    <item
         android:id="@+id/itemLoad"
         android:icon="@drawable/ic_file_download_black_24dp"
         android:title="@string/download"

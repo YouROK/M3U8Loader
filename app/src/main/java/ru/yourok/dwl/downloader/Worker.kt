@@ -32,11 +32,10 @@ class Worker(val item: Item, private val stat: DownloadStatus, private val file:
         if (item.size == 0L)
             item.size = client!!.getSize()
 
-        val inputStream = client!!.getInputStream()!!.buffered()
         stat.Clear()
         speed.startRead()
         while (!stop) {
-            val readCount = inputStream.read(buffer)
+            val readCount = client!!.read(buffer)
             if (readCount == -1)
                 break
             speed.measure(readCount)
@@ -67,6 +66,11 @@ class Worker(val item: Item, private val stat: DownloadStatus, private val file:
     fun stop() {
         stop = true
         client?.close()
+    }
+
+    fun setMaxPrior() {
+        if (Thread.currentThread().priority != Thread.MAX_PRIORITY)
+            Thread.currentThread().priority = Thread.MAX_PRIORITY
     }
 
     private fun isBinary(buf: ByteArray): Boolean {

@@ -14,7 +14,7 @@ object Settings {
     var errorRepeat: Int = 5
     var downloadPath: String = ""
     var preloadSize: Boolean = false
-    var useFFMpeg: Boolean = false
+    var convertVideo: Boolean = false
 
     var headers: MutableMap<String, String> = mutableMapOf()
 

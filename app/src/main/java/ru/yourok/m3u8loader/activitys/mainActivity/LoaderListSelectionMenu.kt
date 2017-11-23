@@ -8,7 +8,6 @@ import android.widget.AbsListView
 import android.widget.ListView
 import ru.yourok.dwl.manager.Manager
 import ru.yourok.m3u8loader.R
-import ru.yourok.m3u8loader.player.PlayIntent
 
 /**
  * Created by yourok on 19.11.17.
@@ -28,13 +27,6 @@ class LoaderListSelectionMenu(val activity: Activity) : AbsListView.MultiChoiceM
 
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
         when (item?.itemId) {
-            R.id.itemPlay -> {
-                if (selected.size == 1) {
-                    val stat = Manager.getLoaderStat(selected.first())
-                    if (stat != null)
-                        PlayIntent.start(activity, stat.file, stat.name)
-                }
-            }
             R.id.itemLoad -> {
                 selected.forEach {
                     Manager.load(it)
@@ -66,6 +58,5 @@ class LoaderListSelectionMenu(val activity: Activity) : AbsListView.MultiChoiceM
             selected.add(position)
         else
             selected.remove(position)
-        mode?.menu?.getItem(0)?.setVisible(selected.size == 1)
     }
 }

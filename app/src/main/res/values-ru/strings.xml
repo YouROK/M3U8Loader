@@ -6,6 +6,7 @@
 
     <string name="add">Добавить</string>
     <string name="play">Проиграть</string>
+    <string name="convert">Конвертировать</string>
     <string name="download">Скачать</string>
     <string name="load_all">Скачать всё</string>
     <string name="stop_all">Остановить всё</string>

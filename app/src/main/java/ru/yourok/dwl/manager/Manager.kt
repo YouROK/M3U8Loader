@@ -165,6 +165,8 @@ object Manager {
     private var loading: Boolean = false
     private var currentLoader = -1
 
+    fun isLoading() = loading
+
     fun load(index: Int) {
         synchronized(loaderList) {
             if (index in 0 until loaderList.size) {
@@ -229,7 +231,7 @@ object Manager {
                     }
                     Thread.sleep(100)
                     loaderList[currentLoader].waitEnd()
-                    if (!loaderList[currentLoader].isComplete()) {
+                    if (currentLoader != -1 && !loaderList[currentLoader].isComplete()) {
                         loading = false
                         queueList.clear()
                     }

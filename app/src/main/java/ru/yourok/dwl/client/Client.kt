@@ -13,6 +13,7 @@ interface Client {
     fun getSize(): Long
     fun getUrl(): String
     fun getInputStream(): InputStream?
+    fun read(b: ByteArray): Int
     fun getErrorMessage(): String
     fun close()
 }
@@ -20,11 +21,11 @@ interface Client {
 object ClientBuilder {
     fun new(url: Uri): Client {
         if (url.scheme.startsWith("http", 0, true)) {
-            return Http(url.toString())
+            return Http(url)
         } else if (url.scheme.startsWith("content", 0, true)) {
             return Content(url)
         } else {
-            return File(url.path)
+            return File(url)
         }
     }
 }

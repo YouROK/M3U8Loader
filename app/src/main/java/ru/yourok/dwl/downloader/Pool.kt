@@ -1,6 +1,5 @@
 package ru.yourok.dwl.downloader
 
-import android.util.Log
 import ru.yourok.dwl.settings.Settings
 import java.net.SocketTimeoutException
 import kotlin.concurrent.thread
@@ -36,28 +35,33 @@ class Pool(private val workers: List<Pair<Worker, DownloadStatus>>) {
         this.thread = thread {
             try {
                 currentWorker = 0
+                var priorityIndex = -1
                 workers.forEach { item ->
                     val wrk = item.first
+                    val dstat = item.second
                     if (stop || !error.isNullOrEmpty())
                         return@forEach
                     synchronized(lock) {
                         currentWorker++
                     }
                     thread {
-                        Thread.sleep(10)
+                        Thread.currentThread().priority = Thread.MIN_PRIORITY
                         for (i in 0..Settings.errorRepeat)
                             try {
                                 if (!wrk.item.isCompleteLoad && !stop) {
                                     wrk.run()
+                                    dstat.isError = false
                                     onFinish?.invoke()
                                 }
                                 break
                             } catch (e: SocketTimeoutException) {
+                                dstat.isError = true
                                 if (i == Settings.errorRepeat) {
                                     error = "Error, connection timeout on load item " + wrk.item.index
                                     onError?.invoke(error)
                                 }
                             } catch (e: Exception) {
+                                dstat.isError = true
                                 if (i == Settings.errorRepeat) {
                                     error = "Error connection: " + e.message
                                     onError?.invoke(error)
@@ -67,6 +71,7 @@ class Pool(private val workers: List<Pair<Worker, DownloadStatus>>) {
                             currentWorker--
                         }
                     }
+                    priorityIndex = setPrior(priorityIndex)
                     while (currentWorker >= Settings.threads)
                         Thread.sleep(100)
                 }
@@ -101,5 +106,20 @@ class Pool(private val workers: List<Pair<Worker, DownloadStatus>>) {
 
     fun isWorking(): Boolean {
         return !stop || currentWorker > 0
+    }
+
+    private fun setPrior(lastIndex: Int): Int {
+        if (lastIndex == -1) {//Find and set
+            workers.forEachIndexed { index, pair ->
+                if (pair.second.isLoading) {
+                    pair.first.setMaxPrior()
+                    return index
+                }
+            }
+            return -1
+        }
+        if (lastIndex in 0..workers.size && workers[lastIndex].first.item.isCompleteLoad)
+            return -1
+        return lastIndex
     }
 }

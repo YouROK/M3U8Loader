@@ -15,14 +15,14 @@ import kotlin.concurrent.schedule
 class ProgressView : View {
     private var background: Int = -1
     private var autoUpdate = true
+    private val timer: Timer = Timer()
+    private var index: Int? = null
 
     constructor(context: Context) : super(context) {
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
     }
-
-    private var index: Int? = null
 
     fun setIndexList(index: Int) {
         this.index = index
@@ -50,26 +50,29 @@ class ProgressView : View {
         if (canvas == null && index == null)
             return
 
-        val color = ContextCompat.getColor(context, R.color.colorAccent)
+        val itmColor = ContextCompat.getColor(context, R.color.colorAccent)
         val loader = Manager.getLoader(index!!)
         loader?.let {
             val state = loader.getState()
             val fragSize = ((width.toDouble() / state.loadedItems.size))
             state.let {
-                it.loadedItems.forEachIndexed { index, item ->
-                    val paint = Paint()
-                    paint.isAntiAlias = true
-                    paint.style = Paint.Style.FILL
+                val paintItem = Paint()
+                paintItem.isAntiAlias = true
+                paintItem.style = Paint.Style.FILL
 
+                it.loadedItems.forEachIndexed { index, item ->
                     var prcItem = 0
+                    var color = itmColor
                     item.let {
                         if (item.complete)
                             prcItem = 255
                         else if (item.size > 0)
                             prcItem = (item.loaded * 255 / item.size).toInt()
+                        if (item.error)
+                            color = Color.RED
                     }
-                    paint.setARGB(prcItem, Color.red(color), Color.green(color), Color.blue(color))
-                    canvas.drawRect(Rect((index * fragSize + .5).toInt(), 0, (index * fragSize + fragSize + .5).toInt(), height), paint)
+                    paintItem.setARGB(prcItem, Color.red(color), Color.green(color), Color.blue(color))
+                    canvas.drawRect(Rect((index * fragSize + .5).toInt(), 0, (index * fragSize + fragSize + .5).toInt(), height), paintItem)
                 }
             }
         }
@@ -86,32 +89,32 @@ class ProgressView : View {
             if (stat.size > 0)
                 size = "  %s/%s".format(Utils.byteFmt(stat.loadedBytes), Utils.byteFmt(stat.size))
 
-            val color = Color.CYAN
+            val colorText = Color.CYAN
 
-            val paint = Paint()
-            paint.isAntiAlias = true
-            paint.typeface = Typeface.DEFAULT
-            paint.color = color
-            paint.textSize = height.toFloat() * 0.8F
-            paint.setShadowLayer(5.0F, 0.0F, 0.0F, Color.BLACK)
+            val paintText = Paint()
+            paintText.isAntiAlias = true
+            paintText.typeface = Typeface.DEFAULT
+            paintText.color = colorText
+            paintText.textSize = height.toFloat() * 0.8F
+            paintText.setShadowLayer(5.0F, 0.0F, 0.0F, Color.BLACK)
 
             var rect = Rect()
-            paint.getTextBounds(frags, 0, frags.length, rect)
-            val yPos = (canvas.height / 2 - (paint.descent() + paint.ascent()) / 2)
-            canvas.drawText(frags, 5.0F, yPos, paint)
+            paintText.getTextBounds(frags, 0, frags.length, rect)
+            val yPos = (canvas.height / 2 - (paintText.descent() + paintText.ascent()) / 2)
+            canvas.drawText(frags, 5.0F, yPos, paintText)
 
             if (!speed.isNullOrEmpty()) {
-                paint.getTextBounds(speed, 0, speed.length, rect)
+                paintText.getTextBounds(speed, 0, speed.length, rect)
                 val xPos = width.toFloat() / 2 - rect.centerX().toFloat()
-                canvas.drawText(speed, xPos, yPos, paint)
+                canvas.drawText(speed, xPos, yPos, paintText)
             }
             if (!size.isNullOrEmpty()) {
-                paint.getTextBounds(size, 0, size.length, rect)
+                paintText.getTextBounds(size, 0, size.length, rect)
                 val xPos = width.toFloat() - rect.right.toFloat()
-                canvas.drawText(size, xPos - 5.0F, yPos, paint)
+                canvas.drawText(size, xPos - 5.0F, yPos, paintText)
             }
         }
         if (autoUpdate)
-            Timer().schedule(50) { postInvalidate() }
+            timer.schedule(50) { postInvalidate() }
     }
 }

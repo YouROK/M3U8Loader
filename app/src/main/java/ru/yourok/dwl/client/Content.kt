@@ -40,6 +40,12 @@ class Content(val fileName: Uri) : Client {
         return input
     }
 
+    override fun read(b: ByteArray): Int {
+        if (!isOpen)
+            return -1
+        return input!!.read(b)
+    }
+
     override fun getErrorMessage(): String {
         return errMsg
     }

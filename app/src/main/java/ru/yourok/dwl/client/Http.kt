@@ -1,5 +1,6 @@
 package ru.yourok.dwl.client
 
+import android.net.Uri
 import ru.yourok.dwl.settings.Settings
 import java.io.IOException
 import java.io.InputStream
@@ -11,8 +12,9 @@ import java.net.URL
 /**
  * Created by yourok on 07.11.17.
  */
-class Http(url: String) : Client {
-    private var currUrl: String = url
+
+class Http(url: Uri) : Client {
+    private var currUrl: String = url.toString()
     private var isConn: Boolean = false
     private var connection: HttpURLConnection? = null
     private var errMsg: String = ""
@@ -23,8 +25,8 @@ class Http(url: String) : Client {
         do {
             var url = URL(currUrl)
             connection = url.openConnection() as HttpURLConnection
-            connection!!.setConnectTimeout(30000)
-            connection!!.setReadTimeout(10000)
+            connection!!.connectTimeout = 30000
+            connection!!.readTimeout = 15000
             connection!!.setRequestMethod("GET")
             connection!!.setDoInput(true)
 
@@ -39,6 +41,7 @@ class Http(url: String) : Client {
             }
 
             connection!!.connect()
+
             responseCode = connection!!.getResponseCode()
             val redirected = responseCode == HTTP_MOVED_PERM || responseCode == HTTP_MOVED_TEMP || responseCode == HTTP_SEE_OTHER
             if (redirected) {
@@ -92,6 +95,12 @@ class Http(url: String) : Client {
 
     override fun getInputStream(): InputStream? {
         return connection!!.inputStream
+    }
+
+    override fun read(b: ByteArray): Int {
+        if (!isConn)
+            return -1
+        return connection!!.inputStream.read(b)
     }
 
     override fun getErrorMessage(): String {

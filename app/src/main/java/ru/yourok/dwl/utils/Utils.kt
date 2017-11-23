@@ -34,22 +34,26 @@ object Utils {
     }
 
     fun loadSettings() {
-        val path = Settings.context?.filesDir?.path
-        if (!path.isNullOrEmpty()) {
-            val file = File(path, "settings.cfg")
-            if (!file.exists())
-                return
-            val vals = Saver.load<LinkedHashMap<*, *>>(file.path)
-            Settings.threads = vals["threads"] as Int
-            Settings.errorRepeat = vals["errorRepeat"] as Int
+        try {
+            val path = Settings.context?.filesDir?.path
+            if (!path.isNullOrEmpty()) {
+                val file = File(path, "settings.cfg")
+                if (!file.exists())
+                    return
+                val vals = Saver.load<LinkedHashMap<*, *>>(file.path)
+                Settings.threads = vals["threads"] as Int
+                Settings.errorRepeat = vals["errorRepeat"] as Int
 
-            Settings.downloadPath = vals["downloadPath"] as String
-            Settings.preloadSize = vals["preloadSize"] as Boolean
-            Settings.useFFMpeg = vals["useFFMpeg"] as Boolean
+                Settings.downloadPath = vals["downloadPath"] as String
+                Settings.preloadSize = vals["preloadSize"] as Boolean
+                Settings.convertVideo = vals["convertVideo"] as Boolean
 
-            Settings.headers = mutableMapOf()
-            if (vals["headers"] != null)
-                Settings.headers = (vals["headers"] as LinkedHashMap<String, String>).toMutableMap()
+                Settings.headers = mutableMapOf()
+                if (vals["headers"] != null)
+                    Settings.headers = (vals["headers"] as LinkedHashMap<String, String>).toMutableMap()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
