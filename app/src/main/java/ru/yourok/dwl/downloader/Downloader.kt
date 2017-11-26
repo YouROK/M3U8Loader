@@ -9,9 +9,10 @@ import ru.yourok.dwl.converter.Converter
 import ru.yourok.dwl.list.List
 import ru.yourok.dwl.manager.Notifyer
 import ru.yourok.dwl.settings.Settings
+import ru.yourok.dwl.storage.Storage
 import ru.yourok.dwl.utils.Utils
 import ru.yourok.m3u8loader.R.string.error_load_subs
-import java.io.FileOutputStream
+import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -56,7 +57,7 @@ class Downloader(val list: List) {
                 isLoading = true
                 completeLoad = false
                 error = ""
-                val file = File(java.io.File(Settings.downloadPath, list.filePath).path)
+                val file = FileWriter(list.filePath)
                 var resize = true
                 var size = 0L
                 workers = null
@@ -107,9 +108,12 @@ class Downloader(val list: List) {
                     }
                     file.close()
                     Utils.saveList(list)
-                    if (list.isConvert && !list.isConverted && completeLoad)
-                        convertAsync()
                     isLoading = false
+                    if (list.isConvert && !list.isConverted && completeLoad && Storage.canWrite()) {
+                        isConverting = true
+                        convertAsync()
+                        isConverting = false
+                    }
                     Notifyer.toastEnd(list, completeLoad, error)
                 }
 
@@ -122,6 +126,7 @@ class Downloader(val list: List) {
 
             } catch (e: Exception) {
                 error = e.message ?: ""
+                isLoading = false
             }
         }
     }
@@ -183,7 +188,7 @@ class Downloader(val list: List) {
                 error = message
                 Toast.makeText(Settings.context, "Error convert: " + message, Toast.LENGTH_SHORT).show()
             })
-
+            Thread.sleep(200)
             while (Converter.isConverting()) {
                 Thread.sleep(200)
             }
@@ -258,16 +263,17 @@ class Downloader(val list: List) {
     private fun loadSubtitles() {
         if (!list.subsUrl.isEmpty()) {
             try {
-                val file = java.io.File(Settings.downloadPath, list.info.title + ".srt")
+                val file = File(Settings.downloadPath, list.info.title + ".srt")
                 if (!file.exists() || file.length() == 0L) {
                     val client = ClientBuilder.new(Uri.parse(list.subsUrl))
                     client.connect()
                     val subs = client.getInputStream()?.bufferedReader().use { it?.readText() ?: "" }
                     client.close()
                     if (!subs.isNullOrEmpty()) {
-                        val oStream = FileOutputStream(file)
-                        oStream.bufferedWriter().write(subs)
-                        oStream.close()
+                        val writer = FileWriter(list.info.title + ".srt")
+                        writer.resize(0)
+                        writer.write(subs.toByteArray(), 0)
+                        writer.close()
                     }
                 }
             } catch (e: Exception) {

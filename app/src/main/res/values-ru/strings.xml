@@ -35,12 +35,19 @@
     <string name="delete_with_files">Удалить с файлами</string>
     <string name="remove_from_list">Удалить из списка</string>
 
+    <string name="selected_folder_label">Выбранная папка</string>
+    <string name="new_directory_title">Создать новую папку</string>
+    <string name="new_directory_name_label">Имя новой папки</string>
+
+    <string name="error_not_support_sd_convert">Не поддерживается конвертирование на карте памяти</string>
     <string name="error">Ошибка</string>
     <string name="error_load_subs">Ошибка при загрузки субтитров</string>
     <string name="error_empty_url">Ошибка, пустая ссылка</string>
     <string name="error_empty_name">Ошибка, пустое имя</string>
     <string name="error_directory_permission">Доступ к папке запрещен</string>
+    <string name="error_directory_not_found">Папка не найдена</string>
     <string name="error_fragment_not_binary">Ошибка, фрагмент является html страницей</string>
+    <string name="error_create_folder">Ошибка при создании папки</string>
 
     <string name="choose_player">Выберите плеер</string>
 

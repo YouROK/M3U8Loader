@@ -22,6 +22,9 @@ object Settings {
 }
 
 object Preferences {
+    val DocumentRootUri = "DocumentRootUri"
+
+
     fun get(name: String, def: Any): Any? {
         Settings.context?.let {
             val prefs = PreferenceManager.getDefaultSharedPreferences(Settings.context)

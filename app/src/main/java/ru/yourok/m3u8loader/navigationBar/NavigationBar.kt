@@ -12,7 +12,7 @@ import ru.yourok.dwl.manager.Manager
 import ru.yourok.m3u8loader.R
 import ru.yourok.m3u8loader.activitys.AddListActivity
 import ru.yourok.m3u8loader.activitys.DonateActivity
-import ru.yourok.m3u8loader.activitys.PreferenceActivity
+import ru.yourok.m3u8loader.activitys.preferenceActivity.PreferenceActivity
 
 
 object NavigationBar {

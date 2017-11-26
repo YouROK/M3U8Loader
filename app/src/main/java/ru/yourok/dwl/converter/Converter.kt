@@ -19,27 +19,23 @@ object Converter {
         }
     }
 
-    fun getVersion(): String {
-        return ffmpeg.getDeviceFFmpegVersion()
-    }
-
     //-c:v libx264 -c:a copy -bsf:a aac_adtstoasc
     //-c copy -bsf:a aac_adtstoasc
 
     fun convert(inFile: String, outFile: String, onFinish: (() -> Unit)?, onFailure: ((message: String) -> Unit)?) {
         try {
 //            val cmd = "-i \"$inFile\" -c copy -bsf:a aac_adtstoasc \"$outFile\""
-            val cmd = mutableListOf<String>("-i", inFile, "-c", "copy", "-bsf:a", "aac_adtstoasc", outFile)
+            val cmd = mutableListOf<String>("-y", "-i", inFile, "-c", "copy", "-bsf:a", "aac_adtstoasc", outFile)
             count++
             ffmpeg.execute(cmd.toTypedArray(), object : ExecuteBinaryResponseHandler() {
                 override fun onFinish() {
-                    onFinish?.invoke()
-                    Log.i("******Finish", "convert")
                     count--
                     if (count == 0) {
                         if (ffmpeg.isFFmpegCommandRunning)
                             ffmpeg.killRunningProcesses()
                     }
+                    onFinish?.invoke()
+                    Log.i("******Finish", "convert")
                 }
 
                 override fun onFailure(message: String?) {
@@ -56,6 +52,6 @@ object Converter {
     }
 
     fun isConverting(): Boolean {
-        return ffmpeg.isFFmpegCommandRunning
+        return ffmpeg.isFFmpegCommandRunning || count > 0
     }
 }

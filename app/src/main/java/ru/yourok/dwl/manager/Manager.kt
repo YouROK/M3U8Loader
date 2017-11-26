@@ -6,6 +6,7 @@ import ru.yourok.dwl.downloader.Downloader
 import ru.yourok.dwl.downloader.State
 import ru.yourok.dwl.list.List
 import ru.yourok.dwl.settings.Settings
+import ru.yourok.dwl.storage.Document
 import ru.yourok.dwl.utils.Utils
 import ru.yourok.m3u8loader.R
 import java.io.File
@@ -80,8 +81,8 @@ object Manager {
         synchronized(loaderList) {
             val loader = getLoader(index)
             if (loader != null) {
-                val file = File(Settings.downloadPath, loader.list.filePath)
-                if (file.exists()) {
+                val file = Document.getFile(loader.list.filePath)
+                if (file != null) {
                     with(activity) {
                         AlertDialog.Builder(activity)
                                 .setTitle(activity.getString(R.string.remove) + " " + loader.list.info.title)
@@ -90,7 +91,7 @@ object Manager {
                                     loader.waitEnd()
                                     file.delete()
                                     if (loader.list.subsUrl.isNotEmpty())
-                                        File(Settings.downloadPath, loader.list.info.title + ".srt").delete()
+                                        Document.getFile(loader.list.info.title + ".srt")?.delete()
                                     Utils.removeList(loader.list)
                                     loaderList.removeAt(index)
                                 }
@@ -131,10 +132,10 @@ object Manager {
                                 loaderList.forEach {
                                     it.waitEnd()
                                     Utils.removeList(it.list)
-                                    val f = File(Settings.downloadPath, it.list.filePath)
-                                    if (f.exists()) f.delete()
+                                    val f = Document.getFile(it.list.filePath)
+                                    if (f != null) f.delete()
                                     if (it.list.subsUrl.isNotEmpty())
-                                        File(Settings.downloadPath, it.list.info.title + ".srt").delete()
+                                        Document.getFile(it.list.info.title + ".srt")?.delete()
                                 }
                                 loaderList.clear()
                             }

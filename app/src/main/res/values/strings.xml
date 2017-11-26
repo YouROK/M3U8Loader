@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">M3U8LoaderBeta</string>
+    <string name="app_name" translatable="false">M3U8Loader</string>
 
     <string name="name">Name</string>
     <string name="url_link">Url link</string>
@@ -30,7 +30,6 @@
     <string name="dark_theme">Dark theme</string>
 
     <string name="donation">Donation</string>
-    //Или вы можете сделать красивое фото и прислать автору на почту/телеграм :-)
     <string name="donation_msg">If you like M3U8Loader we\'d be happy about a donation.\nOr you can make a beautiful photo and send the author to the email/telegram &#128522;</string>
 
     <string name="permission_storage_msg">Storage permission is needed to download and write files</string>
@@ -40,12 +39,19 @@
     <string name="delete_with_files">Delete with files</string>
     <string name="remove_from_list">Remove from list</string>
 
+    <string name="selected_folder_label">Selected folder</string>
+    <string name="new_directory_title">Create new folder</string>
+    <string name="new_directory_name_label">Name of new folder</string>
+
+    <string name="error_not_support_sd_convert">Does not support converting to a sd card</string>
     <string name="error">Error</string>
     <string name="error_load_subs">Error load subtitles</string>
     <string name="error_empty_url">Error empty url</string>
     <string name="error_empty_name">Error empty name</string>
     <string name="error_directory_permission">Directory permission denied</string>
+    <string name="error_directory_not_found">Directory not found</string>
     <string name="error_fragment_not_binary">Error, fragment is html page</string>
+    <string name="error_create_folder">Error create folder</string>
 
     <string name="choose_player">Choose player</string>
     <string-array name="players_names" translatable="false">

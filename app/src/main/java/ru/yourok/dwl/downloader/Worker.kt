@@ -13,7 +13,7 @@ import java.io.IOException
 /**
  * Created by yourok on 10.11.17.
  */
-class Worker(val item: Item, private val stat: DownloadStatus, private val file: File) : Runnable {
+class Worker(val item: Item, private val stat: DownloadStatus, private val file: FileWriter) : Runnable {
     private var stop = false
     private var client: Client? = null
 

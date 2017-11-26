@@ -11,6 +11,7 @@ import ru.yourok.dwl.list.List
 import ru.yourok.dwl.manager.Manager
 import ru.yourok.dwl.parser.Parser
 import ru.yourok.dwl.settings.Settings
+import ru.yourok.dwl.storage.Storage
 import ru.yourok.dwl.utils.Utils
 import ru.yourok.m3u8loader.R
 import ru.yourok.m3u8loader.theme.Theme
@@ -90,14 +91,23 @@ class AddListActivity : AppCompatActivity() {
             Toast.makeText(this, "Error: " + e.localizedMessage, Toast.LENGTH_SHORT).show()
             finish()
         }
-        if (download)
-            downloadBtnClick(buttonDownload)
 
         checkboxConvert.isChecked = Settings.convertVideo
+        if (!Storage.canWrite())
+            checkboxConvert.isChecked = false
+        checkboxConvert.setOnCheckedChangeListener { compoundButton, b ->
+            if (!Storage.canWrite() && b) {
+                checkboxConvert.isChecked = false
+                Toast.makeText(this, R.string.error_not_support_sd_convert, Toast.LENGTH_SHORT).show()
+            }
+        }
         textViewDirectoryPathAdd.setText(Settings.downloadPath)
         val dfile = File(Settings.downloadPath)
         textViewDiskSize.text = "%s / %s".format(Utils.byteFmt(dfile.totalSpace - dfile.usableSpace), Utils.byteFmt(dfile.totalSpace))
         progressBarFreeSpace.progress = 100 - (dfile.usableSpace * 100 / (dfile.totalSpace + 1)).toInt()
+
+        if (download)
+            downloadBtnClick(buttonDownload)
     }
 
     fun addBtnClick(view: View) {

@@ -15,7 +15,7 @@ import ru.yourok.dwl.downloader.LoadState
 import ru.yourok.dwl.manager.Manager
 import ru.yourok.dwl.settings.Preferences
 import ru.yourok.m3u8loader.R
-import ru.yourok.m3u8loader.activitys.PreferenceActivity
+import ru.yourok.m3u8loader.activitys.preferenceActivity.PreferenceActivity
 import ru.yourok.m3u8loader.navigationBar.NavigationBar
 import ru.yourok.m3u8loader.player.PlayIntent
 import ru.yourok.m3u8loader.theme.Theme
@@ -112,12 +112,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestPermissionWithRationale() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            Snackbar.make(findViewById<View>(R.id.main_layout), R.string.permission_storage_msg, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.permission_btn, { ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1) })
-                    .show()
-        } else {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+        thread {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                Snackbar.make(findViewById<View>(R.id.main_layout), R.string.permission_storage_msg, Snackbar.LENGTH_INDEFINITE)
+                        .setAction(R.string.permission_btn, { ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1) })
+                        .show()
+            } else {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+            }
         }
     }
 }
