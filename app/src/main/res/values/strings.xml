@@ -34,6 +34,7 @@
 
     <string name="permission_storage_msg">Storage permission is needed to download and write files</string>
     <string name="permission_btn">GRANT</string>
+    <string name="permission_request_access">Request write access</string>
 
     <string name="delete_all_items">Delete all items</string>
     <string name="delete_with_files">Delete with files</string>

@@ -11,11 +11,14 @@ import java.io.File
  * Created by yourok on 25.11.17.
  */
 object Document {
-    fun getFile(fileNamePath: String): DocumentFile? {
-        val root = getRoot()
-        var path: DocumentFile? = root
-        val spath = fileNamePath.split("/")
-        spath.forEach {
+
+    fun openFile(fullPath: String): DocumentFile? {
+        val relPath = getRelPath(fullPath) ?: return null
+
+        if (relPath.isEmpty())
+            return getRoot()
+        var path: DocumentFile? = getRoot()
+        relPath.split("/").filter { !it.isEmpty() }.forEach {
             path = path?.findFile(it)
             if (path == null)
                 return null
@@ -23,33 +26,37 @@ object Document {
         return path
     }
 
-    fun createFile(fileNamePath: String): DocumentFile? {
-        val root = getRoot()
-        var path: DocumentFile? = root
-        val spath = fileNamePath.split("/")
+    fun createFile(fullPath: String): DocumentFile? {
+        val relPath = getRelPath(fullPath) ?: return null
+
+        if (relPath.isEmpty())
+            return getRoot()
+        var path: DocumentFile? = getRoot()
+        var spath = relPath.split("/").filter { !it.isEmpty() }
         spath.forEach {
-            if (spath.last() == it) {
-                return path?.createFile("*/*", spath.last())
+            if (path?.findFile(it) == null) {
+                if (spath.last() != it)
+                    path = path?.createDirectory(it)
+                else
+                    return path?.createFile("*/*", it)
+            } else
+                path = path?.findFile(it)
+        }
+        return path
+    }
+
+    private fun getRelPath(path: String): String? {
+        Storage.getListDirs().forEach {
+            val fp = File(path)
+            val fit = File(it)
+            if (fp.canonicalPath == fit.canonicalPath)
+                return ""
+
+            if (fp.canonicalPath.startsWith(fit.canonicalPath)) {
+                return fp.canonicalPath.substring(it.length)
             }
-            path = path?.findFile(it)
-            if (path == null)
-                return null
         }
-        return path
-    }
-
-    fun createFileOrOpen(path: String, name: String): DocumentFile? {
-        val root = getRoot()
-        var file: DocumentFile? = root
-        path.split("/").forEach {
-            file = file?.findFile(it)
-            if (file == null)
-                return null
-        }
-        val ret = file?.findFile(name)
-        if (ret != null)
-            return ret
-        return file?.createFile("*/*", name)
+        return null
     }
 
     fun getRoot(): DocumentFile {

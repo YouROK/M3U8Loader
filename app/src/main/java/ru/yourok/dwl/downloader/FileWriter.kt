@@ -23,9 +23,10 @@ class FileWriter(fileName: String) {
             writer = NativeFile()
             writer.open(Uri.fromFile(File(Settings.downloadPath, fileName)))
         } else {
-            var doc = Document.getFile(fileName)
+            val fullPath = java.io.File(Settings.downloadPath, fileName).canonicalPath
+            var doc = Document.openFile(fullPath)
             if (doc == null)
-                doc = Document.createFile(fileName)
+                doc = Document.createFile(fullPath)
             if (doc == null)
                 throw IOException("Error open file: " + fileName)
             writer = UriFile()

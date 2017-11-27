@@ -1,6 +1,7 @@
 package ru.yourok.m3u8loader.activitys.preferenceActivity
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.support.v7.app.AppCompatActivity
@@ -36,7 +37,9 @@ class PreferenceActivity : AppCompatActivity() {
             startActivity(Intent(this, RequestStoragePermissionActivity::class.java))
 
         findViewById<ImageButton>(R.id.imageButtonSearchDirectory).setOnClickListener {
-            startActivityForResult(Intent(this, DirectoryActivity::class.java), 1202)
+            val intent = Intent(this, DirectoryActivity::class.java)
+            intent.data = Uri.parse(editTextDirectoryPath.text.toString())
+            startActivityForResult(intent, 1202)
         }
 
         try {
@@ -51,16 +54,20 @@ class PreferenceActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerChoosePlayer.adapter = adapter
 
+        findViewById<Button>(R.id.buttonRenewPermission).setOnClickListener {
+            startActivity(Intent(this, RequestStoragePermissionActivity::class.java))
+        }
+
+        findViewById<Button>(R.id.buttonDefOptions).setOnClickListener {
+            defSettings()
+        }
+
         findViewById<Button>(R.id.buttonOk).setOnClickListener {
             saveSettings()
             finish()
         }
 
         findViewById<Button>(R.id.buttonCancel).setOnClickListener { finish() }
-
-        findViewById<Button>(R.id.buttonDefOptions).setOnClickListener {
-            defSettings()
-        }
 
         if (savedInstanceState == null)
             loadSettings()

@@ -31,6 +31,10 @@ class DirectoryActivity : AppCompatActivity() {
         Theme.set(this)
         setContentView(R.layout.activity_directory_list)
 
+        if (intent.data != null) {
+            DirectoryPath = File(intent.data.path)
+        }
+
         Storage.getListDirs().forEach {
             if (it.startsWith(DirectoryPath.canonicalPath)) {
                 DirectoryPath = File(it)
@@ -48,10 +52,12 @@ class DirectoryActivity : AppCompatActivity() {
         listView.adapter = listAdapter
         listView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
             val file = adapterView.getItemAtPosition(i) as File
-            val doc = Document.getFile(file.path)
-            if ((doc != null && !doc.canWrite()) || !file.canWrite()) {
-                Toast.makeText(this, R.string.error_directory_permission, Toast.LENGTH_SHORT).show()
-                return@OnItemClickListener
+            if (!file.canWrite()) {
+                val doc = Document.openFile(File(Settings.downloadPath, file.path).canonicalPath)
+                if ((doc == null || !doc.canWrite())) {
+                    Toast.makeText(this, R.string.error_directory_permission, Toast.LENGTH_SHORT).show()
+                    return@OnItemClickListener
+                }
             }
             DirectoryPath = file
             updateViews()

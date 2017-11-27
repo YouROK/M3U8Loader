@@ -81,7 +81,7 @@ object Manager {
         synchronized(loaderList) {
             val loader = getLoader(index)
             if (loader != null) {
-                val file = Document.getFile(loader.list.filePath)
+                val file = Document.openFile(File(Settings.downloadPath, loader.list.filePath).canonicalPath)
                 if (file != null) {
                     with(activity) {
                         AlertDialog.Builder(activity)
@@ -91,7 +91,7 @@ object Manager {
                                     loader.waitEnd()
                                     file.delete()
                                     if (loader.list.subsUrl.isNotEmpty())
-                                        Document.getFile(loader.list.info.title + ".srt")?.delete()
+                                        Document.openFile(File(Settings.downloadPath, loader.list.info.title + ".srt").canonicalPath)?.delete()
                                     Utils.removeList(loader.list)
                                     loaderList.removeAt(index)
                                 }
@@ -132,10 +132,10 @@ object Manager {
                                 loaderList.forEach {
                                     it.waitEnd()
                                     Utils.removeList(it.list)
-                                    val f = Document.getFile(it.list.filePath)
+                                    val f = Document.openFile(File(Settings.downloadPath, it.list.filePath).canonicalPath)
                                     if (f != null) f.delete()
                                     if (it.list.subsUrl.isNotEmpty())
-                                        Document.getFile(it.list.info.title + ".srt")?.delete()
+                                        Document.openFile(File(Settings.downloadPath, it.list.info.title + ".srt").canonicalPath)?.delete()
                                 }
                                 loaderList.clear()
                             }

@@ -30,6 +30,7 @@
 
     <string name="permission_storage_msg">Доступ к памяти требуется для загрузки и записи файлов</string>
     <string name="permission_btn">РАЗРЕШИТЬ</string>
+    <string name="permission_request_access">Запросить права на запись</string>
 
     <string name="delete_all_items">Удалить всё</string>
     <string name="delete_with_files">Удалить с файлами</string>

@@ -3,9 +3,13 @@ package ru.yourok.m3u8loader.player
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import android.support.v4.content.FileProvider
 import android.widget.Toast
 import ru.yourok.dwl.settings.Preferences
+import ru.yourok.dwl.storage.Document
 import ru.yourok.m3u8loader.BuildConfig
 import java.io.File
 
@@ -17,21 +21,22 @@ class PlayIntent(val context: Context) {
     fun start(filename: String, title: String) {
         try {
             val player = Preferences.get("Player", 0) as Int
+            Handler(Looper.getMainLooper()).post {
+                val intent = when (player) {
+                //Chooser
+                    0 -> getChooser(filename, title)
+                    1 -> getDefaultPlayer(filename, title)
+                //MX Player
+                    2 -> getMXPlayer(context, filename, title)
+                    3 -> getKodiPlayer(context, filename, title)
+                //Default
+                    else -> getDefaultPlayer(filename, title)
+                }
 
-            val intent = when (player) {
-            //Chooser
-                0 -> getChooser(filename, title)
-                1 -> getDefaultPlayer(filename, title)
-            //MX Player
-                2 -> getMXPlayer(context, filename, title)
-                3 -> getKodiPlayer(context, filename, title)
-            //Default
-                else -> getDefaultPlayer(filename, title)
-            }
-
-            val pm = context.getPackageManager()
-            if (intent.resolveActivity(pm) != null) {
-                context.startActivity(intent)
+                val pm = context.getPackageManager()
+                if (intent.resolveActivity(pm) != null) {
+                    context.startActivity(intent)
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -47,7 +52,7 @@ class PlayIntent(val context: Context) {
         val intent = Intent(Intent.ACTION_VIEW)
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        val uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", File(filename))
+        var uri = getUri(filename)
         intent.setDataAndType(uri, "video/mp4")
         intent.putExtra("title", title)
         return intent
@@ -78,7 +83,7 @@ class PlayIntent(val context: Context) {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
-        val uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", File(filename))
+        val uri = getUri(filename)
         intent.setDataAndType(uri, "video/mp4")
         intent.putExtra("title", title)
         intent.`package` = pkg
@@ -103,11 +108,18 @@ class PlayIntent(val context: Context) {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
-        val uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", File(filename))
+        val uri = getUri(filename)
         intent.setDataAndType(uri, "video/mp4")
         intent.putExtra("title", title)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.`package` = pkg
         return intent
+    }
+
+    private fun getUri(filename: String): Uri {
+        var uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", File(filename))
+        if (!File(filename).canWrite())
+            uri = Document.openFile(filename)?.uri
+        return uri
     }
 }
