@@ -1,6 +1,7 @@
 package ru.yourok.dwl.client
 
 import android.net.Uri
+import java.io.IOException
 import java.io.InputStream
 
 
@@ -20,6 +21,8 @@ interface Client {
 
 object ClientBuilder {
     fun new(url: Uri): Client {
+        url.scheme ?: throw IOException("wrong url: " + url.toString())
+
         if (url.scheme.startsWith("http", 0, true)) {
             return Http(url)
         } else if (url.scheme.startsWith("content", 0, true)) {

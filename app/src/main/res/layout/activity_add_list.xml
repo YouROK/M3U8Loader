@@ -54,10 +54,10 @@
             android:inputType="textUri"
             android:selectAllOnFocus="true" />
 
-        <TextView
-            android:id="@+id/textViewError"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
+            android:background="@android:color/transparent" />
 
         <CheckBox
             android:id="@+id/checkboxConvert"
@@ -69,6 +69,11 @@
             android:layout_width="match_parent"
             android:layout_height="15dp"
             android:background="@android:color/transparent" />
+
+        <TextView
+            android:id="@+id/textViewError"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <ProgressBar
             android:id="@+id/progressBar"

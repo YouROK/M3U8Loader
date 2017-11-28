@@ -99,6 +99,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        if (drawer.isDrawerOpen) {
+            drawer.closeDrawer()
+            return
+        }
+
         if (Manager.isLoading())
             moveTaskToBack(true)
         super.onBackPressed()

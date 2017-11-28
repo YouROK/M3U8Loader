@@ -53,6 +53,7 @@
     <string name="error_directory_not_found">Directory not found</string>
     <string name="error_fragment_not_binary">Error, fragment is html page</string>
     <string name="error_create_folder">Error create folder</string>
+    <string name="error_same_url">Loading with the same url already exists</string>
 
     <string name="choose_player">Choose player</string>
     <string-array name="players_names" translatable="false">

@@ -9,7 +9,6 @@ import ru.yourok.dwl.converter.Converter
 import ru.yourok.dwl.list.List
 import ru.yourok.dwl.manager.Notifyer
 import ru.yourok.dwl.settings.Settings
-import ru.yourok.dwl.storage.Storage
 import ru.yourok.dwl.utils.Utils
 import ru.yourok.m3u8loader.R.string.error_load_subs
 import java.io.File
@@ -57,6 +56,9 @@ class Downloader(val list: List) {
                 isLoading = true
                 completeLoad = false
                 error = ""
+
+                loadSubtitles()
+
                 val file = FileWriter(list.filePath)
                 var resize = true
                 var size = 0L
@@ -89,7 +91,6 @@ class Downloader(val list: List) {
                     return@synchronized
                 }
 
-                loadSubtitles()
                 pool = Pool(workers!!)
                 pool!!.start()
                 pool!!.onEnd {
@@ -109,9 +110,10 @@ class Downloader(val list: List) {
                     file.close()
                     Utils.saveList(list)
                     isLoading = false
-                    if (list.isConvert && !list.isConverted && completeLoad && Storage.canWrite()) {
+                    if (list.isConvert && !list.isConverted && completeLoad) {
                         isConverting = true
-                        convertAsync()
+                        convertVideo()
+                        System.gc()
                         isConverting = false
                     }
                     Notifyer.toastEnd(list, completeLoad, error)
@@ -153,7 +155,7 @@ class Downloader(val list: List) {
 
     fun isComplete(): Boolean = completeLoad
 
-    private fun convertAsync() {
+    private fun convertVideo() {
 
         synchronized(completeLoad) {
             if (!completeLoad)
@@ -166,33 +168,10 @@ class Downloader(val list: List) {
             isConverting = true
         }
 
-        while (Converter.isConverting()) {
-            Thread.sleep(200)
-        }
-
-        val oldFile = java.io.File(Settings.downloadPath, list.filePath)
-        val newFile = java.io.File(Settings.downloadPath, oldFile.nameWithoutExtension + ".non.mp4")
-        if (oldFile.renameTo(newFile)) {
-            list.filePath = newFile.path
-            Converter.convert(newFile.path, oldFile.path, {
-                //on Finish
-                list.filePath = oldFile.path
-                list.isConverted = true
-                isConverting = false
-                newFile.delete()
-            }, { message ->
-                //on Error
-                oldFile.delete()
-                newFile.renameTo(oldFile)
-                list.filePath = oldFile.path
-                error = message
-                Toast.makeText(Settings.context, "Error convert: " + message, Toast.LENGTH_SHORT).show()
-            })
-            Thread.sleep(200)
-            while (Converter.isConverting()) {
-                Thread.sleep(200)
-            }
-        }
+        val errStr = Converter.convert(java.io.File(Settings.downloadPath, list.filePath))
+        if (errStr.isNotEmpty())
+            Toast.makeText(Settings.context, errStr, Toast.LENGTH_SHORT).show()
+        isConverting = false
     }
 
     fun getState(): State {

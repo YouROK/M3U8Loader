@@ -10,6 +10,7 @@ import ru.yourok.dwl.storage.Document
 import ru.yourok.dwl.utils.Utils
 import ru.yourok.m3u8loader.R
 import java.io.File
+import java.io.IOException
 import kotlin.concurrent.thread
 
 
@@ -51,7 +52,7 @@ object Manager {
                 var isFindUrl = false
                 loaderList.forEach { item ->
                     if (it.url == item.list.url)
-                        isFindUrl = true
+                        throw IOException(Settings.context!!.getString(R.string.error_same_url))
                 }
                 if (!isFindUrl) {
                     //find equal url

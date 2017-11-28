@@ -14,6 +14,7 @@ import android.widget.*
 import kotlinx.android.synthetic.main.activity_directory_list.*
 import ru.yourok.dwl.settings.Settings
 import ru.yourok.dwl.storage.Document
+import ru.yourok.dwl.storage.RequestStoragePermissionActivity
 import ru.yourok.dwl.storage.Storage
 import ru.yourok.dwl.utils.Utils
 import ru.yourok.m3u8loader.R
@@ -35,13 +36,6 @@ class DirectoryActivity : AppCompatActivity() {
             DirectoryPath = File(intent.data.path)
         }
 
-        Storage.getListDirs().forEach {
-            if (it.startsWith(DirectoryPath.canonicalPath)) {
-                DirectoryPath = File(it)
-                return@forEach
-            }
-        }
-
         if (!DirectoryPath.exists()) {
             Toast.makeText(this, R.string.error_directory_not_found, Toast.LENGTH_SHORT).show()
             finish()
@@ -53,10 +47,14 @@ class DirectoryActivity : AppCompatActivity() {
         listView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
             val file = adapterView.getItemAtPosition(i) as File
             if (!file.canWrite()) {
-                val doc = Document.openFile(File(Settings.downloadPath, file.path).canonicalPath)
-                if ((doc == null || !doc.canWrite())) {
+                try {
+                    val doc = Document.openFile(file.canonicalPath)
+                    if ((doc == null || !doc.canWrite())) {
+                        Toast.makeText(this, R.string.error_directory_permission, Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: IllegalArgumentException) {
+                    startActivity(Intent(this, RequestStoragePermissionActivity::class.java))
                     Toast.makeText(this, R.string.error_directory_permission, Toast.LENGTH_SHORT).show()
-                    return@OnItemClickListener
                 }
             }
             DirectoryPath = file
@@ -66,11 +64,8 @@ class DirectoryActivity : AppCompatActivity() {
     }
 
     fun upBtnClick(view: View) {
-        val roots = Storage.getListDirs()
-        roots.forEach {
-            if (DirectoryPath.canonicalPath == File(it).canonicalPath)
-                return
-        }
+        if (DirectoryPath.parentFile == null)
+            return
         DirectoryPath = DirectoryPath.parentFile
         updateViews()
     }
@@ -117,6 +112,13 @@ class DirectoryActivity : AppCompatActivity() {
     }
 
     fun confirmBtnClick(view: View) {
+        if (!DirectoryPath.canWrite()) {
+            val doc = Document.openFile(DirectoryPath.canonicalPath)
+            if ((doc == null || !doc.canWrite())) {
+                Toast.makeText(this, R.string.error_directory_permission, Toast.LENGTH_SHORT).show()
+                return
+            }
+        }
         val intent = Intent()
         intent.putExtra("filename", DirectoryPath.absolutePath)
         setResult(Activity.RESULT_OK, intent)
@@ -136,17 +138,24 @@ class DirectoryActivity : AppCompatActivity() {
         private var files: Array<File> = arrayOf()
 
         override fun getCount(): Int {
-            files = DirectoryPath.listFiles { pathname -> pathname.isDirectory }
-            files.sortWith(Comparator { file1, file2 ->
-                var f1 = file1.name.toLowerCase()
-                var f2 = file2.name.toLowerCase()
-                if (f1.startsWith("."))
-                    f1 = f1.substring(1)
-                if (f2.startsWith("."))
-                    f2 = f2.substring(1)
-                f1.compareTo(f2)
-            })
-            return files.size
+            try {
+                files = DirectoryPath.listFiles { pathname ->
+                    pathname?.isDirectory ?: false
+                }
+                files.sortWith(Comparator { file1, file2 ->
+                    var f1 = file1.name.toLowerCase()
+                    var f2 = file2.name.toLowerCase()
+                    if (f1.startsWith("."))
+                        f1 = f1.substring(1)
+                    if (f2.startsWith("."))
+                        f2 = f2.substring(1)
+                    f1.compareTo(f2)
+                })
+                return files.size
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return 0
+            }
         }
 
         override fun getItem(position: Int): Any? {
@@ -170,7 +179,7 @@ class DirectoryActivity : AppCompatActivity() {
 
     internal inner class HomeDirsAdapter(internal var context: Context) : BaseAdapter() {
 
-        internal var list: List<File> = Storage.getListDirs().map { File(it) }
+        internal var list: List<File> = Storage.getListRoots().map { File(it) }
 
         override fun getCount(): Int {
             return list.size

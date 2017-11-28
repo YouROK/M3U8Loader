@@ -16,8 +16,8 @@ object Document {
         val relPath = getRelPath(fullPath) ?: return null
 
         if (relPath.isEmpty())
-            return getRoot()
-        var path: DocumentFile? = getRoot()
+            return getRoot(fullPath)
+        var path: DocumentFile? = getRoot(fullPath)
         relPath.split("/").filter { !it.isEmpty() }.forEach {
             path = path?.findFile(it)
             if (path == null)
@@ -30,8 +30,8 @@ object Document {
         val relPath = getRelPath(fullPath) ?: return null
 
         if (relPath.isEmpty())
-            return getRoot()
-        var path: DocumentFile? = getRoot()
+            return getRoot(fullPath)
+        var path: DocumentFile? = getRoot(fullPath)
         var spath = relPath.split("/").filter { !it.isEmpty() }
         spath.forEach {
             if (path?.findFile(it) == null) {
@@ -46,7 +46,7 @@ object Document {
     }
 
     private fun getRelPath(path: String): String? {
-        Storage.getListDirs().forEach {
+        Storage.getListRoots().forEach {
             val fp = File(path)
             val fit = File(it)
             if (fp.canonicalPath == fit.canonicalPath)
@@ -59,13 +59,15 @@ object Document {
         return null
     }
 
-    fun getRoot(): DocumentFile {
-        if (File(Settings.downloadPath).canWrite())
-            return DocumentFile.fromFile(File(Settings.downloadPath))
+    fun getRoot(path: String): DocumentFile {
+        if (File(path).canWrite()) {
+            var root = File(path)
+            while (root.parentFile.canWrite())
+                root = root.parentFile
+            return DocumentFile.fromFile(root)
+        }
 
         val uri = Preferences.get(DocumentRootUri, "") as String
-        if (uri.isEmpty())
-            return DocumentFile.fromFile(File(Settings.downloadPath))
         return DocumentFile.fromTreeUri(Settings.context, Uri.parse(uri))
     }
 }

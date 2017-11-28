@@ -49,6 +49,7 @@
     <string name="error_directory_not_found">Папка не найдена</string>
     <string name="error_fragment_not_binary">Ошибка, фрагмент является html страницей</string>
     <string name="error_create_folder">Ошибка при создании папки</string>
+    <string name="error_same_url">Загрузка с такой ссылкой уже существует</string>
 
     <string name="choose_player">Выберите плеер</string>
 
