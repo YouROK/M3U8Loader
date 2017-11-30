@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#607D8B</color>
+    <color name="colorPrimaryDark">#455A64</color>
+    <color name="colorAccent">#78909c</color>
+
+    <color name="colorPrimaryInverse">#b0bec5</color>
+    <color name="colorPrimaryDarkInverse">#cfd8dc</color>
+    <color name="colorAccentInverse">#78909c</color>
+
+    <color name="colorListSelectLight">#CFD8DC</color>
+    <color name="colorListSelectDark">#11171a</color>
+
+    <color name="button_color_dark">#595959</color>
+    <color name="button_color_light">#d5d7d4</color>
+</resources>

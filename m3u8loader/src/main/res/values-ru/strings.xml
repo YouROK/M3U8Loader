@@ -1,0 +1,58 @@
+<resources>
+    <string name="name">Имя</string>
+    <string name="url_link">Url-ссылка</string>
+    <string name="settings">Настройки</string>
+    <string name="subtitles_url">Ссылка на Субтитры</string>
+
+    <string name="add">Добавить</string>
+    <string name="play">Проиграть</string>
+    <string name="convert">Конвертировать</string>
+    <string name="download">Скачать</string>
+    <string name="load_all">Скачать всё</string>
+    <string name="stop_all">Остановить всё</string>
+    <string name="remove_all">Удалить всё</string>
+    <string name="stop">Остановить</string>
+    <string name="remove">Удалить</string>
+    <string name="complete">Завершено</string>
+    <string name="loading_complete">Загрузка завершена</string>
+    <string name="loading_error">Ошибка загрузки</string>
+
+    <string name="download_path">Путь для загрузок</string>
+    <string name="threads">Потоки</string>
+    <string name="repeat_error">Повторять при ошибках</string>
+    <string name="preload_fragments_size">Предварительно загрузить размер фрагментов</string>
+    <string name="convert_on_load_end">Конвертировать после загрузки</string>
+    <string name="set_def_settings">Установить настройки по умолчанию</string>
+    <string name="dark_theme">Темная тема</string>
+
+    <string name="donation">Пожертвование</string>
+    <string name="donation_msg">Если вам нравится M3U8Loader, я буду рад пожертвованию.\nИли вы можете сделать красивое фото и прислать автору на почту/телеграм &#128522;</string>
+
+    <string name="permission_storage_msg">Доступ к памяти требуется для загрузки и записи файлов</string>
+    <string name="permission_btn">РАЗРЕШИТЬ</string>
+    <string name="permission_request_access">Запросить права на запись</string>
+
+    <string name="delete_all_items">Удалить всё</string>
+    <string name="delete_with_files">Удалить с файлами</string>
+    <string name="remove_from_list">Удалить из списка</string>
+
+    <string name="selected_folder_label">Выбранная папка</string>
+    <string name="new_directory_title">Создать новую папку</string>
+    <string name="new_directory_name_label">Имя новой папки</string>
+
+    <string name="warn_install_convertor">Для конвертирования видео установите M3U8Convertor</string>
+
+    <string name="error_not_support_sd_convert">Не поддерживается конвертирование на карте памяти</string>
+    <string name="error">Ошибка</string>
+    <string name="error_load_subs">Ошибка при загрузки субтитров</string>
+    <string name="error_empty_url">Ошибка, пустая ссылка</string>
+    <string name="error_empty_name">Ошибка, пустое имя</string>
+    <string name="error_directory_permission">Доступ к папке запрещен</string>
+    <string name="error_directory_not_found">Папка не найдена</string>
+    <string name="error_fragment_not_binary">Ошибка, фрагмент является html страницей</string>
+    <string name="error_create_folder">Ошибка при создании папки</string>
+    <string name="error_same_url">Загрузка с такой ссылкой уже существует</string>
+
+    <string name="choose_player">Выберите плеер</string>
+
+</resources>

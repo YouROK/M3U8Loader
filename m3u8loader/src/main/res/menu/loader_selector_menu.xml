@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/itemLoad"
+        android:icon="@drawable/ic_file_download_black_24dp"
+        android:title="@string/download"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/itemPause"
+        android:icon="@drawable/ic_pause_black_24dp"
+        android:title="@string/stop"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/itemConvert"
+        android:icon="@drawable/ic_convert_black"
+        android:title="@string/convert"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/itemRemove"
+        android:icon="@drawable/ic_clear_black_24dp"
+        android:title="@string/remove"
+        app:showAsAction="ifRoom" />
+</menu>
