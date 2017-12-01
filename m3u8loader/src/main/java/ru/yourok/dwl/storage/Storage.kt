@@ -37,11 +37,15 @@ object Storage {
             if (index != -1)
                 ret.add(path.substring(0, index))
         }
-        val mntPaths = getMountedPaths()
-        mntPaths.forEach { mit ->
-            val fpath = File(ret.find { File(it).canonicalPath == File(mit).canonicalPath }).canonicalPath
-            if (fpath != File(mit).canonicalPath)
-                ret.add(mit)
+        try {
+            val mntPaths = getMountedPaths()
+            mntPaths.forEach { mit ->
+                val fpath = File(ret.find { File(it).canonicalPath == File(mit).canonicalPath }).canonicalPath
+                if (fpath != File(mit).canonicalPath)
+                    ret.add(mit)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
         return ret.toList()
     }

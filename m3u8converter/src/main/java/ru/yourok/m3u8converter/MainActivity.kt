@@ -14,8 +14,9 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.yourok.m3u8converter.converter.ConvertItem
 import ru.yourok.m3u8converter.converter.Manager
-import ru.yourok.m3u8converter.storage.Preferences
 import ru.yourok.m3u8converter.storage.Storage
+import ru.yourok.m3u8converter.utils.Preferences
+import ru.yourok.m3u8converter.utils.Theme
 import java.util.*
 import kotlin.concurrent.schedule
 import kotlin.concurrent.thread
@@ -27,6 +28,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (intent.hasExtra("dark"))
+            Preferences.set("ThemeDark", intent.getBooleanExtra("dark", true))
+        Theme.set(this)
+
         if (!intent.hasExtra("hide")) {
             setContentView(R.layout.activity_main)
             listViewConverter.adapter = ConvertAdapter(this)

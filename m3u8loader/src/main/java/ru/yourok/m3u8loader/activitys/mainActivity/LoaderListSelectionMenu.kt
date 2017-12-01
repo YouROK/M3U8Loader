@@ -1,6 +1,7 @@
 package ru.yourok.m3u8loader.activitys.mainActivity
 
 import android.app.Activity
+import android.content.Intent
 import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
@@ -11,6 +12,8 @@ import ru.yourok.dwl.converter.Converter
 import ru.yourok.dwl.list.List
 import ru.yourok.dwl.manager.Manager
 import ru.yourok.m3u8loader.R
+import ru.yourok.m3u8loader.activitys.editorActivity.EditorActivity
+import kotlin.concurrent.thread
 
 /**
  * Created by yourok on 19.11.17.
@@ -53,6 +56,20 @@ class LoaderListSelectionMenu(val activity: Activity) : AbsListView.MultiChoiceM
                     }
                 }
                 Converter.convert(sendList)
+            }
+            R.id.itemEdit -> {
+                thread {
+                    EditorActivity.editorList.clear()
+                    selected.forEach {
+                        Manager.getLoader(it)?.let {
+                            it.stop()
+                            it.waitEnd()
+                            EditorActivity.editorList.add(it.list)
+                        }
+                    }
+                    if (EditorActivity.editorList.size > 0)
+                        activity.startActivity(Intent(activity, EditorActivity::class.java))
+                }
             }
             R.id.itemRemove -> {
                 Manager.removes(selected, activity)

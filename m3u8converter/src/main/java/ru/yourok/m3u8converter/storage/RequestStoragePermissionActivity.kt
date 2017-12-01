@@ -4,9 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
-import ru.yourok.m3u8converter.App
+import ru.yourok.m3u8converter.utils.Preferences
 import java.io.File
 
 /**
@@ -51,31 +50,5 @@ class RequestStoragePermissionActivity : AppCompatActivity() {
         Preferences.set(Preferences.DocumentRootUri, treeUri.toString())
         setResult(Activity.RESULT_OK)
         finish()
-    }
-}
-
-
-object Preferences {
-    val DocumentRootUri = "DocumentRootUri"
-
-
-    fun get(name: String, def: Any): Any? {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(App.getContext())
-        if (prefs.all.containsKey(name))
-            return prefs.all[name]
-        return def
-    }
-
-    fun set(name: String, value: Any?) {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(App.getContext())
-        when (value) {
-            is String -> prefs.edit().putString(name, value).apply()
-            is Boolean -> prefs.edit().putBoolean(name, value).apply()
-            is Float -> prefs.edit().putFloat(name, value).apply()
-            is Int -> prefs.edit().putInt(name, value).apply()
-            is Long -> prefs.edit().putLong(name, value).apply()
-            is MutableSet<*>? -> prefs.edit().putStringSet(name, value as MutableSet<String>?).apply()
-            else -> prefs.edit().putString(name, value.toString()).apply()
-        }
     }
 }

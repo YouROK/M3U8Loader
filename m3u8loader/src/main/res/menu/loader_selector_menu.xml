@@ -17,6 +17,11 @@
         android:title="@string/convert"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/itemEdit"
+        android:icon="@drawable/ic_mode_edit_black_24dp"
+        android:title="@string/edit"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/itemRemove"
         android:icon="@drawable/ic_clear_black_24dp"
         android:title="@string/remove"

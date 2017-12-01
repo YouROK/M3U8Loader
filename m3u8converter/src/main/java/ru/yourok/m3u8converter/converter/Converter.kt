@@ -10,6 +10,7 @@ import ru.yourok.m3u8converter.storage.Storage
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.io.IOException
 
 
 @SuppressLint("StaticFieldLeak")
@@ -17,6 +18,8 @@ object Converter {
     fun convert(item: ConvertItem): String {
         try {
             val inFile = item.path
+            if (!File(inFile).exists())
+                throw IOException("file not found")
 
             val tmpPath = File(findTmpPath(inFile), "Android/data/" + BuildConfig.APPLICATION_ID + "/files").canonicalFile
             val tmpName = File.createTempFile(File(inFile).nameWithoutExtension, ".mp4").name
@@ -32,11 +35,11 @@ object Converter {
                     .build()
             val res = command.execute()
             if (res.code != 0)
-                return "Error convert: ${res.code}"
+                return "Error convert ${item.name}: ${res.code}"
             return moveFile(outFile.canonicalPath, item)
         } catch (e: Exception) {
             e.printStackTrace()
-            return "Error convert: " + e.message
+            return "Error convert ${item.name}: " + e.message
         }
     }
 

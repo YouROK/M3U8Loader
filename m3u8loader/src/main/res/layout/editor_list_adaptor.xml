@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
+
+    <TextView
+        android:id="@+id/textViewUrlItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="middle"
+        android:maxLines="1"
+        android:text="@string/url_link" />
+
+    <TextView
+        android:id="@+id/textViewNameItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="middle"
+        android:maxLines="1"
+        android:text="@string/name" />
+
+
+    <TextView
+        android:id="@+id/textViewItemsInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textAlignment="center" />
+
+    <com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
+        android:id="@+id/rangeBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:corner_radius="10"
+        app:min_value="0"
+        app:max_value="100"
+        app:gap="1"
+        app:bar_color="@color/accent"
+        app:bar_highlight_color="@color/primary_dark"
+        app:left_thumb_color="@color/accent"
+        app:right_thumb_color="@color/accent"
+        app:left_thumb_color_pressed="@color/primary_dark"
+        app:right_thumb_color_pressed="@color/primary_dark"
+        app:data_type="_integer" />
+
+    <TextView
+        android:id="@+id/buttonClear"
+        android:gravity="center"
+        android:clickable="true"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="@string/clear" />
+
+</LinearLayout>

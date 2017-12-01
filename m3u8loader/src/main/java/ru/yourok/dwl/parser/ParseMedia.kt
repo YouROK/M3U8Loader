@@ -36,6 +36,7 @@ class ParseMedia(val downloadPath: String) {
                 itm.index = index
                 itm.isLoad = true
                 itm.url = Util.concatUriList(listUri, trackData.uri.toString())
+                itm.duration = trackData.trackInfo.duration
                 if (trackData.isEncrypted) {
                     try {
                         val encUrl = Util.concatUriList(listUri, trackData.encryptionData.uri.toString())

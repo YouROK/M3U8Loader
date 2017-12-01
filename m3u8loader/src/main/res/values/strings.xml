@@ -11,14 +11,16 @@
     <string name="add">Add</string>
     <string name="play">Play</string>
     <string name="convert">Convert</string>
+    <string name="edit">Edit</string>
     <string name="download">Download</string>
     <string name="load_all">Load all</string>
     <string name="stop_all">Pause all</string>
     <string name="remove_all">Remove all</string>
     <string name="stop">Pause</string>
     <string name="remove">Remove</string>
+    <string name="clear">Clear</string>
     <string name="complete">Complete</string>
-    <string name="loading_complete">Loading completeLoad</string>
+    <string name="loading_complete">Loading complete</string>
     <string name="loading_error">Loading error</string>
 
     <string name="download_path">Download path</string>
@@ -45,6 +47,7 @@
     <string name="new_directory_name_label">Name of new folder</string>
 
     <string name="warn_install_convertor">For converting video install M3U8Convertor</string>
+    <string name="warn_clean_message">Caution! During cleaning, all settings and the downloaded file are deleted.\nClean out?</string>
 
     <string name="error_not_support_sd_convert">Does not support converting to a sd card</string>
     <string name="error">Error</string>

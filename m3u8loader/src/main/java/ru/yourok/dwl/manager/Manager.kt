@@ -32,6 +32,14 @@ object Manager {
         return null
     }
 
+    fun findLoader(list: List): Downloader? {
+        loaderList.forEach {
+            if (it.list.url + it.list.info.title == list.url + list.info.title)
+                return it
+        }
+        return null
+    }
+
     fun getLoadersSize(): Int {
         return loaderList.size
     }

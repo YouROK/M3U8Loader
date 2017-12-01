@@ -4,7 +4,8 @@ import android.net.Uri
 import android.support.v4.provider.DocumentFile
 import ru.yourok.m3u8converter.App
 import ru.yourok.m3u8converter.converter.ConvertItem
-import ru.yourok.m3u8converter.storage.Preferences.DocumentRootUri
+import ru.yourok.m3u8converter.utils.Preferences
+import ru.yourok.m3u8converter.utils.Preferences.DocumentRootUri
 import java.io.File
 
 /**

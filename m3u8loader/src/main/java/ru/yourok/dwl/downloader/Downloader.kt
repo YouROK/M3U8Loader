@@ -143,6 +143,12 @@ class Downloader(val list: List) {
 
     fun isComplete(): Boolean = complete
 
+    fun clear() {
+        stop()
+        waitEnd()
+        complete = false
+    }
+
     fun getState(): State {
         val state = State()
         synchronized(list) {

@@ -23,6 +23,7 @@ class Item {
     var index: Int = -1
     var url: String = ""
     var size: Long = 0
+    var duration: Float = 0F
     var isLoad: Boolean = true
     var isComplete = false
     var encData: EncKey? = null

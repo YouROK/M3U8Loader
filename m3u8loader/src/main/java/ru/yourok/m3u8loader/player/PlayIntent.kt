@@ -19,9 +19,9 @@ import java.io.File
  */
 class PlayIntent(val context: Context) {
     fun start(filename: String, title: String) {
-        try {
-            val player = Preferences.get("Player", 0) as Int
-            Handler(Looper.getMainLooper()).post {
+        Handler(Looper.getMainLooper()).post {
+            try {
+                val player = Preferences.get("Player", 0) as Int
                 val intent = when (player) {
                 //Chooser
                     0 -> getChooser(filename, title)
@@ -31,34 +31,34 @@ class PlayIntent(val context: Context) {
                     3 -> getKodiPlayer(context, filename, title)
                 //Default
                     else -> getDefaultPlayer(filename, title)
-                }
+                } ?: return@post
 
                 val pm = context.getPackageManager()
                 if (intent.resolveActivity(pm) != null) {
                     context.startActivity(intent)
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(context, "Error open player: " + e.message, Toast.LENGTH_SHORT).show()
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(context, "Error open player: " + e.message, Toast.LENGTH_SHORT)
         }
     }
 
-    private fun getChooser(filename: String, title: String): Intent {
+    private fun getChooser(filename: String, title: String): Intent? {
         return Intent.createChooser(getDefaultPlayer(filename, title), "   ")
     }
 
-    private fun getDefaultPlayer(filename: String, title: String): Intent {
+    private fun getDefaultPlayer(filename: String, title: String): Intent? {
         val intent = Intent(Intent.ACTION_VIEW)
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        var uri = getUri(filename)
+        val uri: Uri? = getUri(filename) ?: return null
         intent.setDataAndType(uri, "video/mp4")
         intent.putExtra("title", title)
         return intent
     }
 
-    private fun getMXPlayer(context: Context, filename: String, title: String): Intent {
+    private fun getMXPlayer(context: Context, filename: String, title: String): Intent? {
         val intent = Intent(Intent.ACTION_VIEW)
         var pkg = ""
 
@@ -83,14 +83,14 @@ class PlayIntent(val context: Context) {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
-        val uri = getUri(filename)
+        val uri: Uri? = getUri(filename) ?: return null
         intent.setDataAndType(uri, "video/mp4")
         intent.putExtra("title", title)
         intent.`package` = pkg
         return intent
     }
 
-    private fun getKodiPlayer(context: Context, filename: String, title: String): Intent {
+    private fun getKodiPlayer(context: Context, filename: String, title: String): Intent? {
         val intent = Intent(Intent.ACTION_VIEW)
         var pkg = ""
 
@@ -108,7 +108,7 @@ class PlayIntent(val context: Context) {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
-        val uri = getUri(filename)
+        val uri: Uri? = getUri(filename) ?: return null
         intent.setDataAndType(uri, "video/mp4")
         intent.putExtra("title", title)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -116,9 +116,9 @@ class PlayIntent(val context: Context) {
         return intent
     }
 
-    private fun getUri(filename: String): Uri {
+    private fun getUri(filename: String): Uri? {
         var uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", File(filename))
-        if (!File(filename).canWrite())
+        if (!File(filename).parentFile.canWrite())
             uri = Document.openFile(filename)?.uri
         return uri
     }

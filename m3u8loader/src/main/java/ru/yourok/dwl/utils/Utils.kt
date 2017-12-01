@@ -31,6 +31,13 @@ object Utils {
         return byteFmt(bytes.toDouble())
     }
 
+    fun durationFmt(duration: Float): String {
+        if ((duration / 3600).toInt() == 0)
+            return "%02d:%02d".format(((duration % 3600) / 60).toInt(), (duration % 60).toInt())
+        else
+            return "%d:%02d:%02d".format((duration / 3600).toInt(), ((duration % 3600) / 60).toInt(), (duration % 60).toInt())
+    }
+
     fun saveSettings() {
         val path = Settings.context?.filesDir?.path
         if (!path.isNullOrEmpty())

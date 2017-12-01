@@ -8,11 +8,13 @@
     <string name="play">Проиграть</string>
     <string name="convert">Конвертировать</string>
     <string name="download">Скачать</string>
+    <string name="edit">Изменить</string>
     <string name="load_all">Скачать всё</string>
     <string name="stop_all">Остановить всё</string>
     <string name="remove_all">Удалить всё</string>
     <string name="stop">Остановить</string>
     <string name="remove">Удалить</string>
+    <string name="clear">Очистить</string>
     <string name="complete">Завершено</string>
     <string name="loading_complete">Загрузка завершена</string>
     <string name="loading_error">Ошибка загрузки</string>
@@ -41,6 +43,7 @@
     <string name="new_directory_name_label">Имя новой папки</string>
 
     <string name="warn_install_convertor">Для конвертирования видео установите M3U8Convertor</string>
+    <string name="warn_clean_message">Внимание! Во время очистки все настройки и загруженный файл удаляются. Очистить?</string>
 
     <string name="error_not_support_sd_convert">Не поддерживается конвертирование на карте памяти</string>
     <string name="error">Ошибка</string>
