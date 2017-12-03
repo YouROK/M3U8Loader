@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DirectoryListActivity">
+    android:animateLayoutChanges="true"
+    android:id="@+id/directory_activity_layout"
+    tools:context=".activitys.preferenceActivity.DirectoryActivity">
 
     <LinearLayout
         android:id="@+id/footer"
@@ -74,40 +76,47 @@
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/ic_create_new_folder_black_24dp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        <TextView
+            android:id="@+id/txtvSelectedFolder"
             android:gravity="center_vertical"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txtvSelectedFolderLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/selected_folder_label"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtvSelectedFolder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="start"
-                android:lines="1"
-                android:scrollHorizontally="true"
-                android:singleLine="true"
-                android:text="Folder Name" />
-        </LinearLayout>
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:ellipsize="start"
+            android:scrollHorizontally="true"
+            android:singleLine="true" />
 
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/directoryList"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/footer"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/directoryInfo" />
+        android:layout_below="@+id/directoryInfo">
+
+        <ListView
+            android:layout_weight="1"
+            android:id="@+id/directoryList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/footer"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/directoryInfo" />
+
+        <TextView
+            android:visibility="gone"
+            android:text=""
+            android:gravity="center"
+            android:layout_weight="0"
+            android:id="@+id/textViewDirectoryStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true" />
+    </LinearLayout>
 
 
 </RelativeLayout>

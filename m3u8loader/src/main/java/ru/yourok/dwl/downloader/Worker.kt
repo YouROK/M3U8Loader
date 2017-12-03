@@ -4,7 +4,7 @@ import android.net.Uri
 import ru.yourok.dwl.client.Client
 import ru.yourok.dwl.client.ClientBuilder
 import ru.yourok.dwl.list.Item
-import ru.yourok.dwl.settings.Settings
+import ru.yourok.m3u8loader.App
 import ru.yourok.m3u8loader.R
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -52,7 +52,7 @@ class Worker(val item: Item, private val stat: DownloadStatus, private val file:
                 stat.buffer = outBuffer.toByteArray()
 
             if (stat.buffer != null && !isBinary(stat.buffer!!))
-                throw IOException(Settings.context?.getString(R.string.error_fragment_not_binary) ?: "Error, fragment is html page")
+                throw IOException(App.getContext().getString(R.string.error_fragment_not_binary) ?: "Error, fragment is html page")
 
             item.size = stat.buffer!!.size.toLong()
             stat.isCompleteLoad = true
@@ -67,8 +67,8 @@ class Worker(val item: Item, private val stat: DownloadStatus, private val file:
     }
 
     fun setMaxPrior() {
-        if (Thread.currentThread().priority != Thread.MAX_PRIORITY)
-            Thread.currentThread().priority = Thread.MAX_PRIORITY
+        if (Thread.currentThread().priority != Thread.NORM_PRIORITY)
+            Thread.currentThread().priority = Thread.NORM_PRIORITY
     }
 
     private fun isBinary(buf: ByteArray): Boolean {

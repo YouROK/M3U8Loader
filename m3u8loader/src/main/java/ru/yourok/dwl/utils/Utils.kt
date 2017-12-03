@@ -7,6 +7,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import ru.yourok.dwl.list.List
 import ru.yourok.dwl.settings.Preferences
 import ru.yourok.dwl.settings.Settings
+import ru.yourok.m3u8loader.App
 import java.io.File
 import java.io.IOException
 
@@ -39,14 +40,14 @@ object Utils {
     }
 
     fun saveSettings() {
-        val path = Settings.context?.filesDir?.path
+        val path = App.getContext().filesDir?.path
         if (!path.isNullOrEmpty())
             Saver.save(File(path, "settings.cfg").path, Settings)
     }
 
     fun loadSettings() {
         try {
-            val path = Settings.context?.filesDir?.path
+            val path = App.getContext().filesDir?.path
             if (!path.isNullOrEmpty()) {
                 val file = File(path, "settings.cfg")
                 if (!file.exists())
@@ -73,7 +74,7 @@ object Utils {
             return Uri.fromFile(File(Settings.downloadPath, fileName))
         } else {
             val treeStr = Preferences.get(Preferences.DocumentRootUri, "") as String
-            val pickedDir = DocumentFile.fromTreeUri(Settings.context, Uri.parse(treeStr))
+            val pickedDir = DocumentFile.fromTreeUri(App.getContext(), Uri.parse(treeStr))
             var file = pickedDir.findFile(fileName)
             if (file == null)
                 file = pickedDir.createFile("video/mp4", fileName)
@@ -84,13 +85,13 @@ object Utils {
     }
 
     fun removeList(list: List) {
-        var path = Settings.context?.filesDir
+        var path = App.getContext().filesDir
         path = java.io.File(path, list.info.title + ".lst")
         if (path.exists()) path.delete()
     }
 
     fun saveList(list: List) {
-        var path = Settings.context?.filesDir?.path
+        var path = App.getContext().filesDir?.path
         path = java.io.File(path, list.info.title + ".lst").path
         Saver.save(path, list)
     }
@@ -98,7 +99,7 @@ object Utils {
     fun loadLists(): MutableList<List>? {
         try {
             val lists: MutableList<List> = mutableListOf()
-            var path = Settings.context?.filesDir
+            var path = App.getContext().filesDir
             if (path != null)
                 path.walk().forEach {
                     if (it.path.endsWith(".lst")) {

@@ -1,7 +1,9 @@
 package ru.yourok.m3u8converter.storage
 
+import android.content.Intent
 import android.support.v4.content.ContextCompat
 import ru.yourok.m3u8converter.App
+import ru.yourok.m3u8converter.utils.Preferences
 import java.io.File
 
 /**
@@ -37,5 +39,14 @@ object Storage {
         return ret.toList()
     }
 
+    fun requestSDPermissions() {
+        if (getListRoots().size > 1) {
+            if (Preferences.get(Preferences.DocumentRootUri, "") as String == "") {
+                val intent = Intent(App.getContext(), RequestStoragePermissionActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                App.getContext().startActivity(intent)
+            }
+        }
+    }
 
 }

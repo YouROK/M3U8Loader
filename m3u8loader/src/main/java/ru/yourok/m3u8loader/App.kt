@@ -1,6 +1,7 @@
 package ru.yourok.m3u8loader
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Build.MANUFACTURER
@@ -15,12 +16,18 @@ import java.io.StringWriter
 
 
 class App : Application() {
+    companion object {
+        private lateinit var contextApp: Context
+
+        fun getContext(): Context {
+            return contextApp
+        }
+    }
+
+
     override fun onCreate() {
         super.onCreate()
-
-//        Thread.setDefaultUncaughtExceptionHandler { thread, e -> handleUncaughtException(thread, e) }
-
-        Settings.context = applicationContext
+        contextApp = applicationContext
 
         Utils.loadSettings()
 
@@ -35,10 +42,10 @@ class App : Application() {
         Log.e("M3U8LoaderCrash", exceptionAsString)
 
         var msg = ""
-        msg += "Manufacture: " +MANUFACTURER + "\n"
-        msg += "Model: " +MODEL + "\n"
+        msg += "Manufacture: " + MANUFACTURER + "\n"
+        msg += "Model: " + MODEL + "\n"
         msg += "Api: " + SDK_INT.toString() + "\n"
-        msg += "OS: " +Build.VERSION.RELEASE + "\n"
+        msg += "OS: " + Build.VERSION.RELEASE + "\n"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             msg += Build.SUPPORTED_ABIS.joinToString() + "\n"
         else

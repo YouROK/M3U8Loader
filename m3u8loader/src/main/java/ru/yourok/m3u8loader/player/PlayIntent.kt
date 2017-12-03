@@ -9,7 +9,7 @@ import android.os.Looper
 import android.support.v4.content.FileProvider
 import android.widget.Toast
 import ru.yourok.dwl.settings.Preferences
-import ru.yourok.dwl.storage.Document
+import ru.yourok.dwl.storage.Storage
 import ru.yourok.m3u8loader.BuildConfig
 import java.io.File
 
@@ -117,9 +117,13 @@ class PlayIntent(val context: Context) {
     }
 
     private fun getUri(filename: String): Uri? {
-        var uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", File(filename))
-        if (!File(filename).parentFile.canWrite())
-            uri = Document.openFile(filename)?.uri
-        return uri
+        try {
+            var uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", File(filename))
+            if (!File(filename).parentFile.canWrite())
+                uri = Storage.getDocument(filename).uri
+            return uri
+        } catch (e: Exception) {
+            return Storage.getDocument(filename).uri
+        }
     }
 }

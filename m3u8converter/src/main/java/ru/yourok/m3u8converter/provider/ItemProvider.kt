@@ -83,20 +83,3 @@ class ItemProvider : ContentProvider() {
         return ""
     }
 }
-//
-//object TestProvider {
-//    fun test() {
-//        try {
-//            val cv = ContentValues()
-//            cv.put("name", "Video0")
-//            cv.put("path", "/storage/1D06-1D18/Video/video0.mp4")
-//            val newUri = App.getContext().getContentResolver().insert(ItemProvider.CONTENT_URI, cv)
-//            Log.d("********", "insert, result Uri : " + newUri.toString())
-//
-//            val cursor = App.getContext().getContentResolver().query(ItemProvider.CONTENT_URI, null, null, null, null)
-//            Log.d("********", cursor.toString())
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
-//    }
-//}

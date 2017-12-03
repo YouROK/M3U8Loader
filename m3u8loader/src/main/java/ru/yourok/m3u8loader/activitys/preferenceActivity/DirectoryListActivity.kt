@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.support.design.widget.Snackbar
+import android.support.v4.provider.DocumentFile
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
@@ -12,8 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import kotlinx.android.synthetic.main.activity_directory_list.*
-import ru.yourok.dwl.settings.Settings
-import ru.yourok.dwl.storage.Document
 import ru.yourok.dwl.storage.RequestStoragePermissionActivity
 import ru.yourok.dwl.storage.Storage
 import ru.yourok.dwl.utils.Utils
@@ -21,10 +21,12 @@ import ru.yourok.m3u8loader.R
 import ru.yourok.m3u8loader.theme.Theme
 import java.io.File
 import java.util.*
+import kotlin.concurrent.schedule
+
 
 class DirectoryActivity : AppCompatActivity() {
 
-    private var DirectoryPath: File = File(Settings.downloadPath)
+    private lateinit var DirectoryPath: File
     private var listAdapter: DirsAdapter = DirsAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,31 +34,22 @@ class DirectoryActivity : AppCompatActivity() {
         Theme.set(this)
         setContentView(R.layout.activity_directory_list)
 
-        if (intent.data != null) {
-            DirectoryPath = File(intent.data.path)
+        var pathFile: File? = File(intent?.data?.toString())
+        if (pathFile == null) {
+            Toast.makeText(this, getString(R.string.error_directory_not_found) + ": " + intent?.data?.toString(), Toast.LENGTH_SHORT).show()
+            if (Storage.getRoots().isNotEmpty())
+                pathFile = File(Storage.getPath(Storage.getRoots()[0]))
         }
-
-        if (!DirectoryPath.exists()) {
-            Toast.makeText(this, R.string.error_directory_not_found, Toast.LENGTH_SHORT).show()
+        if (pathFile == null) {
             finish()
             return
         }
+        DirectoryPath = pathFile
 
         val listView = findViewById<ListView>(R.id.directoryList)
         listView.adapter = listAdapter
         listView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
             val file = adapterView.getItemAtPosition(i) as File
-            if (!file.canWrite()) {
-                try {
-                    val doc = Document.openFile(file.canonicalPath)
-                    if ((doc == null || !doc.canWrite())) {
-                        Toast.makeText(this, R.string.error_directory_permission, Toast.LENGTH_SHORT).show()
-                    }
-                } catch (e: IllegalArgumentException) {
-                    startActivity(Intent(this, RequestStoragePermissionActivity::class.java))
-                    Toast.makeText(this, R.string.error_directory_permission, Toast.LENGTH_SHORT).show()
-                }
-            }
             DirectoryPath = file
             updateViews()
         }
@@ -66,25 +59,23 @@ class DirectoryActivity : AppCompatActivity() {
     fun upBtnClick(view: View) {
         if (DirectoryPath.parentFile == null)
             return
-        DirectoryPath = DirectoryPath.parentFile
+        DirectoryPath = DirectoryPath.parentFile ?: return
         updateViews()
     }
 
     fun homeBtnClick(view: View) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            val dialogBuilder = AlertDialog.Builder(this)
-            dialogBuilder.setTitle(R.string.selected_folder_label)
-            val adapter = HomeDirsAdapter(this)
-            dialogBuilder.setAdapter(adapter) { dialog, item ->
-                val newDir = adapter.getItem(item) as File?
-                if (newDir != null) {
-                    DirectoryPath = newDir
-                    updateViews()
-                }
+        val dialogBuilder = AlertDialog.Builder(this)
+        dialogBuilder.setTitle(R.string.selected_folder_label)
+        val adapter = HomeDirsAdapter(this)
+        dialogBuilder.setAdapter(adapter) { dialog, item ->
+            val selDir = adapter.getItem(item) as DocumentFile?
+            if (selDir != null) {
+                DirectoryPath = File(Storage.getPath(selDir))
+                updateViews()
             }
-            val alertDialogObject = dialogBuilder.create()
-            alertDialogObject.show()
         }
+        val alertDialogObject = dialogBuilder.create()
+        alertDialogObject.show()
     }
 
     fun createDirBtnClick(view: View) {
@@ -102,7 +93,11 @@ class DirectoryActivity : AppCompatActivity() {
 
         alertDialog.setPositiveButton(android.R.string.ok) { dialog, which ->
             val name = input.text.toString()
-            if (!File(DirectoryPath.absolutePath + "/" + name).mkdir())
+            val doc = Storage.getDocument(DirectoryPath.canonicalPath)
+            if (doc.canWrite()) {
+                if (doc.createDirectory(name) != null)
+                    DirectoryPath = File(DirectoryPath, name)
+            } else
                 Toast.makeText(this@DirectoryActivity, R.string.error_create_folder, Toast.LENGTH_SHORT).show()
             dialog.dismiss()
             updateViews()
@@ -112,17 +107,27 @@ class DirectoryActivity : AppCompatActivity() {
     }
 
     fun confirmBtnClick(view: View) {
-        if (!DirectoryPath.canWrite()) {
-            val doc = Document.openFile(DirectoryPath.canonicalPath)
-            if ((doc == null || !doc.canWrite())) {
-                Toast.makeText(this, R.string.error_directory_permission, Toast.LENGTH_SHORT).show()
-                return
+        DirectoryPath.let {
+            if (!it.canWrite()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    val doc = Storage.getDocument(DirectoryPath.canonicalPath)
+                    if (!doc.canWrite()) {
+                        Snackbar.make(findViewById(R.id.directory_activity_layout), R.string.permission_request_access, Snackbar.LENGTH_INDEFINITE)
+                                .setAction(R.string.permission_btn) {
+                                    startActivity(Intent(this, RequestStoragePermissionActivity::class.java))
+                                }
+                                .show()
+                    }
+                } else {
+                    Toast.makeText(this, R.string.error_directory_permission, Toast.LENGTH_SHORT).show()
+                    return
+                }
             }
+            val intent = Intent()
+            intent.putExtra("filename", it.canonicalPath)
+            setResult(Activity.RESULT_OK, intent)
+            finish()
         }
-        val intent = Intent()
-        intent.putExtra("filename", DirectoryPath.absolutePath)
-        setResult(Activity.RESULT_OK, intent)
-        finish()
     }
 
     fun cancelBtnClick(view: View) {
@@ -130,21 +135,53 @@ class DirectoryActivity : AppCompatActivity() {
     }
 
     fun updateViews() {
-        txtvSelectedFolder.text = DirectoryPath.absolutePath
+        txtvSelectedFolder.text = DirectoryPath.canonicalPath
         directoryList.invalidateViews()
+        if (!DirectoryPath.canWrite()) {
+            val doc = Storage.getDocument(DirectoryPath.canonicalPath)
+            if (!doc.canWrite()) {
+                showStatus(getText(R.string.error_directory_permission).toString())
+                return
+            }
+        }
+        showStatus("")
+    }
+
+    var countTimer = 0
+    fun showStatus(text: String) {
+        runOnUiThread {
+            if (text.isEmpty()) {
+                textViewDirectoryStatus.visibility = View.GONE
+                return@runOnUiThread
+            }
+            textViewDirectoryStatus.visibility = View.VISIBLE
+            textViewDirectoryStatus.text = text
+            countTimer++
+            Timer().schedule(5000) {
+                countTimer--
+                if (countTimer == 0)
+                    runOnUiThread { textViewDirectoryStatus.visibility = View.GONE }
+            }
+        }
     }
 
     internal inner class DirsAdapter(private val context: Context) : BaseAdapter() {
-        private var files: Array<File> = arrayOf()
+        private var files: List<File> = listOf()
 
         override fun getCount(): Int {
             try {
-                files = DirectoryPath.listFiles { pathname ->
-                    pathname?.isDirectory ?: false
+                files = DirectoryPath.listFiles()?.filter {
+                    it.isDirectory()
+                } ?: listOf()
+
+                if (files.isEmpty()) {
+                    val doc = Storage.getDocument(DirectoryPath.canonicalPath)
+                    files = doc.listFiles()?.filter { it.isDirectory }?.map { File(Storage.getPath(it)) } ?: listOf()
                 }
-                files.sortWith(Comparator { file1, file2 ->
-                    var f1 = file1.name.toLowerCase()
-                    var f2 = file2.name.toLowerCase()
+
+                files = files.sortedWith(Comparator { file1, file2 ->
+                    var f1 = file1.canonicalPath.toLowerCase()
+                    var f2 = file2.canonicalPath.toLowerCase()
                     if (f1.startsWith("."))
                         f1 = f1.substring(1)
                     if (f2.startsWith("."))
@@ -179,7 +216,7 @@ class DirectoryActivity : AppCompatActivity() {
 
     internal inner class HomeDirsAdapter(internal var context: Context) : BaseAdapter() {
 
-        internal var list: List<File> = Storage.getListRoots().map { File(it) }
+        internal var list: List<DocumentFile> = Storage.getRoots().map { it }
 
         override fun getCount(): Int {
             return list.size
@@ -204,10 +241,11 @@ class DirectoryActivity : AppCompatActivity() {
                 val paddingDp = (paddingPixel * density).toInt()
                 view.setPadding(paddingDp, 0, 0, paddingDp)
             }
-
             if (position in 0 until list.size) {
-                (view.findViewById<TextView>(android.R.id.text1))?.text = list[position].absolutePath
-                val Space = Utils.byteFmt(list[position].freeSpace) + "/" + Utils.byteFmt(list[position].totalSpace)
+                (view.findViewById<TextView>(android.R.id.text1))?.text = Storage.getPath(list[position])
+                val freeSpace = Storage.getSpace(list[position], false)
+                val totalSpace = Storage.getSpace(list[position], true)
+                val Space = Utils.byteFmt(freeSpace) + "/" + Utils.byteFmt(totalSpace)
                 (view.findViewById<TextView>(android.R.id.text2))?.setText(Space)
             }
             return view

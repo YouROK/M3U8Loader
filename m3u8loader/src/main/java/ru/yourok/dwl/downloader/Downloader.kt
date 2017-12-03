@@ -10,6 +10,7 @@ import ru.yourok.dwl.list.List
 import ru.yourok.dwl.manager.Notifyer
 import ru.yourok.dwl.settings.Settings
 import ru.yourok.dwl.utils.Utils
+import ru.yourok.m3u8loader.App
 import ru.yourok.m3u8loader.R.string.error_load_subs
 import java.io.File
 import java.util.concurrent.ExecutorService
@@ -230,7 +231,7 @@ class Downloader(val list: List) {
                 }
             } catch (e: Exception) {
                 Handler(Looper.getMainLooper()).post {
-                    Toast.makeText(Settings.context, error_load_subs, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(App.getContext(), error_load_subs, Toast.LENGTH_SHORT).show()
                 }
             }
         }

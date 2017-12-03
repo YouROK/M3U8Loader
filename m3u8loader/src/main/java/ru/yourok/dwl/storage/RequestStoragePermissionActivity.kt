@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import ru.yourok.dwl.settings.Preferences
 
 
 /**
@@ -35,7 +34,7 @@ class RequestStoragePermissionActivity : AppCompatActivity() {
         grantUriPermission(packageName, treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
             contentResolver.takePersistableUriPermission(treeUri!!, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-        Preferences.set(Preferences.DocumentRootUri, treeUri.toString())
+        Storage.addRootUri(treeUri.toString())
         setResult(Activity.RESULT_OK)
         finish()
     }

@@ -2,7 +2,7 @@ package ru.yourok.dwl.downloader
 
 import android.net.Uri
 import ru.yourok.dwl.settings.Settings
-import ru.yourok.dwl.storage.Document
+import ru.yourok.dwl.storage.Storage
 import ru.yourok.dwl.writer.NativeFile
 import ru.yourok.dwl.writer.UriFile
 import ru.yourok.dwl.writer.Writer
@@ -23,10 +23,11 @@ class FileWriter(fileName: String) {
             writer = NativeFile()
             writer.open(Uri.fromFile(File(fileName)))
         } else {
-            val fullPath = fileName
-            var doc = Document.openFile(fullPath)
-            if (doc == null)
-                doc = Document.createFile(fullPath)
+            var doc = Storage.getDocument(fileName)
+            if (!doc.exists()) {
+                doc = Storage.getDocument(File(fileName).parent)
+                doc = doc.createFile("*/*", File(fileName).name)
+            }
             if (doc == null)
                 throw IOException("Error open file: " + fileName)
             writer = UriFile()

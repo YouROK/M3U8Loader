@@ -13,11 +13,11 @@ import ru.yourok.dwl.list.List
 import ru.yourok.dwl.manager.Manager
 import ru.yourok.dwl.parser.Parser
 import ru.yourok.dwl.settings.Settings
+import ru.yourok.dwl.storage.Storage
 import ru.yourok.dwl.utils.Utils
 import ru.yourok.m3u8loader.R
 import ru.yourok.m3u8loader.activitys.preferenceActivity.DirectoryActivity
 import ru.yourok.m3u8loader.theme.Theme
-import java.io.File
 import kotlin.concurrent.thread
 
 
@@ -118,9 +118,10 @@ class AddListActivity : AppCompatActivity() {
 
     fun updateDownloadPath() {
         textViewDirectoryPathAdd.setText(downloadPath)
-        val dfile = File(downloadPath)
-        textViewDiskSize.text = "%s / %s".format(Utils.byteFmt(dfile.totalSpace - dfile.usableSpace), Utils.byteFmt(dfile.totalSpace))
-        progressBarFreeSpace.progress = 100 - (dfile.usableSpace * 100 / (dfile.totalSpace + 1)).toInt()
+        val totalSpace = Storage.getSpace(Storage.getDocument(downloadPath), true)
+        val freeSpace = Storage.getSpace(Storage.getDocument(downloadPath), false)
+        textViewDiskSize.text = "%s / %s".format(Utils.byteFmt(totalSpace - freeSpace), Utils.byteFmt(totalSpace))
+        progressBarFreeSpace.progress = 100 - (freeSpace * 100 / (totalSpace + 1)).toInt()
     }
 
     fun addBtnClick(view: View) {

@@ -14,7 +14,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import ru.yourok.dwl.downloader.LoadState
 import ru.yourok.dwl.manager.Manager
 import ru.yourok.dwl.settings.Preferences
-import ru.yourok.dwl.storage.Storage
 import ru.yourok.m3u8loader.R
 import ru.yourok.m3u8loader.activitys.preferenceActivity.PreferenceActivity
 import ru.yourok.m3u8loader.navigationBar.NavigationBar
@@ -36,7 +35,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         requestPermissionWithRationale()
-        Storage.requestSDPermissions()
 
         drawer = NavigationBar.setup(this)
         listViewLoader.adapter = LoaderListAdapter(this)

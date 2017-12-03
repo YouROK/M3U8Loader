@@ -2,16 +2,17 @@ package ru.yourok.m3u8loader.activitys.preferenceActivity
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import android.widget.*
 import kotlinx.android.synthetic.main.activity_preference.*
 import ru.yourok.dwl.converter.Converter
 import ru.yourok.dwl.settings.Preferences
 import ru.yourok.dwl.settings.Settings
 import ru.yourok.dwl.storage.RequestStoragePermissionActivity
-import ru.yourok.dwl.storage.Storage
 import ru.yourok.dwl.utils.Utils
 import ru.yourok.m3u8loader.R
 import ru.yourok.m3u8loader.theme.Theme
@@ -33,8 +34,6 @@ class PreferenceActivity : AppCompatActivity() {
         Theme.set(this)
         setContentView(R.layout.activity_preference)
         lastTheme = Preferences.get("ThemeDark", true) as Boolean
-
-        Storage.requestSDPermissions()
 
         checkboxConvert.setOnCheckedChangeListener { _, b ->
             if (b) {
@@ -62,8 +61,11 @@ class PreferenceActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerChoosePlayer.adapter = adapter
 
-        findViewById<Button>(R.id.buttonRenewPermission).setOnClickListener {
-            startActivity(Intent(this, RequestStoragePermissionActivity::class.java))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            findViewById<Button>(R.id.buttonRequestPermission).visibility = View.VISIBLE
+            findViewById<Button>(R.id.buttonRequestPermission).setOnClickListener {
+                startActivity(Intent(this, RequestStoragePermissionActivity::class.java))
+            }
         }
 
         findViewById<Button>(R.id.buttonDefOptions).setOnClickListener {

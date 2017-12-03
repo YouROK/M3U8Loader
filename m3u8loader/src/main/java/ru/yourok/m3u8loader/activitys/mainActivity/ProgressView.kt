@@ -5,6 +5,7 @@ import android.graphics.*
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
+import ru.yourok.dwl.downloader.LoadState
 import ru.yourok.dwl.manager.Manager
 import ru.yourok.dwl.utils.Utils
 import ru.yourok.m3u8loader.R
@@ -14,9 +15,10 @@ import kotlin.concurrent.schedule
 
 class ProgressView : View {
     private var background: Int = -1
-    private var autoUpdate = true
     private val timer: Timer = Timer()
     private var index: Int? = null
+    private var times: Long = 0L
+    private var delay: Long = 50L
 
     constructor(context: Context) : super(context) {
     }
@@ -26,11 +28,6 @@ class ProgressView : View {
 
     fun setIndexList(index: Int) {
         this.index = index
-    }
-
-    fun setAutoUpdate(a: Boolean) {
-        autoUpdate = a
-        postInvalidate()
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -56,6 +53,8 @@ class ProgressView : View {
             val state = loader.getState()
             val fragSize = ((width.toDouble() / state.loadedItems.size))
             state.let {
+                if (state.state != LoadState.ST_LOADING)
+                    delay = 500L
                 val paintItem = Paint()
                 paintItem.isAntiAlias = true
                 paintItem.style = Paint.Style.FILL
@@ -114,7 +113,20 @@ class ProgressView : View {
                 canvas.drawText(size, xPos - 5.0F, yPos, paintText)
             }
         }
-        if (autoUpdate)
-            timer.schedule(50) { postInvalidate() }
+
+        times = System.currentTimeMillis()
+
+        timer.schedule(delay) {
+            postInvalidate()
+            val delta = System.currentTimeMillis() - times
+            if (delta == delay)
+                delay = 30
+
+            if (delta < delay && delay > 30)
+                delay--
+
+            if (delta > delay && delay < 500)
+                delay++
+        }
     }
 }

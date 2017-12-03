@@ -2,7 +2,7 @@ package ru.yourok.dwl.writer
 
 import android.net.Uri
 import android.os.ParcelFileDescriptor
-import ru.yourok.dwl.settings.Settings
+import ru.yourok.m3u8loader.App
 import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.ByteBuffer
@@ -16,7 +16,7 @@ class UriFile : Writer {
     private var fos: FileOutputStream? = null
 
     override fun open(file: Uri) {
-        pfdOutput = Settings.context!!.getContentResolver().openFileDescriptor(file, "rw")
+        pfdOutput = App.getContext().getContentResolver().openFileDescriptor(file, "rw")
         fos = FileOutputStream(pfdOutput!!.fileDescriptor)
     }
 

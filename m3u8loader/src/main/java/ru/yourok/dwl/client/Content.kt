@@ -1,8 +1,7 @@
 package ru.yourok.dwl.client
 
 import android.net.Uri
-import ru.yourok.dwl.settings.Settings
-import java.io.IOException
+import ru.yourok.m3u8loader.App
 import java.io.InputStream
 
 /**
@@ -16,9 +15,7 @@ class Content(val fileName: Uri) : Client {
     private var errMsg: String = ""
 
     override fun connect() {
-        if (Settings.context == null)
-            throw IOException("Error read fom content: context is null")
-        input = Settings.context!!.contentResolver.openInputStream(fileName)
+        input = App.getContext().contentResolver.openInputStream(fileName)
         isOpen = true
     }
 

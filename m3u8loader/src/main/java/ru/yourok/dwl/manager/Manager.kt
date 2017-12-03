@@ -5,9 +5,9 @@ import android.support.v7.app.AlertDialog
 import ru.yourok.dwl.downloader.Downloader
 import ru.yourok.dwl.downloader.State
 import ru.yourok.dwl.list.List
-import ru.yourok.dwl.settings.Settings
-import ru.yourok.dwl.storage.Document
+import ru.yourok.dwl.storage.Storage
 import ru.yourok.dwl.utils.Utils
+import ru.yourok.m3u8loader.App
 import ru.yourok.m3u8loader.R
 import java.io.File
 import java.io.IOException
@@ -54,7 +54,7 @@ object Manager {
                 var isFindUrl = false
                 loaderList.forEach { item ->
                     if (it.url == item.list.url)
-                        throw IOException(Settings.context!!.getString(R.string.error_same_url))
+                        throw IOException(App.getContext().getString(R.string.error_same_url))
                 }
                 if (!isFindUrl) {
                     //find equal url
@@ -103,10 +103,9 @@ object Manager {
                                     it.waitEnd()
                                     Utils.removeList(it.list)
                                     loaderList.remove(it)
-                                    val f = Document.openFile(it.list.filePath)
-                                    if (f != null) f.delete()
+                                    Storage.getDocument(it.list.filePath).delete()
                                     if (it.list.subsUrl.isNotEmpty())
-                                        Document.openFile(File(File(it.list.filePath).parent, it.list.info.title + ".srt").canonicalPath)?.delete()
+                                        Storage.getDocument(File(File(it.list.filePath).parent, it.list.info.title + ".srt").canonicalPath)?.delete()
                                 }
                             }
                             .setNegativeButton(R.string.remove_from_list) { _, _ ->
@@ -157,10 +156,9 @@ object Manager {
                                 loaderList.forEach {
                                     it.waitEnd()
                                     Utils.removeList(it.list)
-                                    val f = Document.openFile(it.list.filePath)
-                                    if (f != null) f.delete()
+                                    Storage.getDocument(it.list.filePath).delete()
                                     if (it.list.subsUrl.isNotEmpty())
-                                        Document.openFile(File(File(it.list.filePath).parent, it.list.info.title + ".srt").canonicalPath)?.delete()
+                                        Storage.getDocument(File(File(it.list.filePath).parent, it.list.info.title + ".srt").canonicalPath).delete()
                                 }
                                 loaderList.clear()
                             }

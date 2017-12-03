@@ -7,8 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
-import ru.yourok.dwl.settings.Settings
 import ru.yourok.dwl.utils.Utils
+import ru.yourok.m3u8loader.App
 import ru.yourok.m3u8loader.R
 import ru.yourok.m3u8loader.activitys.mainActivity.MainActivity
 import kotlin.concurrent.thread
@@ -63,7 +63,7 @@ class LoaderService : Service() {
                 .setAutoCancel(true)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(pendingIntent)
-        val notificationManager = Settings.context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = App.getContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(0, notificationBuilder.build())
     }
 
@@ -90,24 +90,20 @@ class LoaderService : Service() {
                 .setAutoCancel(true)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(pendingIntent)
-        val notificationManager = Settings.context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = App.getContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(0, notificationBuilder.build())
     }
 
     companion object {
         fun start() {
-            Settings.context?.let {
-                val intent = Intent(it, LoaderService::class.java)
-                it.startService(intent)
-            }
+            val intent = Intent(App.getContext(), LoaderService::class.java)
+            App.getContext().startService(intent)
         }
 
         fun stop() {
-            Settings.context?.let {
-                val intent = Intent(it, LoaderService::class.java)
-                intent.putExtra("exit", true)
-                it.startService(intent)
-            }
+            val intent = Intent(App.getContext(), LoaderService::class.java)
+            intent.putExtra("exit", true)
+            App.getContext().startService(intent)
         }
     }
 }

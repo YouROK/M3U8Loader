@@ -10,7 +10,7 @@ import android.widget.BaseAdapter
 import android.widget.TextView
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
 import ru.yourok.dwl.manager.Manager
-import ru.yourok.dwl.storage.Document
+import ru.yourok.dwl.storage.Storage
 import ru.yourok.dwl.utils.Utils
 import ru.yourok.m3u8loader.R
 
@@ -18,7 +18,7 @@ import ru.yourok.m3u8loader.R
 /**
  * Created by yourok on 01.12.17.
  */
-//TODO
+
 class EditorAdaptor(val lists: List<ru.yourok.dwl.list.List>, val context: Context) : BaseAdapter() {
     override fun getView(position: Int, convertView: View?, p2: ViewGroup?): View {
         var view: View = convertView ?: (context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.editor_list_adaptor, null)
@@ -100,7 +100,7 @@ class EditorAdaptor(val lists: List<ru.yourok.dwl.list.List>, val context: Conte
                 list.items.forEach {
                     it.isComplete = false
                 }
-                Document.openFile(list.filePath)?.delete()
+                Storage.getDocument(list.filePath)?.delete()
                 Utils.saveList(list)
             })
             builder.setNegativeButton(android.R.string.cancel, null)

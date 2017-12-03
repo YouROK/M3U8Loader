@@ -6,7 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import ru.yourok.dwl.list.List
-import ru.yourok.dwl.settings.Settings
+import ru.yourok.m3u8loader.App
 import kotlin.concurrent.thread
 
 
@@ -27,7 +27,7 @@ object Converter {
                 val cv = ContentValues()
                 cv.put("name", it.info.title)
                 cv.put("path", it.filePath)
-                Settings.context!!.contentResolver.insert(CONTENT_URI, cv)
+                App.getContext().contentResolver.insert(CONTENT_URI, cv)
             }
             isConverting = true
         }
@@ -38,7 +38,7 @@ object Converter {
             return emptyList()
 
         val retList = mutableListOf<String>()
-        val cursor = Settings.context!!.contentResolver.query(CONTENT_URI, null, null, null, null)
+        val cursor = App.getContext().contentResolver.query(CONTENT_URI, null, null, null, null)
         while (cursor.moveToNext()) {
             val name = cursor.getString(cursor.getColumnIndex("name"))
             val path = cursor.getString(cursor.getColumnIndex("path"))
@@ -55,14 +55,14 @@ object Converter {
         intent.component = ComponentName("ru.yourok.m3u8converter", "ru.yourok.m3u8converter.MainActivity")
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.putExtra("hide", true)
-        if (intent.resolveActivity(Settings.context!!.packageManager) != null) {
-            Settings.context!!.startActivity(intent)
+        if (intent.resolveActivity(App.getContext().packageManager) != null) {
+            App.getContext().startActivity(intent)
             Thread.sleep(2000)
         }
     }
 
     fun installed(): Boolean {
-        val pm = Settings.context!!.getPackageManager()
+        val pm = App.getContext().getPackageManager()
         val packages = pm.getInstalledApplications(PackageManager.GET_META_DATA)
         packages.forEach {
             if (it.packageName == "ru.yourok.m3u8converter")
