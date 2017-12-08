@@ -12,6 +12,7 @@
 
 #include <string>
 #include <vector>
+#include <errno.h>
 
 JNIEXPORT jlong JNICALL
 Java_ru_yourok_dwl_storage_StatFS_sizeFd(JNIEnv *, jobject, jint fd, jint isTotal) {
@@ -50,4 +51,11 @@ Java_ru_yourok_dwl_storage_StatFS_pathFd(JNIEnv *env, jobject, jint fd) {
     if (readlink(path.c_str(), buffer, sizeof(buffer) - 1) < 0)
         return NULL;
     return env->NewStringUTF(buffer);
+}
+
+JNIEXPORT jint JNICALL
+Java_ru_yourok_dwl_storage_StatFS_chmodFD(JNIEnv *env, jobject, jint fd) {
+    if (fchmod(fd, 0777) != 0)
+        return errno;
+    return 0;
 }

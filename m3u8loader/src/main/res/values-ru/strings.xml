@@ -42,10 +42,9 @@
     <string name="new_directory_title">Создать новую папку</string>
     <string name="new_directory_name_label">Имя новой папки</string>
 
-    <string name="warn_install_convertor">Для конвертирования видео установите M3U8Convertor</string>
+    <string name="warn_install_convertor">Эта функция не доступна сейчас, ожидайте обновления</string>
     <string name="warn_clean_message">Внимание! Во время очистки все настройки и загруженный файл удаляются. Очистить?</string>
 
-    <string name="error_not_support_sd_convert">Не поддерживается конвертирование на карте памяти</string>
     <string name="error">Ошибка</string>
     <string name="error_load_subs">Ошибка при загрузки субтитров</string>
     <string name="error_empty_url">Ошибка, пустая ссылка</string>
@@ -55,6 +54,8 @@
     <string name="error_fragment_not_binary">Ошибка, фрагмент является html страницей</string>
     <string name="error_create_folder">Ошибка при создании папки</string>
     <string name="error_same_url">Загрузка с такой ссылкой уже существует</string>
+
+    <string name="crash_app">"Ой... Во мне случилась ошибка,\nНо не волнуйтесь, Вы можете отправить отчет об ошибке разработчику, чтобы он её поскорее исправил."</string>
 
     <string name="choose_player">Выберите плеер</string>
 

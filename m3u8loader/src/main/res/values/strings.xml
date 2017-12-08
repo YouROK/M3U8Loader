@@ -46,10 +46,9 @@
     <string name="new_directory_title">Create new folder</string>
     <string name="new_directory_name_label">Name of new folder</string>
 
-    <string name="warn_install_convertor">For converting video install M3U8Convertor</string>
+    <string name="warn_install_convertor">This feature is not available now, expect updates</string>
     <string name="warn_clean_message">Caution! During cleaning, all settings and the downloaded file are deleted.\nClean out?</string>
 
-    <string name="error_not_support_sd_convert">Does not support converting to a sd card</string>
     <string name="error">Error</string>
     <string name="error_load_subs">Error load subtitles</string>
     <string name="error_empty_url">Error empty url</string>
@@ -59,6 +58,8 @@
     <string name="error_fragment_not_binary">Error, fragment is html page</string>
     <string name="error_create_folder">Error create folder</string>
     <string name="error_same_url">Loading with the same url already exists</string>
+
+    <string name="crash_app">"Ooooops... I crashed, but don't worry you can send error report to my developer to help him fix the issue."</string>
 
     <string name="choose_player">Choose player</string>
     <string-array name="players_names" translatable="false">

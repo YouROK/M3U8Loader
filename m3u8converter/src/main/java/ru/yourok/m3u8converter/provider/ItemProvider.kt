@@ -35,10 +35,10 @@ class ItemProvider : ContentProvider() {
         if (uriMatcher.match(uri) != ITEMS)
             throw IllegalArgumentException("Wrong URI: " + uri)
 
-        val cursor = MatrixCursor(arrayOf("name", "path"))
+        val cursor = MatrixCursor(arrayOf("name", "path", "uri"))
         Manager.execList { list ->
             list.forEach {
-                cursor.addRow(arrayOf(it.name, it.path))
+                cursor.addRow(arrayOf(it.name, it.path, it.uri))
             }
         }
 
@@ -53,6 +53,7 @@ class ItemProvider : ContentProvider() {
         val item = ConvertItem()
         item.name = values?.get("name")?.toString() ?: ""
         item.path = values?.get("path")?.toString() ?: ""
+        item.uri = values?.get("uri")?.toString() ?: ""
 
         if (item.name.isEmpty() || item.path.isEmpty())
             throw IllegalArgumentException("Empty value: " + uri)

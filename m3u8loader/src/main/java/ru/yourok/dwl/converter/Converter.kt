@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import ru.yourok.dwl.list.List
+import ru.yourok.dwl.storage.Storage
 import ru.yourok.m3u8loader.App
 import kotlin.concurrent.thread
 
@@ -27,6 +28,7 @@ object Converter {
                 val cv = ContentValues()
                 cv.put("name", it.info.title)
                 cv.put("path", it.filePath)
+                cv.put("uri", Storage.getDocument(it.filePath).uri.toString())
                 App.getContext().contentResolver.insert(CONTENT_URI, cv)
             }
             isConverting = true

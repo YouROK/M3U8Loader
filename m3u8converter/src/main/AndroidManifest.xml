@@ -3,6 +3,7 @@
     package="ru.yourok.m3u8converter">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
 
     <application
         android:sharedUserId="ru.yourok.m3u8"

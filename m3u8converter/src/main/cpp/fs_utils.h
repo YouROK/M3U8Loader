@@ -20,6 +20,9 @@ Java_ru_yourok_dwl_storage_StatFS_sizeFPath(JNIEnv *, jobject, jstring fpath, ji
 JNIEXPORT jstring JNICALL
 Java_ru_yourok_dwl_storage_StatFS_pathFd(JNIEnv *, jobject, jint fd);
 
+JNIEXPORT jint JNICALL
+Java_ru_yourok_dwl_storage_StatFS_chmodFD(JNIEnv *env, jobject, jint fd);
+
 #ifdef __cplusplus
 }
 #endif

@@ -1,4 +1,4 @@
-package ru.yourok.dwl.storage
+package ru.yourok.m3u8converter.storage
 
 
 /**

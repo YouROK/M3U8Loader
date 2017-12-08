@@ -1,7 +1,6 @@
 package ru.yourok.dwl.downloader
 
 import android.net.Uri
-import ru.yourok.dwl.settings.Settings
 import ru.yourok.dwl.storage.Storage
 import ru.yourok.dwl.writer.NativeFile
 import ru.yourok.dwl.writer.UriFile
@@ -19,7 +18,11 @@ class FileWriter(fileName: String) {
     private val lock = Any()
 
     init {
-        if (java.io.File(Settings.downloadPath).canWrite()) {
+
+        if (!Storage.getDocument(File(fileName).parent).exists())
+            throw IOException("Error directory not found: " + File(fileName).parent)
+
+        if (File(fileName).canWrite()) {
             writer = NativeFile()
             writer.open(Uri.fromFile(File(fileName)))
         } else {

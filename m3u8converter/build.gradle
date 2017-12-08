@@ -36,7 +36,11 @@ android {
         exclude 'META-INF/dependencies.txt'
         exclude 'META-INF/LGPL2.1'
     }
-
+    externalNativeBuild {
+        cmake {
+            path '../m3u8loader/src/main/cpp/CMakeLists.txt'
+        }
+    }
 }
 
 dependencies {

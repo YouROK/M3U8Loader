@@ -6,6 +6,7 @@ package ru.yourok.m3u8converter.converter
 class ConvertItem {
     var name: String = ""
     var path: String = ""
+    var uri: String = ""
 
     var state: Int = 0
     var error: String = ""

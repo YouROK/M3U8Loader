@@ -152,8 +152,8 @@
         <activity android:name=".activitys.preferenceActivity.PreferenceActivity" />
         <activity android:name=".activitys.DonateActivity" />
         <activity android:name=".activitys.preferenceActivity.DirectoryActivity" />
-        <activity android:name="ru.yourok.dwl.storage.RequestStoragePermissionActivity" />
         <activity android:name=".activitys.editorActivity.EditorActivity" />
+        <activity android:name="ru.yourok.dwl.storage.RequestStoragePermissionActivity" />
     </application>
 
 </manifest>

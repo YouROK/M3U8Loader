@@ -184,6 +184,14 @@ object Manager {
         }
     }
 
+    fun saveLists() {
+        try {
+            loaderList.forEach { Utils.saveList(it.list) }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     /////////Queue funcs
     private val lockQueue: Any = Any()
     private var loading: Boolean = false

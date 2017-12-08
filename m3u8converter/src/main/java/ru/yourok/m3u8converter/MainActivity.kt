@@ -14,7 +14,6 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.yourok.m3u8converter.converter.ConvertItem
 import ru.yourok.m3u8converter.converter.Manager
-import ru.yourok.m3u8converter.storage.Storage
 import ru.yourok.m3u8converter.utils.Preferences
 import ru.yourok.m3u8converter.utils.Theme
 import java.util.*
@@ -36,7 +35,6 @@ class MainActivity : AppCompatActivity() {
             setContentView(R.layout.activity_main)
             listViewConverter.adapter = ConvertAdapter(this)
         }
-        Storage.getListRoots()
         requestPermissionWithRationale()
 
         if (intent.hasExtra("hide")) {

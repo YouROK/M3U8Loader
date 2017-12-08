@@ -1,15 +1,11 @@
 package ru.yourok.dwl.utils
 
-import android.net.Uri
-import android.support.v4.provider.DocumentFile
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import ru.yourok.dwl.list.List
-import ru.yourok.dwl.settings.Preferences
 import ru.yourok.dwl.settings.Settings
 import ru.yourok.m3u8loader.App
 import java.io.File
-import java.io.IOException
 
 object Utils {
     fun byteFmt(bytes: Double): String {
@@ -66,21 +62,6 @@ object Utils {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-        }
-    }
-
-    fun getFileUri(fileName: String): Uri {
-        if (java.io.File(Settings.downloadPath).canWrite()) {
-            return Uri.fromFile(File(Settings.downloadPath, fileName))
-        } else {
-            val treeStr = Preferences.get(Preferences.DocumentRootUri, "") as String
-            val pickedDir = DocumentFile.fromTreeUri(App.getContext(), Uri.parse(treeStr))
-            var file = pickedDir.findFile(fileName)
-            if (file == null)
-                file = pickedDir.createFile("video/mp4", fileName)
-            if (file == null)
-                throw IOException("Error get file: " + fileName)
-            return file.uri
         }
     }
 
