@@ -50,6 +50,7 @@ class Pool(private val workers: List<Pair<Worker, DownloadStatus>>) {
                             try {
                                 if (!wrk.item.isComplete && !stop) {
                                     wrk.run()
+                                    Runtime.getRuntime().gc()
                                     dstat.isError = false
                                     onFinish?.invoke()
                                 }

@@ -61,6 +61,10 @@ class MainActivity : AppCompatActivity() {
 
         update()
         showMenuHelp()
+//        Timer().schedule(5000) {
+//            Updater.check()
+//            Updater.open()
+//        }
     }
 
     private fun update() {

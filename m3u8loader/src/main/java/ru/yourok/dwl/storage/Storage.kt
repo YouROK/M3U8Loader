@@ -79,11 +79,11 @@ object Storage {
             if (fd != null) {
                 path = StatFS.path(fd.fd) ?: ""
                 fd.close()
-                if (path.isNotEmpty() && path.startsWith("/mnt/media_rw/")) {
-                    val tmp = path.replace("/mnt/media_rw/", "/storage/")
-                    if (File(tmp).exists())
-                        path = tmp
-                }
+//                if (path.isNotEmpty() && path.startsWith("/mnt/media_rw/")) {
+//                    val tmp = path.replace("/mnt/media_rw/", "/storage/")
+//                    if (File(tmp).exists())
+//                        path = tmp
+//                }
             }
         } catch (e: Exception) {
             e.printStackTrace()

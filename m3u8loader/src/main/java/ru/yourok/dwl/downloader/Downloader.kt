@@ -124,6 +124,7 @@ class Downloader(val list: List) {
                 }
 
             } catch (e: Exception) {
+                e.printStackTrace()
                 error = e.message ?: ""
                 isLoading = false
             }

@@ -18,6 +18,7 @@ class Http(url: Uri) : Client {
     private var isConn: Boolean = false
     private var connection: HttpURLConnection? = null
     private var errMsg: String = ""
+    private var inputStream: InputStream? = null
 
     override fun connect() {
         var responseCode: Int
@@ -31,8 +32,8 @@ class Http(url: Uri) : Client {
             connection!!.setDoInput(true)
 
             connection!!.setRequestProperty("UserAgent", "DWL/1.1.0 (Android)")
-            connection!!.setRequestProperty("Accept", "*/*")
-            connection!!.setRequestProperty("Accept-Encoding", "gzip")
+            connection!!.setRequestProperty("Accept", "text/html;q=0.8,*/*;q=0.9")
+            connection!!.setRequestProperty("Accept-Encoding", "gzip, deflate, br")
 
             if (Settings.headers.isNotEmpty()) {
                 Settings.headers.forEach { (k, v) ->
@@ -94,13 +95,13 @@ class Http(url: Uri) : Client {
     }
 
     override fun getInputStream(): InputStream? {
-        return connection!!.inputStream
+        if (inputStream == null)
+            inputStream = connection!!.inputStream
+        return inputStream
     }
 
     override fun read(b: ByteArray): Int {
-        if (!isConn)
-            return -1
-        return connection!!.inputStream.read(b)
+        return getInputStream()?.read(b) ?: -1
     }
 
     override fun getErrorMessage(): String {
@@ -109,7 +110,7 @@ class Http(url: Uri) : Client {
 
     override fun close() {
         try {
-            connection?.inputStream?.close()
+            inputStream?.close()
         } catch (e: Exception) {
         }
         connection?.disconnect()
