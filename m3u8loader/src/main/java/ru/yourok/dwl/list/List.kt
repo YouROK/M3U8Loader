@@ -9,14 +9,10 @@ class List {
     var items: MutableList<Item> = mutableListOf()
     var url: String = ""
     var filePath: String = ""
-    var info: Info = Info()
-    var isConvert: Boolean = Settings.convertVideo
-    var subsUrl: String = ""
-}
-
-class Info {
     var bandwidth: Int = 0
     var title: String = ""
+    var isConvert: Boolean = Settings.convertVideo
+    var subsUrl: String = ""
 }
 
 class Item {
@@ -28,4 +24,3 @@ class Item {
     var isComplete = false
     var encData: EncKey? = null
 }
-

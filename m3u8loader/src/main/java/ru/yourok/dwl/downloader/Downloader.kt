@@ -9,7 +9,7 @@ import ru.yourok.dwl.converter.Converter
 import ru.yourok.dwl.list.List
 import ru.yourok.dwl.manager.Notifyer
 import ru.yourok.dwl.settings.Settings
-import ru.yourok.dwl.utils.Utils
+import ru.yourok.dwl.utils.Saver
 import ru.yourok.m3u8loader.App
 import ru.yourok.m3u8loader.R.string.error_load_subs
 import java.io.File
@@ -108,7 +108,7 @@ class Downloader(val list: List) {
                         file.resize(size)
                     }
                     file.close()
-                    Utils.saveList(list)
+                    Saver.saveList(list)
                     isLoading = false
                     if (complete && list.isConvert)
                         Converter.convert(mutableListOf(list))
@@ -116,7 +116,7 @@ class Downloader(val list: List) {
                 }
 
                 pool!!.onFinishWorker {
-                    Utils.saveList(list)
+                    Saver.saveList(list)
                 }
                 pool!!.onError {
                     error = it
@@ -154,7 +154,7 @@ class Downloader(val list: List) {
     fun getState(): State {
         val state = State()
         synchronized(list) {
-            state.name = list.info.title
+            state.name = list.title
             state.url = list.url
             state.file = list.filePath
             state.threads = pool?.size() ?: 0
@@ -217,14 +217,14 @@ class Downloader(val list: List) {
     private fun loadSubtitles() {
         if (!list.subsUrl.isEmpty()) {
             try {
-                val file = File(Settings.downloadPath, list.info.title + ".srt")
+                val file = File(Settings.downloadPath, list.title + ".srt")
                 if (!file.exists() || file.length() == 0L) {
                     val client = ClientBuilder.new(Uri.parse(list.subsUrl))
                     client.connect()
                     val subs = client.getInputStream()?.bufferedReader().use { it?.readText() ?: "" }
                     client.close()
                     if (!subs.isNullOrEmpty()) {
-                        val writer = FileWriter(list.info.title + ".srt")
+                        val writer = FileWriter(list.title + ".srt")
                         writer.resize(0)
                         writer.write(subs.toByteArray(), 0)
                         writer.close()
@@ -261,7 +261,7 @@ class Downloader(val list: List) {
             executor?.shutdown()
             executor?.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS)
             executor = null
-            Utils.saveList(list)
+            Saver.saveList(list)
         }
     }
 }

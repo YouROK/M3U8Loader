@@ -5,7 +5,7 @@ import android.content.Context
 import android.os.Environment
 import ru.yourok.dwl.manager.Manager
 import ru.yourok.dwl.settings.Settings
-import ru.yourok.dwl.utils.Utils
+import ru.yourok.dwl.utils.Loader
 
 
 class App : Application() {
@@ -28,7 +28,7 @@ class App : Application() {
 
         contextApp = applicationContext
 
-        Utils.loadSettings()
+        Loader.loadSettings()
 
         if (Settings.downloadPath.isEmpty())
             Settings.downloadPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path

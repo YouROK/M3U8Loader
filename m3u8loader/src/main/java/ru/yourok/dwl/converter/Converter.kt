@@ -26,7 +26,7 @@ object Converter {
                 start()
             list.forEach {
                 val cv = ContentValues()
-                cv.put("name", it.info.title)
+                cv.put("name", it.title)
                 cv.put("path", it.filePath)
                 cv.put("uri", Storage.getDocument(it.filePath).uri.toString())
                 App.getContext().contentResolver.insert(CONTENT_URI, cv)

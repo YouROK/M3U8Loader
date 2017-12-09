@@ -13,7 +13,7 @@ import ru.yourok.dwl.converter.Converter
 import ru.yourok.dwl.settings.Preferences
 import ru.yourok.dwl.settings.Settings
 import ru.yourok.dwl.storage.RequestStoragePermissionActivity
-import ru.yourok.dwl.utils.Utils
+import ru.yourok.dwl.utils.Saver
 import ru.yourok.m3u8loader.R
 import ru.yourok.m3u8loader.theme.Theme
 
@@ -117,7 +117,7 @@ class PreferenceActivity : AppCompatActivity() {
         val sel = spinnerChoosePlayer.selectedItemPosition
         Preferences.set("Player", sel)
 
-        Utils.saveSettings()
+        Saver.saveSettings()
     }
 
     private fun defSettings() {

@@ -6,7 +6,8 @@ import ru.yourok.dwl.downloader.Downloader
 import ru.yourok.dwl.downloader.State
 import ru.yourok.dwl.list.List
 import ru.yourok.dwl.storage.Storage
-import ru.yourok.dwl.utils.Utils
+import ru.yourok.dwl.utils.Loader
+import ru.yourok.dwl.utils.Saver
 import ru.yourok.m3u8loader.App
 import ru.yourok.m3u8loader.R
 import java.io.File
@@ -19,7 +20,7 @@ object Manager {
     @Volatile private var queueList: MutableList<Int> = mutableListOf()
 
     init {
-        val list = Utils.loadLists()
+        val list = Loader.loadLists()
         if (list != null)
             list.forEach {
                 loaderList.add(Downloader(it))
@@ -34,7 +35,7 @@ object Manager {
 
     fun findLoader(list: List): Downloader? {
         loaderList.forEach {
-            if (it.list.url + it.list.info.title == list.url + list.info.title)
+            if (it.list.url + it.list.title == list.url + list.title)
                 return it
         }
         return null
@@ -59,7 +60,7 @@ object Manager {
                 if (!isFindUrl) {
                     //find equal url
                     val flist = loaderList.find { downloader ->
-                        downloader.getState().name == it.info.title
+                        downloader.getState().name == it.title
                     }
                     //replace urls if find eq
                     if (flist != null) {
@@ -76,7 +77,7 @@ object Manager {
                         loaderList.add(Downloader(it))
                 }
             }
-            list.forEach { Utils.saveList(it) }
+            list.forEach { Saver.saveList(it) }
         }
     }
 
@@ -101,11 +102,11 @@ object Manager {
                                 }
                                 delLoader.forEach {
                                     it.waitEnd()
-                                    Utils.removeList(it.list)
+                                    Saver.removeList(it.list)
                                     loaderList.remove(it)
                                     Storage.getDocument(it.list.filePath).delete()
                                     if (it.list.subsUrl.isNotEmpty())
-                                        Storage.getDocument(File(File(it.list.filePath).parent, it.list.info.title + ".srt").canonicalPath)?.delete()
+                                        Storage.getDocument(File(File(it.list.filePath).parent, it.list.title + ".srt").canonicalPath)?.delete()
                                 }
                             }
                             .setNegativeButton(R.string.remove_from_list) { _, _ ->
@@ -116,7 +117,7 @@ object Manager {
                                 }
                                 delLoader.forEach {
                                     it.waitEnd()
-                                    Utils.removeList(it.list)
+                                    Saver.removeList(it.list)
                                     loaderList.remove(it)
                                 }
                             }
@@ -131,7 +132,7 @@ object Manager {
                 }
                 delLoader.forEach {
                     it.waitEnd()
-                    Utils.removeList(it.list)
+                    Saver.removeList(it.list)
                     loaderList.remove(it)
                 }
             }
@@ -155,10 +156,10 @@ object Manager {
                                 stopAll()
                                 loaderList.forEach {
                                     it.waitEnd()
-                                    Utils.removeList(it.list)
+                                    Saver.removeList(it.list)
                                     Storage.getDocument(it.list.filePath).delete()
                                     if (it.list.subsUrl.isNotEmpty())
-                                        Storage.getDocument(File(File(it.list.filePath).parent, it.list.info.title + ".srt").canonicalPath).delete()
+                                        Storage.getDocument(File(File(it.list.filePath).parent, it.list.title + ".srt").canonicalPath).delete()
                                 }
                                 loaderList.clear()
                             }
@@ -166,7 +167,7 @@ object Manager {
                                 stopAll()
                                 loaderList.forEach {
                                     it.waitEnd()
-                                    Utils.removeList(it.list)
+                                    Saver.removeList(it.list)
                                 }
                                 loaderList.clear()
                             }
@@ -177,7 +178,7 @@ object Manager {
                 stopAll()
                 loaderList.forEach {
                     it.waitEnd()
-                    Utils.removeList(it.list)
+                    Saver.removeList(it.list)
                 }
                 loaderList.clear()
             }
@@ -186,7 +187,7 @@ object Manager {
 
     fun saveLists() {
         try {
-            loaderList.forEach { Utils.saveList(it.list) }
+            loaderList.forEach { Saver.saveList(it.list) }
         } catch (e: Exception) {
             e.printStackTrace()
         }

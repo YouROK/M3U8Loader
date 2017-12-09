@@ -51,7 +51,7 @@ class ParseMedia(val downloadPath: String) {
                     val name = if (!trackData.trackInfo.title.isNullOrEmpty())
                         trackData.trackInfo.title
                     else
-                        list.info.title
+                        list.title
                     retList.addAll(Parser(name, itm.url, downloadPath).parse())
                 } else {
                     list.items.add(itm)

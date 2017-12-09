@@ -18,9 +18,9 @@ object Notifyer {
         with(App.getContext()) {
             Handler(Looper.getMainLooper()).post {
                 if (complete && err.isEmpty()) {
-                    Toast.makeText(this, this.getText(R.string.complete).toString() + ": " + list.info.title, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, this.getText(R.string.complete).toString() + ": " + list.title, Toast.LENGTH_SHORT).show()
                 } else if (!err.isEmpty()) {
-                    Toast.makeText(this, this.getText(R.string.error).toString() + ": " + list.info.title + ", " + err, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, this.getText(R.string.error).toString() + ": " + list.title + ", " + err, Toast.LENGTH_SHORT).show()
                 }
             }
         }

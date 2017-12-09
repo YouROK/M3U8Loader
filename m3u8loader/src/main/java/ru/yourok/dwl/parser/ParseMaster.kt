@@ -14,8 +14,8 @@ class ParseMaster {
         masterPlaylist.playlists.forEach {
             val list = List()
             list.url = Util.concatUriList(url, it.uri)
-            list.info.title = it.streamInfo.closedCaptions ?: ""
-            list.info.bandwidth = it.streamInfo.bandwidth
+            list.title = it.streamInfo.closedCaptions ?: ""
+            list.bandwidth = it.streamInfo.bandwidth
             retList.add(list)
         }
         return retList

@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_editor.*
 import ru.yourok.dwl.list.List
-import ru.yourok.dwl.utils.Utils
+import ru.yourok.dwl.utils.Saver
 import ru.yourok.m3u8loader.R
 import ru.yourok.m3u8loader.theme.Theme
 
@@ -31,7 +31,7 @@ class EditorActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         editorList.forEach {
-            Utils.saveList(it)
+            Saver.saveList(it)
         }
     }
 }

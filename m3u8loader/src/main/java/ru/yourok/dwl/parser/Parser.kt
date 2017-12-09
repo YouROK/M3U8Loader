@@ -49,18 +49,18 @@ class Parser(val name: String, val url: String, val downloadPath: String) {
             if (playList.hasMediaPlaylist()) {
                 val list = List()
                 list.url = client.getUrl()
-                list.info.title = name
+                list.title = name
                 retList.add(list)
             }
             for (i in 0 until retList.size) {
                 val list = retList[i]
-                if (list.info.title.isEmpty()) {
-                    var band = list.info.bandwidth
+                if (list.title.isEmpty()) {
+                    var band = list.bandwidth
                     if (band == 0)
                         band = i
-                    list.info.title = name + "_" + band
+                    list.title = name + "_" + band
                 }
-                list.filePath = File(downloadPath, list.info.title + ".mp4").canonicalPath
+                list.filePath = File(downloadPath, list.title + ".mp4").canonicalPath
                 parseMedia = ParseMedia(downloadPath)
                 retList.addAll(parseMedia!!.parse(list))
                 if (list.items.size == 0) {

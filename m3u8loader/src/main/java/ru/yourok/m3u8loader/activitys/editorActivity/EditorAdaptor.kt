@@ -11,6 +11,7 @@ import android.widget.TextView
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
 import ru.yourok.dwl.manager.Manager
 import ru.yourok.dwl.storage.Storage
+import ru.yourok.dwl.utils.Saver
 import ru.yourok.dwl.utils.Utils
 import ru.yourok.m3u8loader.R
 
@@ -28,7 +29,7 @@ class EditorAdaptor(val lists: List<ru.yourok.dwl.list.List>, val context: Conte
         val list = lists[position]
 
         view.findViewById<TextView>(R.id.textViewUrlItem).text = list.url
-        view.findViewById<TextView>(R.id.textViewNameItem).text = list.info.title
+        view.findViewById<TextView>(R.id.textViewNameItem).text = list.title
 
         val textViewInfo = view.findViewById<TextView>(R.id.textViewItemsInfo)
 
@@ -101,7 +102,7 @@ class EditorAdaptor(val lists: List<ru.yourok.dwl.list.List>, val context: Conte
                     it.isComplete = false
                 }
                 Storage.getDocument(list.filePath)?.delete()
-                Utils.saveList(list)
+                Saver.saveList(list)
             })
             builder.setNegativeButton(android.R.string.cancel, null)
             builder.create().show()

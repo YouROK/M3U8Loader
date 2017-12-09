@@ -100,6 +100,11 @@ class MainActivity : AppCompatActivity() {
         isShow = false
     }
 
+    override fun onStop() {
+        super.onStop()
+        Manager.saveLists()
+    }
+
     override fun onBackPressed() {
         if (drawer.isDrawerOpen) {
             drawer.closeDrawer()

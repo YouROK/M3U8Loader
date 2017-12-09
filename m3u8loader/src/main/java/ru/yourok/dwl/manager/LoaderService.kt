@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import ru.yourok.dwl.utils.Utils
@@ -51,7 +52,7 @@ class LoaderService : Service() {
 
     private fun sendNotificationComplete() {
         var msg = getString(R.string.loading_complete)
-        if (!Notifyer.error.isNullOrEmpty())
+        if (!Notifyer.error.isEmpty())
             msg = getString(R.string.loading_error)
 
         val intent = Intent(this, MainActivity::class.java)
@@ -61,10 +62,18 @@ class LoaderService : Service() {
                 .setContentTitle(msg)
                 .setContentText(Notifyer.error)
                 .setAutoCancel(true)
-                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(pendingIntent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (Notifyer.error.isEmpty())
+                notificationBuilder.setSmallIcon(R.drawable.ic_check_black_24dp)
+            else
+                notificationBuilder.setSmallIcon(R.drawable.ic_report_problem_black_24dp)
+        } else
+            notificationBuilder.setSmallIcon(R.mipmap.ic_launcher)
+
         val notificationManager = App.getContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(0, notificationBuilder.build())
+        Manager.saveLists()
     }
 
     private fun sendNotification() {
@@ -88,8 +97,13 @@ class LoaderService : Service() {
                 .setContentText(status)
                 .setProgress(100, percent, false)
                 .setAutoCancel(true)
-                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(pendingIntent)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            notificationBuilder.setSmallIcon(R.drawable.ic_file_download_black_24dp)
+        else
+            notificationBuilder.setSmallIcon(R.mipmap.ic_launcher)
+
         val notificationManager = App.getContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(0, notificationBuilder.build())
     }

@@ -1,14 +1,12 @@
 package ru.yourok.dwl.settings
 
 import android.preference.PreferenceManager
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import ru.yourok.m3u8loader.App
 
 
 /**
  * Created by yourok on 07.11.17.
  */
-@JsonIgnoreProperties("context")
 object Settings {
     var threads: Int = 20
     var errorRepeat: Int = 5
