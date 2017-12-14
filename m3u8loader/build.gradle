@@ -9,8 +9,8 @@ android {
         applicationId "ru.yourok.m3u8loader"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 162
-        versionName "1.3.162"
+        versionCode 163
+        versionName "1.3.163"
     }
     buildTypes {
         release {

@@ -37,7 +37,7 @@ class Parser(val name: String, val url: String, val downloadPath: String) {
                     }
                 }
 
-            val listStr = client.getInputStream()?.bufferedReader().use { it?.readText() ?: "" }
+            val listStr = client.getInputStream()?.bufferedReader()?.readText() ?: ""
             client.close()
             val parser = PlaylistParser(ByteArrayInputStream(listStr.toByteArray()), Format.EXT_M3U, Encoding.UTF_8, ParsingMode.LENIENT)
             val playList = parser.parse()

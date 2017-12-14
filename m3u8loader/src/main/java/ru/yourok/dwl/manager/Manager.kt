@@ -198,7 +198,13 @@ object Manager {
     private var loading: Boolean = false
     private var currentLoader = -1
 
-    fun isLoading() = loading
+    fun isLoading(): Boolean {
+        loaderList.forEach {
+            if (it.isLoading())
+                return true
+        }
+        return false
+    }
 
     fun load(index: Int) {
         if (index in 0 until loaderList.size) {

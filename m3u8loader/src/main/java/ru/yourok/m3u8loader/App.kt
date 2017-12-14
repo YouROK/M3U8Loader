@@ -24,7 +24,12 @@ class App : Application() {
         ACR.get(this)
                 .setEmailAddresses("8yourok8@gmail.com")
                 .setEmailSubject(getString(R.string.app_name) + " Crash Report")
-                .start({ Manager.saveLists() })
+                .start({
+                    try {
+                        Manager.saveLists()
+                    } catch (e: Exception) {
+                    }
+                })
 
         contextApp = applicationContext
 

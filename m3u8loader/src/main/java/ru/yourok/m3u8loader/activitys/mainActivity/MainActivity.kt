@@ -50,6 +50,7 @@ class MainActivity : AppCompatActivity() {
                     else
                         Manager.load(i)
                 }
+                update()
             }
         }
 
@@ -61,13 +62,10 @@ class MainActivity : AppCompatActivity() {
 
         update()
         showMenuHelp()
-//        Timer().schedule(5000) {
-//            Updater.check()
-//            Updater.open()
-//        }
     }
 
     private fun update() {
+        runOnUiThread { (listViewLoader.adapter as LoaderListAdapter).notifyDataSetChanged() }
         synchronized(isShow) {
             if (isShow)
                 return
@@ -76,7 +74,10 @@ class MainActivity : AppCompatActivity() {
         thread {
             while (isShow) {
                 runOnUiThread { (listViewLoader.adapter as LoaderListAdapter).notifyDataSetChanged() }
-                Thread.sleep(500)
+                if (Manager.isLoading())
+                    Thread.sleep(500)
+                else
+                    Thread.sleep(3000)
             }
         }
     }

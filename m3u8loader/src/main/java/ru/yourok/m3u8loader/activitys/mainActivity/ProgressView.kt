@@ -9,102 +9,203 @@ import ru.yourok.dwl.downloader.LoadState
 import ru.yourok.dwl.manager.Manager
 import ru.yourok.dwl.utils.Utils
 import ru.yourok.m3u8loader.R
-import java.util.*
-import kotlin.concurrent.schedule
+import kotlin.concurrent.thread
 
 
 class ProgressView : View {
     private var background: Int = -1
-    private val timer: Timer = Timer()
     private var index: Int? = null
-    private var times: Long = 0L
     private var delay: Long = 50L
     private val rect: Rect = Rect()
+    private val paint = Paint()
+    private var isUpdating = false
 
-    constructor(context: Context) : super(context) {
-    }
+    private var currentProg = 0
+    private var toProg = 0
+    private var isMoveProg = false
+    private var fragmentWidth: Double = 0.0
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-    }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     fun setIndexList(index: Int) {
-        this.index = index
+        if (this.index != index) {
+            this.index = index
+            fillVars()
+        }
+        autoUpdate()
+    }
+
+    private fun autoUpdate() {
+        synchronized(isUpdating) {
+            if (isUpdating)
+                return
+
+            invalidate()
+            index?.let {
+                Manager.getLoader(it)?.let {
+                    if (it.getState().state != LoadState.ST_LOADING)
+                        return
+                } ?: return
+            } ?: return
+
+
+            isUpdating = true
+        }
+
+        thread {
+            while (isUpdating) {
+                postInvalidate()
+                val rect = Rect()
+                getGlobalVisibleRect(rect)
+                isUpdating = getLocalVisibleRect(rect)
+                index?.let {
+                    Manager.getLoader(it)?.let {
+                        if (it.getState().state == LoadState.ST_LOADING)
+                            Thread.sleep(30)
+                        else
+                            isUpdating = false
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateProg() {
+        if (currentProg == toProg)
+            return
+
+        var delta = toProg - currentProg
+        if (delta == 0)
+            delta = 1
+        delay = (500 / delta).toLong()
+
+        synchronized(isMoveProg) {
+            if (isMoveProg)
+                return
+            isMoveProg = true
+        }
+
+        thread {
+            while (currentProg < toProg) {
+                if (delay < 10) {
+                    currentProg += 10
+                    if (currentProg > toProg)
+                        currentProg = toProg
+                    Thread.sleep(50)
+                } else {
+                    currentProg++
+                    Thread.sleep(delay)
+                }
+                if (!isUpdating)
+                    postInvalidate()
+            }
+            isMoveProg = false
+        }
+    }
+
+    private fun fillVars() {
+        paint.isAntiAlias = true
+        paint.style = Paint.Style.FILL
+        currentProg = 0
+        toProg = 0
+        fragmentWidth = 1.0
+        index?.let { index ->
+            val loader = Manager.getLoader(index)
+            loader?.let { loader ->
+                val state = loader.getState()
+                fragmentWidth = ((width.toDouble() / state.loadedItems.size))
+                var lastItem = -1
+                state.loadedItems.forEachIndexed { index, item ->
+                    if (lastItem == -1 && !item.complete) {
+                        lastItem = index - 1
+                        return@forEachIndexed
+                    }
+                }
+                toProg = (lastItem * fragmentWidth + fragmentWidth + .5).toInt()
+                currentProg = toProg
+            }
+        }
     }
 
     override fun onDraw(canvas: Canvas?) {
-        super.onDraw(canvas)
+//        super.onDraw(canvas)
 
-        val width = getMeasuredWidth()
+        val width = getWidth()
         val height = getHeight()
 
-        val paint = Paint()
-        paint.isAntiAlias = true
         if (background == -1)
             background = ContextCompat.getColor(context, R.color.colorPrimaryDark)
         paint.color = background
-        paint.style = Paint.Style.FILL
+
         rect.right = width
         rect.bottom = height
         rect.left = 0
         rect.top = 0
         canvas!!.drawRect(rect, paint)
 
-        if (canvas == null && index == null)
+        if (index == null)
             return
 
         val itmColor = ContextCompat.getColor(context, R.color.colorAccent)
         val loader = Manager.getLoader(index!!)
         loader?.let {
             val state = loader.getState()
-            val fragSize = ((width.toDouble() / state.loadedItems.size))
             state.let {
-                if (state.state != LoadState.ST_LOADING)
-                    delay = 500L
-                val paintItem = Paint()
-                paintItem.isAntiAlias = true
-                paintItem.style = Paint.Style.FILL
+                if (it.fragments == it.loadedFragments) {
+                    paint.color = itmColor
+                    canvas.drawRect(rect, paint)
+                    return@let
+                }
+                fragmentWidth = ((width.toDouble() / it.loadedItems.size))
 
-                var endItem = 0
+                var endItem = -1
                 var heightBottom = height / 10
                 if (heightBottom == 0)
                     heightBottom = 1
 
                 it.loadedItems.forEachIndexed { index, item ->
+                    if (endItem == -1 && !item.complete)
+                        endItem = index - 1
+
                     var prcItem = 0
                     var color = itmColor
-                    item.let {
-                        if (item.complete)
-                            prcItem = 255
-                        else if (item.size > 0)
-                            prcItem = (item.loaded * 255 / item.size).toInt()
 
-                        if (endItem == 0 && !item.complete)
-                            endItem = index - 1
-                        if (item.error)
-                            color = Color.RED
-                    }
+                    if (item.complete)
+                        prcItem = 255
+                    else if (item.size > 0)
+                        prcItem = (item.loaded * 255 / item.size).toInt()
+                    else if ((item.size == 0L) and (item.loaded > 0))
+                        prcItem = 127
+
+                    if (item.error)
+                        color = Color.RED
+
                     val bottom: Int
                     if (prcItem > 0) {
                         val hgh = height - heightBottom
                         bottom = prcItem * hgh / 255
-                        paintItem.setARGB(prcItem, Color.red(color), Color.green(color), Color.blue(color))
-                        rect.left = (index * fragSize + .5).toInt()
-                        rect.right = (index * fragSize + fragSize + .5).toInt()
+                        paint.setARGB(prcItem, Color.red(color), Color.green(color), Color.blue(color))
+                        rect.left = (index * fragmentWidth + .5).toInt()
+                        rect.right = (index * fragmentWidth + fragmentWidth + .6).toInt()
                         rect.bottom = bottom
                         rect.top = 0
-                        canvas.drawRect(rect, paintItem)
+                        canvas.drawRect(rect, paint)
                     }
                 }
                 if (endItem > 0 || state.isComplete) {
-                    paintItem.color = itmColor
+                    paint.color = itmColor
                     rect.left = 0
-                    rect.top = height - heightBottom
-                    if (state.isComplete)
-                        rect.right = width
-                    else
-                        rect.right = (endItem * fragSize + fragSize + .5).toInt()
+                    rect.top = 0
                     rect.bottom = height
-                    canvas.drawRect(rect, paintItem)
+                    if (state.isComplete) {
+                        toProg = width
+                        currentProg = toProg
+                    } else
+                        toProg = (endItem * fragmentWidth + fragmentWidth + .5).toInt()
+                    rect.right = currentProg
+                    canvas.drawRect(rect, paint)
+                    updateProg()
                 }
             }
         }
@@ -123,43 +224,25 @@ class ProgressView : View {
 
             val colorText = Color.CYAN
 
-            val paintText = Paint()
-            paintText.isAntiAlias = true
-            paintText.typeface = Typeface.DEFAULT
-            paintText.color = colorText
-            paintText.textSize = height.toFloat() * 0.8F
-            paintText.setShadowLayer(5.0F, 0.0F, 0.0F, Color.BLACK)
+            paint.typeface = Typeface.DEFAULT
+            paint.color = colorText
+            paint.textSize = height.toFloat() * 0.8F
+            paint.setShadowLayer(5.0F, 0.0F, 0.0F, Color.BLACK)
 
-            paintText.getTextBounds(frags, 0, frags.length, rect)
-            val yPos = (canvas.height / 2 - (paintText.descent() + paintText.ascent()) / 2)
-            canvas.drawText(frags, 5.0F, yPos, paintText)
+            paint.getTextBounds(frags, 0, frags.length, rect)
+            val yPos = (canvas!!.height / 2 - (paint.descent() + paint.ascent()) / 2)
+            canvas.drawText(frags, 5.0F, yPos, paint)
 
-            if (!speed.isNullOrEmpty()) {
-                paintText.getTextBounds(speed, 0, speed.length, rect)
+            if (!speed.isEmpty()) {
+                paint.getTextBounds(speed, 0, speed.length, rect)
                 val xPos = width.toFloat() / 2 - rect.centerX().toFloat()
-                canvas.drawText(speed, xPos, yPos, paintText)
+                canvas.drawText(speed, xPos, yPos, paint)
             }
-            if (!size.isNullOrEmpty()) {
-                paintText.getTextBounds(size, 0, size.length, rect)
+            if (!size.isEmpty()) {
+                paint.getTextBounds(size, 0, size.length, rect)
                 val xPos = width.toFloat() - rect.right.toFloat()
-                canvas.drawText(size, xPos - 5.0F, yPos, paintText)
+                canvas.drawText(size, xPos - 5.0F, yPos, paint)
             }
-        }
-
-        times = System.currentTimeMillis()
-
-        timer.schedule(delay) {
-            postInvalidate()
-            val delta = System.currentTimeMillis() - times
-
-            if (delta == delay)
-                delay = 30
-
-            if (delta < delay && delay > 30)
-                delay--
-
-            if (delta > delay && delay < 2000)
-                delay++
         }
     }
 }

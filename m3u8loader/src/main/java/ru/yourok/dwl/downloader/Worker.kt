@@ -28,13 +28,14 @@ class Worker(val item: Item, private val stat: DownloadStatus, private val file:
         stat.isLoading = true
 
         stop = false
+        var completeDw = false
         client = ClientBuilder.new(Uri.parse(item.url))
 
         val buffer = ByteArray(32767)
         val outBuffer = ByteArrayOutputStream()
         val speed = Speed(stat)
         try {
-            
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                 client!!.connect()
             else
@@ -53,6 +54,7 @@ class Worker(val item: Item, private val stat: DownloadStatus, private val file:
                 stat.loadedBytes += readCount
             }
             speed.stopRead()
+            completeDw = true
         } catch (e: Exception) {
             client!!.close()
             throw e
@@ -60,7 +62,7 @@ class Worker(val item: Item, private val stat: DownloadStatus, private val file:
             client!!.close()
         }
 
-        if (outBuffer.size().toLong() == item.size) {
+        if (completeDw) {
             if (item.encData != null)
                 stat.buffer = item.encData!!.decrypt(outBuffer.toByteArray())
             else

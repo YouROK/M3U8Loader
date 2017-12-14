@@ -27,9 +27,8 @@
         android:textAppearance="@android:style/TextAppearance.Medium" />
 
 
-    <view
+    <ru.yourok.m3u8loader.activitys.mainActivity.ProgressView
         android:id="@+id/li_progress"
-        class="ru.yourok.m3u8loader.activitys.mainActivity.ProgressView"
         android:layout_width="fill_parent"
         android:layout_height="16dp"
         android:layout_alignParentLeft="true"

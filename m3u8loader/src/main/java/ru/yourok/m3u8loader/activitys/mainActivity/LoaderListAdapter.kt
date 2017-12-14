@@ -31,7 +31,7 @@ class LoaderListAdapter(val context: Context) : BaseAdapter() {
     }
 
     override fun getView(index: Int, convertView: View?, viewGroup: ViewGroup): View {
-        var vi: View = convertView ?: (context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.loader_list_adaptor, null)
+        val vi: View = convertView ?: (context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.loader_list_adaptor, null)
         Manager.getLoader(index)?.let {
             vi.findViewById<TextView>(R.id.textViewNameItem).setText(it.list.title)
             val imgStatus = vi.findViewById<ImageView>(R.id.imageViewLoader)

@@ -144,6 +144,7 @@ class Downloader(val list: List) {
     }
 
     fun isComplete(): Boolean = complete
+    fun isLoading(): Boolean = isLoading
 
     fun clear() {
         stop()

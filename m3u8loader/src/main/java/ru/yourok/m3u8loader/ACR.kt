@@ -258,9 +258,10 @@ class ACR private constructor(private val application: Application) : Thread.Unc
         sendIntent.putExtra(Intent.EXTRA_TEXT, body)
         sendIntent.putExtra(Intent.EXTRA_SUBJECT, subject)
         sendIntent.setType("message/rfc822")
-        //sendIntent.setType("text/html");
         sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        _context.startActivity(Intent.createChooser(sendIntent, "Send crash report"))
+        val chooser = Intent.createChooser(sendIntent, "Send M3U8Loader crash report")
+        chooser.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        _context.startActivity(chooser)
     }
 
     private fun saveAsFile(errorContent: String) {

@@ -7,6 +7,7 @@ import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.HttpURLConnection.*
 import java.net.URL
+import java.util.zip.GZIPInputStream
 
 
 /**
@@ -32,8 +33,8 @@ class Http(url: Uri) : Client {
             connection!!.setDoInput(true)
 
             connection!!.setRequestProperty("UserAgent", "DWL/1.1.0 (Android)")
-            connection!!.setRequestProperty("Accept", "text/html;q=0.8,*/*;q=0.9")
-            connection!!.setRequestProperty("Accept-Encoding", "gzip, deflate, br")
+            connection!!.setRequestProperty("Accept", "*/*")
+            connection!!.setRequestProperty("Accept-Encoding", "gzip")
 
             if (Settings.headers.isNotEmpty()) {
                 Settings.headers.forEach { (k, v) ->
@@ -69,6 +70,12 @@ class Http(url: Uri) : Client {
     override fun getSize(): Long {
         if (!isConn)
             return 0
+
+
+        val size = connection!!.contentLength
+        if (size > 0)
+            return size.toLong()
+
         var cl = connection!!.getHeaderField("Content-Length")
         try {
             if (!cl.isNullOrEmpty()) {
@@ -95,8 +102,13 @@ class Http(url: Uri) : Client {
     }
 
     override fun getInputStream(): InputStream? {
-        if (inputStream == null)
-            inputStream = connection!!.inputStream
+        if (inputStream == null && connection != null) {
+            if ("gzip".equals(connection?.getContentEncoding()))
+                inputStream = GZIPInputStream(connection!!.getInputStream())
+            else
+                inputStream = connection!!.getInputStream()
+        }
+
         return inputStream
     }
 

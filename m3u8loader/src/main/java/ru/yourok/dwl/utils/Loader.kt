@@ -19,6 +19,8 @@ object Loader {
         try {
             val path = App.getContext().filesDir
             val file = File(path, "settings.cfg")
+            if (!file.exists())
+                return
             val stream = FileInputStream(file)
             val str = stream.bufferedReader().use { it.readText() }
             stream.close()
