@@ -46,6 +46,10 @@
     <string name="new_directory_title">Create new folder</string>
     <string name="new_directory_name_label">Name of new folder</string>
 
+    <string name="check_update">Check update</string>
+    <string name="no_updates">No updates found</string>
+    <string name="download_new_version">Released new version of me, do you want to download it?</string>
+
     <string name="warn_install_convertor">This feature is not available now, expect updates</string>
     <string name="warn_clean_message">Caution! During cleaning, all settings and the downloaded file are deleted.\nClean out?</string>
 

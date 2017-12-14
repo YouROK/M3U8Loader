@@ -39,7 +39,7 @@ class PlayIntent(val context: Context) {
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                Toast.makeText(context, "Error open player: " + e.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Error showSnackbar player: " + e.message, Toast.LENGTH_SHORT).show()
             }
         }
     }

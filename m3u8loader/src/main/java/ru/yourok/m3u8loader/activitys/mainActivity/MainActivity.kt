@@ -13,7 +13,9 @@ import com.mikepenz.materialdrawer.Drawer
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.yourok.dwl.downloader.LoadState
 import ru.yourok.dwl.manager.Manager
+import ru.yourok.dwl.parser.Parser
 import ru.yourok.dwl.settings.Preferences
+import ru.yourok.dwl.updater.Updater
 import ru.yourok.m3u8loader.R
 import ru.yourok.m3u8loader.activitys.preferenceActivity.PreferenceActivity
 import ru.yourok.m3u8loader.navigationBar.NavigationBar
@@ -62,6 +64,19 @@ class MainActivity : AppCompatActivity() {
 
         update()
         showMenuHelp()
+
+        Timer().schedule(1000) {
+            if (Updater.hasNewUpdate() or Updater.check())
+                Updater.showSnackbar(this@MainActivity)
+        }
+//        test()
+    }
+
+    fun test() {
+        thread {
+            val parser = Parser("test", "https://srv51.vidzi.tv/hls2/onuqj6ypna2qedz7nlobpdrtbrqkqkwxzkv3wa37w,t5cmm2qqcykfm7jsf6q,y7cmm2qqcygm2pjyfta,.urlset/master.m3u8", "/sdcard/")
+            val list = parser.parse()
+        }
     }
 
     private fun update() {

@@ -32,7 +32,7 @@ class FileWriter(fileName: String) {
                 doc = doc.createFile("*/*", File(fileName).name)
             }
             if (doc == null)
-                throw IOException("Error open file: " + fileName)
+                throw IOException("Error showSnackbar file: " + fileName)
             writer = UriFile()
             writer.open(doc.uri)
         }

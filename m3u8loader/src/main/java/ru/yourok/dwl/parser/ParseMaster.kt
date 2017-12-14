@@ -18,6 +18,14 @@ class ParseMaster {
             list.bandwidth = it.streamInfo.bandwidth
             retList.add(list)
         }
+
+        masterPlaylist.iFramePlaylists.forEach {
+            val list = List()
+            list.url = Util.concatUriList(url, it.uri)
+            list.bandwidth = it.bandwidth
+            retList.add(list)
+        }
+
         return retList
     }
 }
