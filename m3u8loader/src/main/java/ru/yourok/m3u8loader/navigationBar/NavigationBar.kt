@@ -14,11 +14,12 @@ import ru.yourok.dwl.updater.Updater
 import ru.yourok.m3u8loader.R
 import ru.yourok.m3u8loader.activitys.AddListActivity
 import ru.yourok.m3u8loader.activitys.DonateActivity
+import ru.yourok.m3u8loader.activitys.mainActivity.LoaderListAdapter
 import ru.yourok.m3u8loader.activitys.preferenceActivity.PreferenceActivity
 
 
 object NavigationBar {
-    fun setup(activity: AppCompatActivity): Drawer {
+    fun setup(activity: AppCompatActivity, adapter: LoaderListAdapter): Drawer {
         with(activity) {
             return drawer {
                 headerViewRes = R.layout.header
@@ -37,6 +38,7 @@ object NavigationBar {
                     selectable = false
                     onClick { _ ->
                         Manager.loadAll()
+                        adapter.notifyDataSetChanged()
                         false
                     }
                 }
@@ -45,6 +47,7 @@ object NavigationBar {
                     selectable = false
                     onClick { _ ->
                         Manager.stopAll()
+                        adapter.notifyDataSetChanged()
                         false
                     }
                 }
@@ -53,6 +56,7 @@ object NavigationBar {
                     selectable = false
                     onClick { _ ->
                         Manager.removeAll(this@with)
+                        adapter.notifyDataSetChanged()
                         false
                     }
                 }

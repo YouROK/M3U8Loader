@@ -13,11 +13,6 @@ import ru.yourok.dwl.manager.Manager
 import ru.yourok.m3u8loader.R
 
 class LoaderListAdapter(val context: Context) : BaseAdapter() {
-
-    fun autoupdate(a: Boolean) {
-        //TODO проверить идет ли update в фоне
-    }
-
     override fun getCount(): Int {
         return Manager.getLoadersSize()
     }

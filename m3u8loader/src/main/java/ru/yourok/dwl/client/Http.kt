@@ -113,7 +113,9 @@ class Http(url: Uri) : Client {
     }
 
     override fun read(b: ByteArray): Int {
-        return getInputStream()?.read(b) ?: -1
+        if (!isConn or (getInputStream() == null))
+            throw IOException("connect before read")
+        return getInputStream()!!.read(b)
     }
 
     override fun getErrorMessage(): String {

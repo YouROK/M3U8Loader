@@ -47,14 +47,15 @@ class Worker(val item: Item, private val stat: DownloadStatus, private val file:
             speed.startRead()
             while (!stop) {
                 val readCount = client!!.read(buffer)
-                if (readCount == -1)
+                if (readCount == -1) {
+                    completeDw = true
                     break
+                }
                 speed.measure(readCount)
                 outBuffer.write(buffer, 0, readCount)
                 stat.loadedBytes += readCount
             }
             speed.stopRead()
-            completeDw = true
         } catch (e: Exception) {
             client!!.close()
             throw e

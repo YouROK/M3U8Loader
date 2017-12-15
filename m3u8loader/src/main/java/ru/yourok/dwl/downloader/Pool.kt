@@ -1,6 +1,7 @@
 package ru.yourok.dwl.downloader
 
 import ru.yourok.dwl.settings.Settings
+import java.net.SocketException
 import java.net.SocketTimeoutException
 import kotlin.concurrent.thread
 
@@ -55,6 +56,12 @@ class Pool(private val workers: List<Pair<Worker, DownloadStatus>>) {
                                     onFinish?.invoke()
                                 }
                                 break
+                            } catch (e: SocketException) {
+                                dstat.isError = true
+                                if (i == Settings.errorRepeat) {
+                                    error = (e.message ?: "Error, read or connect") + " " + wrk.item.url + " " + wrk.item.index
+                                    onError?.invoke(error)
+                                }
                             } catch (e: SocketTimeoutException) {
                                 dstat.isError = true
                                 if (i == Settings.errorRepeat) {

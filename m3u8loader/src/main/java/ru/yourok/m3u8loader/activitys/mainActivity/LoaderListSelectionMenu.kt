@@ -18,7 +18,7 @@ import kotlin.concurrent.thread
 /**
  * Created by yourok on 19.11.17.
  */
-class LoaderListSelectionMenu(val activity: Activity) : AbsListView.MultiChoiceModeListener {
+class LoaderListSelectionMenu(val activity: Activity, val adapter: LoaderListAdapter) : AbsListView.MultiChoiceModeListener {
 
     private val selected: MutableSet<Int> = mutableSetOf()
 
@@ -37,11 +37,13 @@ class LoaderListSelectionMenu(val activity: Activity) : AbsListView.MultiChoiceM
             R.id.itemLoad -> {
                 selected.forEach {
                     Manager.load(it)
+                    adapter.notifyDataSetChanged()
                 }
             }
             R.id.itemPause -> {
                 selected.forEach {
                     Manager.stop(it)
+                    adapter.notifyDataSetChanged()
                 }
             }
             R.id.itemConvert -> {
@@ -73,6 +75,7 @@ class LoaderListSelectionMenu(val activity: Activity) : AbsListView.MultiChoiceM
             }
             R.id.itemRemove -> {
                 Manager.removes(selected, activity)
+                adapter.notifyDataSetChanged()
             }
             else -> return false
         }
