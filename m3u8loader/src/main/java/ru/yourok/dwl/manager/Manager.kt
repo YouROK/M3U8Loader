@@ -3,6 +3,7 @@ package ru.yourok.dwl.manager
 import android.app.Activity
 import android.support.v7.app.AlertDialog
 import ru.yourok.dwl.downloader.Downloader
+import ru.yourok.dwl.downloader.LoadState
 import ru.yourok.dwl.downloader.State
 import ru.yourok.dwl.list.List
 import ru.yourok.dwl.storage.Storage
@@ -93,48 +94,48 @@ object Manager {
             if (isFile) {
                 with(activity) {
                     AlertDialog.Builder(activity)
-                            .setTitle(this@with.getString(R.string.delete_all_items) + "?")
+                            .setTitle(this@with.getString(R.string.delete) + "?")
                             .setPositiveButton(R.string.delete_with_files) { _, _ ->
-                                val delLoader: MutableList<Downloader> = mutableListOf()
-                                indexes.forEach {
-                                    delLoader.add(loaderList[it])
-                                    loaderList[it].stop()
-                                }
-                                delLoader.forEach {
-                                    it.waitEnd()
-                                    Saver.removeList(it.list)
-                                    loaderList.remove(it)
-                                    Storage.getDocument(it.list.filePath).delete()
-                                    if (it.list.subsUrl.isNotEmpty())
-                                        Storage.getDocument(File(File(it.list.filePath).parent, it.list.title + ".srt").canonicalPath)?.delete()
-                                }
+                                removesSome(indexes, true)
                             }
                             .setNegativeButton(R.string.remove_from_list) { _, _ ->
-                                val delLoader: MutableList<Downloader> = mutableListOf()
-                                indexes.forEach {
-                                    delLoader.add(loaderList[it])
-                                    loaderList[it].stop()
-                                }
-                                delLoader.forEach {
-                                    it.waitEnd()
-                                    Saver.removeList(it.list)
-                                    loaderList.remove(it)
-                                }
+                                removesSome(indexes, false)
                             }
                             .setNeutralButton(" ", null)
                             .show()
                 }
             } else {
-                val delLoader: MutableList<Downloader> = mutableListOf()
-                indexes.forEach {
-                    delLoader.add(loaderList[it])
-                    loaderList[it].stop()
-                }
-                delLoader.forEach {
-                    it.waitEnd()
-                    Saver.removeList(it.list)
-                    loaderList.remove(it)
-                }
+                removesSome(indexes, false)
+            }
+        }
+    }
+
+    private fun removesSome(indexes: Set<Int>, withFile: Boolean) {
+        val delLoader: MutableList<Downloader> = mutableListOf()
+        //save deleted items and delete from queue
+        indexes.forEach {
+            stop(it)
+            delLoader.add(loaderList[it])
+        }
+
+        //remove loaders
+        delLoader.forEach {
+            it.waitEnd()
+            Saver.removeList(it.list)
+            loaderList.remove(it)
+            if (withFile) {
+                Storage.getDocument(it.list.filePath).delete()
+                if (it.list.subsUrl.isNotEmpty())
+                    Storage.getDocument(File(File(it.list.filePath).parent, it.list.title + ".srt").canonicalPath)?.delete()
+            }
+        }
+
+        //shift queue list
+        synchronized(lockQueue) {
+            indexes.forEach {
+                for (i in 0 until queueList.size)
+                    if (queueList[i] > it)
+                        queueList[i] -= delLoader.size
             }
         }
     }
@@ -230,6 +231,10 @@ object Manager {
 
     fun stop(index: Int) {
         loaderList[index].stop()
+        if (queueList.contains(index))
+            synchronized(lockQueue) {
+                queueList.remove(index)
+            }
     }
 
     fun stopAll() {
@@ -254,16 +259,21 @@ object Manager {
             while (queueList.size > 0) {
                 if (!loading)
                     break
+                var loader: Downloader? = null
                 synchronized(lockQueue) {
                     currentLoader = queueList[0]
-                    thread { loaderList[currentLoader].load() }
+                    if (currentLoader in 0 until loaderList.size)
+                        loader = loaderList[currentLoader]
+                    thread { loader?.load() }
                     queueList.removeAt(0)
                 }
-                Thread.sleep(100)
-                loaderList[currentLoader].waitEnd()
-                if (currentLoader != -1 && !loaderList[currentLoader].isComplete()) {
-                    loading = false
-                    queueList.clear()
+                loader?.let {
+                    Thread.sleep(100)
+                    it.waitEnd()
+                    if (currentLoader != -1 && it.getState().state == LoadState.ST_ERROR) {
+                        loading = false
+                        queueList.clear()
+                    }
                 }
             }
             loading = false

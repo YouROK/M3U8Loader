@@ -42,9 +42,9 @@ class MainActivity : AppCompatActivity() {
         listViewLoader.setMultiChoiceModeListener(LoaderListSelectionMenu(this, listViewLoader.getAdapter() as LoaderListAdapter))
         listViewLoader.setOnItemClickListener { adapterView: AdapterView<*>, view1: View, i: Int, l: Long ->
             thread {
-                val stat = Manager.getLoaderStat(i)
-                if (stat?.state == LoadState.ST_COMPLETE) {
-                    PlayIntent(this).start(stat.file, stat.name)
+                val loader = Manager.getLoader(i)
+                if (loader?.getState()?.state == LoadState.ST_COMPLETE) {
+                    PlayIntent(this).start(loader)
                 } else {
                     if (Manager.inQueue(i))
                         Manager.stop(i)
@@ -68,6 +68,10 @@ class MainActivity : AppCompatActivity() {
             if (Updater.hasNewUpdate() or Updater.check())
                 Updater.showSnackbar(this@MainActivity)
         }
+
+//        Timer().schedule(5000) {
+//            throw IOException("test crash")
+//        }
     }
 
     private fun update() {

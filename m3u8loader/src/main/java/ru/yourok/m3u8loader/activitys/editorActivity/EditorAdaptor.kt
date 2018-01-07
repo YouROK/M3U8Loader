@@ -99,6 +99,7 @@ class EditorAdaptor(val lists: List<ru.yourok.dwl.list.List>, val context: Conte
                 builder.setMessage(R.string.warn_clean_message)
                 builder.setPositiveButton(android.R.string.yes, DialogInterface.OnClickListener { dialogInterface, i ->
                     loader?.clear()
+                    list.isPlayed = false
                     list.items.forEach {
                         it.isComplete = false
                     }

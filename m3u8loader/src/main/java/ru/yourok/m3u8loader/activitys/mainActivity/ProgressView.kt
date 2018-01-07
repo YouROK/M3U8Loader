@@ -129,8 +129,6 @@ class ProgressView : View {
     }
 
     override fun onDraw(canvas: Canvas?) {
-//        super.onDraw(canvas)
-
         val width = getWidth()
         val height = getHeight()
 

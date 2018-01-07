@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.support.v4.content.FileProvider
 import android.widget.Toast
+import ru.yourok.dwl.downloader.Downloader
 import ru.yourok.dwl.settings.Preferences
 import ru.yourok.dwl.storage.Storage
 import ru.yourok.m3u8loader.BuildConfig
@@ -18,7 +19,9 @@ import java.io.File
  * Created by yourok on 20.11.17.
  */
 class PlayIntent(val context: Context) {
-    fun start(filename: String, title: String) {
+    fun start(loader: Downloader) {
+        val filename = loader.getState().file
+        val title = loader.getState().name
         Handler(Looper.getMainLooper()).post {
             try {
                 val player = Preferences.get("Player", 0) as Int
@@ -36,6 +39,7 @@ class PlayIntent(val context: Context) {
                 val pm = context.getPackageManager()
                 if (intent.resolveActivity(pm) != null) {
                     context.startActivity(intent)
+                    loader.list.isPlayed = true
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

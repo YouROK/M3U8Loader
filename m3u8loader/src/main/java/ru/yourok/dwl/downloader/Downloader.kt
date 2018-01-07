@@ -90,7 +90,7 @@ class Downloader(val list: List) {
                     isLoading = false
                     return@synchronized
                 }
-
+                list.isPlayed = false
                 pool = Pool(workers!!)
                 pool!!.start()
                 pool!!.onEnd {
@@ -161,6 +161,7 @@ class Downloader(val list: List) {
             state.threads = pool?.size() ?: 0
             state.error = error
             state.isComplete = complete
+            state.isPlayed = list.isPlayed
             if (isLoading)
                 state.state = LoadState.ST_LOADING
             else if (complete)

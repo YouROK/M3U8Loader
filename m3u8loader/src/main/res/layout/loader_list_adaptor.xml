@@ -6,6 +6,16 @@
     android:background="?android:attr/activatedBackgroundIndicator">
 
     <ImageView
+        android:id="@+id/imageViewPlayed"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_circle_played"
+        android:layout_alignBottom="@+id/textViewNameItem"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true" />
+
+    <ImageView
         android:id="@+id/imageViewLoader"
         android:layout_width="48dp"
         android:layout_height="48dp"

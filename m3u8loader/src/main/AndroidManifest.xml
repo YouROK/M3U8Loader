@@ -154,6 +154,11 @@
         <activity android:name=".activitys.preferenceActivity.DirectoryActivity" />
         <activity android:name=".activitys.editorActivity.EditorActivity" />
         <activity android:name="ru.yourok.dwl.storage.RequestStoragePermissionActivity" />
+        <activity
+            android:name=".activitys.ACRActivity"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

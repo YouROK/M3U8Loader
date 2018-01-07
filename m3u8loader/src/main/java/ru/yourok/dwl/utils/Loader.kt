@@ -81,9 +81,10 @@ object Loader {
         list.url = js.getString("url")
         list.filePath = js.getString("filePath")
         list.title = js.getString("title")
-        list.bandwidth = js.getInt("bandwidth")
-        list.isConvert = js.getBoolean("isConvert")
-        list.subsUrl = js.getString("subsUrl")
+        list.bandwidth = js.get("bandwidth", 0)
+        list.isConvert = js.get("isConvert", false)
+        list.isPlayed = js.get("isPlayed", false)
+        list.subsUrl = js.get("subsUrl", "")
         val jsarr = js.getJSONArray("items")
         for (i in 0 until jsarr.length()) {
             val itm = Item()
@@ -110,4 +111,16 @@ object Loader {
         }
         return list
     }
+}
+
+private inline fun <reified T> JSONObject.get(name: String, def: T): T {
+    if (!this.has(name))
+        return def
+
+    if (this.has(name)) {
+        val ret = this.get(name)
+        if (ret is T)
+            return this.get(name) as T
+    }
+    return def
 }

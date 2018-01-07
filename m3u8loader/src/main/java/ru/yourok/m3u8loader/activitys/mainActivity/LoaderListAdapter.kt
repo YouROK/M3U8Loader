@@ -54,6 +54,10 @@ class LoaderListAdapter(val context: Context) : BaseAdapter() {
                     imgStatus.setImageResource(R.drawable.ic_convert_black)
                 }
             }
+            if (state.isPlayed)
+                vi.findViewById<View>(R.id.imageViewPlayed).visibility = View.VISIBLE
+            else
+                vi.findViewById<View>(R.id.imageViewPlayed).visibility = View.GONE
 
             val err = state.error
             if (!err.isEmpty())

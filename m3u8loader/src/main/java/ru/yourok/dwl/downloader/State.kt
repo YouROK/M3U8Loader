@@ -14,6 +14,7 @@ class State {
     var threads: Int = 0
     var speed: Float = 0.0F
     var isComplete: Boolean = false
+    var isPlayed: Boolean = false
     var error: String = ""
     var state: Int = 0
 

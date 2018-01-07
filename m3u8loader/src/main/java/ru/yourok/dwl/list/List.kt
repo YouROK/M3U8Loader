@@ -12,6 +12,7 @@ class List {
     var bandwidth: Int = 0
     var title: String = ""
     var isConvert: Boolean = Settings.convertVideo
+    var isPlayed: Boolean = false
     var subsUrl: String = ""
 }
 

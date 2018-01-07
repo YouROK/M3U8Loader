@@ -1,8 +1,6 @@
 package ru.yourok.dwl.manager
 
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.Service
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -50,29 +48,59 @@ class LoaderService : Service() {
         }
     }
 
+    var notificationBuilder: NotificationCompat.Builder? = null
+    var notificationManager: NotificationManager? = null
+
+    private fun getManager(): NotificationManager {
+        notificationManager?.let {
+            return it
+        }
+        notificationManager = App.getContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        return notificationManager!!
+    }
+
+    private fun createNotfication(title: String, text: String): NotificationCompat.Builder? {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+
+        notificationBuilder = NotificationCompat.Builder(this, "ru.yourok.m3u8loader.channel")
+                .setContentTitle(title)
+                .setContentText(text)
+                .setProgress(0, 0, false)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (Notifyer.error.isEmpty())
+                notificationBuilder?.setSmallIcon(R.drawable.ic_check_black_24dp)
+            else
+                notificationBuilder?.setSmallIcon(R.drawable.ic_report_problem_black_24dp)
+        } else
+            notificationBuilder?.setSmallIcon(R.mipmap.ic_launcher)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val mChannel = NotificationChannel("ru.yourok.m3u8loader.channel", "M3U8Loader", NotificationManager.IMPORTANCE_LOW)
+            mChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE)
+            getManager().createNotificationChannel(mChannel)
+        }
+        return notificationBuilder
+    }
+
     private fun sendNotificationComplete() {
         var msg = getString(R.string.loading_complete)
         if (!Notifyer.error.isEmpty())
             msg = getString(R.string.loading_error)
 
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
-        val notificationBuilder = NotificationCompat.Builder(this)
-                .setContentTitle(msg)
-                .setContentText(Notifyer.error)
-                .setAutoCancel(true)
-                .setContentIntent(pendingIntent)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (Notifyer.error.isEmpty())
-                notificationBuilder.setSmallIcon(R.drawable.ic_check_black_24dp)
-            else
-                notificationBuilder.setSmallIcon(R.drawable.ic_report_problem_black_24dp)
-        } else
-            notificationBuilder.setSmallIcon(R.mipmap.ic_launcher)
+        if (notificationBuilder == null)
+            createNotfication(msg, Notifyer.error)
+        else
+            notificationBuilder
+                    ?.setContentTitle(msg)
+                    ?.setContentText(Notifyer.error)
+                    ?.setProgress(0, 0, false)
 
         val notificationManager = App.getContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(0, notificationBuilder.build())
+        notificationManager.notify(0, notificationBuilder?.build())
         Manager.saveLists()
     }
 
@@ -89,23 +117,17 @@ class LoaderService : Service() {
 
         val status = "%d/%d %s/sec %d%%".format(state.loadedFragments, state.fragments, Utils.byteFmt(state.speed), percent)
 
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
-        val notificationBuilder = NotificationCompat.Builder(this)
-                .setContentTitle(state.name)
-                .setContentText(status)
-                .setProgress(100, percent, false)
-                .setAutoCancel(true)
-                .setContentIntent(pendingIntent)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            notificationBuilder.setSmallIcon(R.drawable.ic_file_download_black_24dp)
+        if (notificationBuilder == null)
+            createNotfication(state.name, status)
+                    ?.setProgress(100, percent, false)
         else
-            notificationBuilder.setSmallIcon(R.mipmap.ic_launcher)
+            notificationBuilder
+                    ?.setContentTitle(state.name)
+                    ?.setContentText(status)
+                    ?.setProgress(100, percent, false)
 
         val notificationManager = App.getContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(0, notificationBuilder.build())
+        notificationManager.notify(0, notificationBuilder?.build())
     }
 
     companion object {

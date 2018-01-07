@@ -68,6 +68,7 @@ object Saver {
         js.put("title", list.title)
         js.put("bandwidth", list.bandwidth)
         js.put("isConvert", list.isConvert)
+        js.put("isPlayed", list.isPlayed)
         js.put("subsUrl", list.subsUrl)
         js.put("items", items2Json(list.items))
 

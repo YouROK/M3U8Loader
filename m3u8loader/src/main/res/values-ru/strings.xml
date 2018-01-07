@@ -34,6 +34,7 @@
     <string name="permission_btn">РАЗРЕШИТЬ</string>
     <string name="permission_request_access">Запросить права на запись</string>
 
+    <string name="delete">Удалить</string>
     <string name="delete_all_items">Удалить всё</string>
     <string name="delete_with_files">Удалить с файлами</string>
     <string name="remove_from_list">Удалить из списка</string>
@@ -59,6 +60,7 @@
     <string name="error_create_folder">Ошибка при создании папки</string>
     <string name="error_same_url">Загрузка с такой ссылкой уже существует</string>
 
+    <string name="send">Отправить</string>
     <string name="crash_app">"Ой... Во мне случилась ошибка,\nНо не волнуйтесь, Вы можете отправить отчет об ошибке разработчику, чтобы он её поскорее исправил."</string>
 
     <string name="choose_player">Выберите плеер</string>

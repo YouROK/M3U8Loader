@@ -8,6 +8,9 @@ import android.os.Build
 import android.os.Environment
 import android.os.StatFs
 import android.util.Log
+import ru.yourok.dwl.settings.Settings
+import ru.yourok.dwl.utils.Loader
+import ru.yourok.m3u8loader.activitys.ACRActivity
 import java.io.*
 import java.util.*
 
@@ -19,7 +22,6 @@ import java.util.*
  */
 class ACR private constructor(private val application: Application) : Thread.UncaughtExceptionHandler {
 
-    private var recipients: Array<String>? = null
     private var startAttempted = false
 
     private var versionName: String? = null
@@ -106,7 +108,7 @@ class ACR private constructor(private val application: Application) : Thread.Unc
             throw IllegalStateException(
                     "EmailAddresses must be set before start")
         }
-        this.recipients = emailAddresses.toList().toTypedArray()
+        recipients = emailAddresses.toList().toTypedArray()
         return this
     }
 
@@ -204,6 +206,25 @@ class ACR private constructor(private val application: Application) : Thread.Unc
         return infoStringBuffer.toString()
     }
 
+    private fun createAppInfoString(): String {
+        val sBuilder = StringBuilder()
+        sBuilder.append("\nThreads          : ").append(Settings.threads)
+        sBuilder.append("\nDownload Path    : ").append(Settings.downloadPath)
+        sBuilder.append("\nError Repeat     : ").append(Settings.errorRepeat)
+        sBuilder.append("\nPreload Size     : ").append(Settings.preloadSize)
+        sBuilder.append("\nConvert Video    : ").append(Settings.convertVideo)
+        sBuilder.append("\nHeaders          : ").append(Settings.headers.toString())
+
+        sBuilder.append("\n\nList :")
+        val list = Loader.loadLists()
+        list?.forEach {
+            sBuilder.append("\nName : ").append(it.title)
+            sBuilder.append("\nUrl : ").append(it.url)
+            sBuilder.append("\n")
+        }
+        return sBuilder.toString()
+    }
+
     override fun uncaughtException(t: Thread, e: Throwable) {
         showLog("====uncaughtException")
 
@@ -233,35 +254,27 @@ class ACR private constructor(private val application: Application) : Thread.Unc
             cause = cause.cause
         }
         printWriter.close()
+
+        reportStringBuffer.append("\nApp Info :\n==============\n")
+        reportStringBuffer.append(createAppInfoString())
+
+
         reportStringBuffer.append("\n\n**** End of current Report ***")
         showLog("====uncaughtException \n Report: " + reportStringBuffer.toString())
         saveAsFile(reportStringBuffer.toString())
 
-//        val intent = Intent(application, ErrorReporterActivity::class.java)
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-//        application.startActivity(intent)
+        checkError(application)
+
+        val intent = Intent(application, ACRActivity::class.java)
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.putExtra("report", wholeErrorText)
+        application.startActivity(intent)
 
 
-        checkErrorAndSendMail(application)
+//        checkErrorAndSendMail(application)
 
         android.os.Process.killProcess(android.os.Process.myPid())
         System.exit(10)
-    }
-
-
-    private fun sendErrorMail(_context: Context, errorContent: String) {
-        showLog("====sendErrorMail")
-        val sendIntent = Intent(Intent.ACTION_SEND)
-        val subject = DEFAULT_EMAIL_SUBJECT
-        val body = "\n\n" + errorContent + "\n\n"
-        sendIntent.putExtra(Intent.EXTRA_EMAIL, recipients)
-        sendIntent.putExtra(Intent.EXTRA_TEXT, body)
-        sendIntent.putExtra(Intent.EXTRA_SUBJECT, subject)
-        sendIntent.setType("message/rfc822")
-        sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        val chooser = Intent.createChooser(sendIntent, "Send M3U8Loader crash report")
-        chooser.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        _context.startActivity(chooser)
     }
 
     private fun saveAsFile(errorContent: String) {
@@ -284,7 +297,7 @@ class ACR private constructor(private val application: Application) : Thread.Unc
         return errorFileList.size > 0
     }
 
-    internal fun checkErrorAndSendMail(_context: Context) {
+    internal fun checkError(_context: Context) {
         try {
             filePath = _context.getFilesDir().getAbsolutePath()
             if (bIsThereAnyErrorFile()) {
@@ -306,7 +319,8 @@ class ACR private constructor(private val application: Application) : Thread.Unc
                     val curFile = File(filePath + "/" + curString)
                     curFile.delete()
                 }
-                sendErrorMail(_context, wholeErrorTextSB.toString())
+                wholeErrorText = wholeErrorTextSB.toString()
+//                sendErrorMail(_context, wholeErrorTextSB.toString())
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -319,17 +333,35 @@ class ACR private constructor(private val application: Application) : Thread.Unc
     }
 
     companion object {
-
         private val TAG = this::class.java.simpleName
         private val DEBUGABLE = false
         private var DEFAULT_EMAIL_SUBJECT = "ACR: New Crash Report Generated"
         private var sInstance: ACR? = null
+        private var recipients: Array<String>? = null
+
+        var wholeErrorText: String = ""
 
         operator fun get(application: Application): ACR {
             if (sInstance == null)
                 sInstance = ACR(application)
             return sInstance as ACR
         }
+
+        fun sendErrorMail(_context: Context, errorContent: String) {
+            if (DEBUGABLE) Log.i(TAG, "====sendErrorMail")
+            val sendIntent = Intent(Intent.ACTION_SEND)
+            val subject = DEFAULT_EMAIL_SUBJECT
+            val body = "\n\n" + errorContent + "\n\n"
+            sendIntent.putExtra(Intent.EXTRA_EMAIL, recipients)
+            sendIntent.putExtra(Intent.EXTRA_TEXT, body)
+            sendIntent.putExtra(Intent.EXTRA_SUBJECT, subject)
+            sendIntent.setType("message/rfc822")
+            sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            val chooser = Intent.createChooser(sendIntent, "Send M3U8Loader crash report")
+            chooser.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            _context.startActivity(chooser)
+        }
+
     }
 
 }
