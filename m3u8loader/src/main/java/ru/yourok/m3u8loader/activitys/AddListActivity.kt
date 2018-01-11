@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.activity_add_list.*
 import ru.yourok.dwl.converter.Converter
 import ru.yourok.dwl.list.List
 import ru.yourok.dwl.manager.Manager
+import ru.yourok.dwl.manager.Notifyer
 import ru.yourok.dwl.parser.Parser
 import ru.yourok.dwl.settings.Settings
 import ru.yourok.dwl.storage.Storage
@@ -23,8 +24,9 @@ import kotlin.concurrent.thread
 
 class AddListActivity : AppCompatActivity() {
 
-    var list: MutableList<List>? = null
-    var downloadPath = Settings.downloadPath
+    private var list: MutableList<List>? = null
+    private var downloadPath = Settings.downloadPath
+    private var showNotify = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +35,6 @@ class AddListActivity : AppCompatActivity() {
 
         textViewError.text = ""
 
-        val intent = intent
         var download = false
 
         try {
@@ -60,15 +61,20 @@ class AddListActivity : AppCompatActivity() {
             }
 
             if (intent.action != null && intent.action.equals(Intent.ACTION_SEND)) {
-                if (intent.getStringExtra(Intent.EXTRA_TEXT) != null)
+                if (intent.getStringExtra(Intent.EXTRA_TEXT) != null) {
                     editTextUrl.setText(intent.getStringExtra(Intent.EXTRA_TEXT))
-                if (intent.extras.get(Intent.EXTRA_STREAM) != null)
+                    showNotify = true
+                }
+                if (intent.extras.get(Intent.EXTRA_STREAM) != null) {
                     editTextUrl.setText(intent.extras.get(Intent.EXTRA_STREAM).toString())
+                    showNotify = true
+                }
             }
 
             if (intent.data != null && !intent.data.toString().isEmpty()) {
                 val path = intent.data.toString()
                 editTextUrl.setText(path)
+                showNotify = true
             }
 
             if (editTextFileName.getText().toString().isEmpty()) {
@@ -164,6 +170,8 @@ class AddListActivity : AppCompatActivity() {
                     val start = Manager.getLoadersSize() - lists.size
                     for (i in start until Manager.getLoadersSize())
                         Manager.load(i)
+                } else {
+                    Notifyer.addNotify(this, Name)
                 }
                 this.setResult(RESULT_OK)
                 this.finish()

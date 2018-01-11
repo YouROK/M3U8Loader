@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/M3U8Loader.iml" filepath="$PROJECT_DIR$/M3U8Loader.iml" />
-      <module fileurl="file://$PROJECT_DIR$/m3u8converter/m3u8converter.iml" filepath="$PROJECT_DIR$/m3u8converter/m3u8converter.iml" />
       <module fileurl="file://$PROJECT_DIR$/m3u8loader/m3u8loader.iml" filepath="$PROJECT_DIR$/m3u8loader/m3u8loader.iml" />
     </modules>
   </component>

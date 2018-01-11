@@ -24,8 +24,9 @@ object Util {
         return copyArguments(baseUrl, path)
     }
 
-    private fun copyArguments(argUrl: Uri, url: String): String {
-        val uri = argUrl.toString()
-        return uri.replace(argUrl.path, url)
+    private fun copyArguments(argUrl: Uri, path: String): String {
+        val builder = argUrl.buildUpon()
+        builder.path(path)
+        return builder.build().toString()
     }
 }

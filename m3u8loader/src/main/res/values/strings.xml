@@ -9,6 +9,7 @@
     <string name="cookies" translatable="false">Cookies</string>
 
     <string name="add">Add</string>
+    <string name="added">Added</string>
     <string name="play">Play</string>
     <string name="convert">Convert</string>
     <string name="edit">Edit</string>
@@ -20,7 +21,7 @@
     <string name="remove">Remove</string>
     <string name="clear">Clear</string>
     <string name="complete">Complete</string>
-    <string name="loading_complete">Loading complete</string>
+    <string name="loading_complete">Loading finished</string>
     <string name="loading_error">Loading error</string>
 
     <string name="download_path">Download path</string>
