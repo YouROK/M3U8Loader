@@ -91,6 +91,7 @@ object Loader {
             val jsitm = jsarr.getJSONObject(i)
             itm.index = jsitm.getInt("index")
             itm.url = jsitm.getString("url")
+            itm.loaded = jsitm.get("loaded", 0L)
             itm.size = jsitm.getLong("size")
             itm.duration = jsitm.getDouble("duration").toFloat()
             itm.isLoad = jsitm.getBoolean("isLoad")
@@ -113,14 +114,11 @@ object Loader {
     }
 }
 
-private inline fun <reified T> JSONObject.get(name: String, def: T): T {
+private fun <T> JSONObject.get(name: String, def: T): T {
     if (!this.has(name))
         return def
 
-    if (this.has(name)) {
-        val ret = this.get(name)
-        if (ret is T)
-            return this.get(name) as T
-    }
+    if (this.has(name))
+        return this.get(name) as T
     return def
 }

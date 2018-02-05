@@ -3,6 +3,8 @@ package ru.yourok.m3u8loader.activitys.mainActivity
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
@@ -16,6 +18,7 @@ import ru.yourok.dwl.manager.Manager
 import ru.yourok.dwl.settings.Preferences
 import ru.yourok.dwl.updater.Updater
 import ru.yourok.m3u8loader.R
+import ru.yourok.m3u8loader.activitys.DonateActivity
 import ru.yourok.m3u8loader.activitys.preferenceActivity.PreferenceActivity
 import ru.yourok.m3u8loader.navigationBar.NavigationBar
 import ru.yourok.m3u8loader.player.PlayIntent
@@ -65,13 +68,9 @@ class MainActivity : AppCompatActivity() {
         showMenuHelp()
 
         Timer().schedule(1000) {
-            if (Updater.hasNewUpdate() or Updater.check())
+            if (Updater.hasNewUpdate())
                 Updater.showSnackbar(this@MainActivity)
         }
-
-//        Timer().schedule(5000) {
-//            throw IOException("test crash")
-//        }
     }
 
     private fun update() {
@@ -104,6 +103,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         update()
+        showDonate()
     }
 
     override fun onPause() {
@@ -143,6 +143,31 @@ class MainActivity : AppCompatActivity() {
             } else {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
             }
+        }
+    }
+
+    private fun showDonate() {
+        thread {
+
+            val last: Long = Preferences.get("LastViewDonate", 0L) as Long
+            if (last == -1L || System.currentTimeMillis() - last < 5 * 60 * 1000)
+                return@thread
+
+            Preferences.set("LastViewDonate", System.currentTimeMillis())
+
+            val snackbar = Snackbar.make(findViewById(R.id.main_layout), R.string.donation, Snackbar.LENGTH_INDEFINITE)
+            Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                snackbar
+                        .setAction(android.R.string.ok) {
+                            Preferences.set("LastViewDonate", System.currentTimeMillis())
+                            startActivity(Intent(this@MainActivity, DonateActivity::class.java))
+                        }
+                        .show()
+            }, 5000)
+            Handler(Looper.getMainLooper()).postDelayed(Runnable {
+                if (snackbar.isShown)
+                    snackbar.dismiss()
+            }, 15000)
         }
     }
 }

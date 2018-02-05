@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.*
 import kotlinx.android.synthetic.main.activity_preference.*
-import ru.yourok.dwl.converter.Converter
+import ru.yourok.converter.ConverterHelper
 import ru.yourok.dwl.settings.Preferences
 import ru.yourok.dwl.settings.Settings
 import ru.yourok.dwl.storage.RequestStoragePermissionActivity
@@ -37,7 +37,7 @@ class PreferenceActivity : AppCompatActivity() {
 
         checkboxConvert.setOnCheckedChangeListener { _, b ->
             if (b) {
-                if (!Converter.installed()) {
+                if (!ConverterHelper.isSupport()) {
                     Toast.makeText(this, R.string.warn_install_convertor, Toast.LENGTH_SHORT).show()
                 }
             }

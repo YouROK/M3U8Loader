@@ -3,6 +3,7 @@ package ru.yourok.dwl.client
 import android.net.Uri
 import java.io.FileInputStream
 import java.io.InputStream
+import java.io.RandomAccessFile
 
 /**
  * Created by yourok on 07.11.17.
@@ -10,12 +11,22 @@ import java.io.InputStream
 class File(private val filePath: Uri) : Client {
     private var isOpen: Boolean = false
     private var input: FileInputStream? = null
+    private var rndFile: RandomAccessFile? = null
     private var errMsg: String = ""
 
     override fun connect() {
         val br = FileInputStream(filePath.path)
         input = br
         isOpen = true
+    }
+
+    override fun connect(pos: Long): Long {
+        val br = RandomAccessFile(filePath.path, "r")
+        br.seek(pos)
+        rndFile = br
+        input = FileInputStream(br.fd)
+        isOpen = true
+        return pos
     }
 
     override fun isConnected(): Boolean {
@@ -47,9 +58,10 @@ class File(private val filePath: Uri) : Client {
     }
 
     override fun close() {
-        if (isOpen) {
-            input!!.close()
-            isOpen = false
-        }
+        rndFile?.close()
+        input?.close()
+        isOpen = false
+        rndFile = null
+        input = null
     }
 }

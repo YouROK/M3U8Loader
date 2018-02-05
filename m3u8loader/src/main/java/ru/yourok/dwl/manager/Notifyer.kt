@@ -66,7 +66,7 @@ object Notifyer {
         notificationBuilder!!
                 .setContentTitle(title)
                 .setContentText(text)
-                .setProgress(0, progress, false)
+                .setProgress(100, progress, false)
                 .setContentIntent(pendingIntent)
 
         val notificationManager = App.getContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

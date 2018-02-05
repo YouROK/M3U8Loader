@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="ru.yourok.m3u8loader"
+    android:installLocation="auto">
+
+    <uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE" />
+
+</manifest>

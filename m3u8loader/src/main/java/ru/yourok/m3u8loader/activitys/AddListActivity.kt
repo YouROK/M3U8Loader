@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_add_list.*
-import ru.yourok.dwl.converter.Converter
+import ru.yourok.converter.ConverterHelper
 import ru.yourok.dwl.list.List
 import ru.yourok.dwl.manager.Manager
 import ru.yourok.dwl.manager.Notifyer
@@ -101,15 +101,17 @@ class AddListActivity : AppCompatActivity() {
             finish()
         }
 
+        checkboxConvertAdd.visibility = if (ConverterHelper.isSupport()) View.VISIBLE else View.GONE
+
         checkboxConvertAdd.setOnCheckedChangeListener { _, b ->
             if (b) {
-                if (!Converter.installed()) {
+                if (!ConverterHelper.isSupport()) {
                     checkboxConvertAdd.isChecked = false
                     Toast.makeText(this, R.string.warn_install_convertor, Toast.LENGTH_SHORT).show()
                 }
             }
         }
-        checkboxConvertAdd.isChecked = Settings.convertVideo && Converter.installed()
+        checkboxConvertAdd.isChecked = Settings.convertVideo && ConverterHelper.isSupport()
 
         updateDownloadPath()
         buttonSetDownloadPath.setOnClickListener {
@@ -163,7 +165,7 @@ class AddListActivity : AppCompatActivity() {
                 val lists = Parser(Name, Url, downloadPath).parse()
                 lists.forEach {
                     it.subsUrl = SubsUrl
-                    it.isConvert = checkboxConvertAdd?.isChecked ?: Settings.convertVideo && Converter.installed()
+                    it.isConvert = checkboxConvertAdd?.isChecked ?: Settings.convertVideo && ConverterHelper.isSupport()
                 }
                 Manager.addList(lists)
                 if (download) {

@@ -1,10 +1,12 @@
 package ru.yourok.dwl.downloader
 
 import android.net.Uri
+import ru.yourok.dwl.list.Item
 import ru.yourok.dwl.storage.Storage
 import ru.yourok.dwl.writer.NativeFile
 import ru.yourok.dwl.writer.UriFile
 import ru.yourok.dwl.writer.Writer
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 
@@ -48,6 +50,22 @@ class FileWriter(fileName: String) {
 
     fun setWorkers(workers: List<Pair<Worker, DownloadStatus>>) {
         this.workers = workers
+    }
+
+    fun write(item: Item, buf: ByteArrayOutputStream): Boolean {
+        synchronized(lock) {
+            var off = 0L
+
+            for (i in 0 until item.index) {
+                val sz = workers[i].first.item.size
+                if (sz == 0L)
+                    return false
+                off += sz
+            }
+            off += item.loaded
+            write(buf.toByteArray(), off)
+            return true
+        }
     }
 
     fun write() {

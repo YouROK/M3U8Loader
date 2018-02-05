@@ -22,7 +22,8 @@ import ru.yourok.m3u8loader.R
 
 class EditorAdaptor(val lists: List<ru.yourok.dwl.list.List>, val context: Context) : BaseAdapter() {
     override fun getView(position: Int, convertView: View?, p2: ViewGroup?): View {
-        val view: View = convertView ?: (context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.editor_list_adaptor, null)
+        val view: View = convertView
+                ?: (context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.editor_list_adaptor, null)
         view.isEnabled = false
         view.setOnClickListener(null)
 
@@ -102,6 +103,7 @@ class EditorAdaptor(val lists: List<ru.yourok.dwl.list.List>, val context: Conte
                     list.isPlayed = false
                     list.items.forEach {
                         it.isComplete = false
+                        it.loaded = 0
                     }
                     Storage.getDocument(list.filePath)?.delete()
                     Saver.saveList(list)

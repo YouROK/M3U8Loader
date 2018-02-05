@@ -4,11 +4,12 @@ import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
+import ru.yourok.converter.ConverterHelper
 import ru.yourok.dwl.client.ClientBuilder
-import ru.yourok.dwl.converter.Converter
 import ru.yourok.dwl.list.List
 import ru.yourok.dwl.manager.Notifyer
 import ru.yourok.dwl.settings.Settings
+import ru.yourok.dwl.storage.Storage
 import ru.yourok.dwl.utils.Saver
 import ru.yourok.m3u8loader.App
 import ru.yourok.m3u8loader.R.string.error_load_subs
@@ -110,8 +111,10 @@ class Downloader(val list: List) {
                     file.close()
                     Saver.saveList(list)
                     isLoading = false
-                    if (complete && list.isConvert)
-                        Converter.convert(mutableListOf(list))
+                    if (complete && list.isConvert) {
+                        ConverterHelper.convert(mutableListOf(list))
+                        ConverterHelper.startConvert()
+                    }
                     Notifyer.toastEnd(list, complete, error)
                 }
 
@@ -175,7 +178,7 @@ class Downloader(val list: List) {
                 workers!!.forEach {
                     if (it.first.item.isLoad) {
                         val itmState = ItemState()
-                        itmState.loaded = it.second.loadedBytes
+                        itmState.loaded = it.first.item.loaded
                         itmState.size = it.first.item.size
                         itmState.complete = it.first.item.isComplete
                         itmState.error = it.second.isError
@@ -185,7 +188,7 @@ class Downloader(val list: List) {
                         if (it.first.item.isComplete)
                             state.loadedBytes += it.first.item.size
                         else
-                            state.loadedBytes += it.second.loadedBytes
+                            state.loadedBytes += it.first.item.loaded
                         if (it.first.item.isComplete) {
                             state.loadedFragments++
                         }
@@ -199,8 +202,7 @@ class Downloader(val list: List) {
                         val itmState = ItemState()
                         itmState.size = it.size
                         itmState.complete = it.isComplete
-                        if (it.isComplete)
-                            itmState.loaded = itmState.size
+                        itmState.loaded = it.loaded
                         state.loadedItems.add(itmState)
 
                         state.fragments++
@@ -208,8 +210,14 @@ class Downloader(val list: List) {
                         if (it.isComplete) {
                             state.loadedBytes += itmState.size
                             state.loadedFragments++
-                        }
+                        } else
+                            state.loadedBytes += itmState.loaded
                     }
+                }
+                if (state.isComplete) {
+                    val fSize = Storage.getDocument(list.filePath).length()
+                    if (fSize > 0)
+                        state.size = fSize
                 }
             }
         }
@@ -223,16 +231,17 @@ class Downloader(val list: List) {
                 if (!file.exists() || file.length() == 0L) {
                     val client = ClientBuilder.new(Uri.parse(list.subsUrl))
                     client.connect()
-                    val subs = client.getInputStream()?.bufferedReader().use { it?.readText() ?: "" }
+                    val subs = client.getInputStream()?.bufferedReader()?.readText() ?: ""
                     client.close()
-                    if (!subs.isNullOrEmpty()) {
-                        val writer = FileWriter(list.title + ".srt")
+                    if (subs.isNotEmpty()) {
+                        val writer = FileWriter(File(Settings.downloadPath, list.title + ".srt").path)
                         writer.resize(0)
                         writer.write(subs.toByteArray(), 0)
                         writer.close()
                     }
                 }
             } catch (e: Exception) {
+                e.printStackTrace()
                 Handler(Looper.getMainLooper()).post {
                     Toast.makeText(App.getContext(), error_load_subs, Toast.LENGTH_SHORT).show()
                 }
@@ -252,6 +261,8 @@ class Downloader(val list: List) {
                                 clientPS.connect()
                                 it.size = clientPS.getSize()
                                 clientPS.close()
+                                if (it.size == 0L)
+                                    break
                                 return@Runnable
                             } catch (e: Exception) {
                             }

@@ -10,6 +10,7 @@ import java.io.InputStream
  */
 interface Client {
     fun connect()
+    fun connect(pos: Long): Long
     fun isConnected(): Boolean
     fun getSize(): Long
     fun getUrl(): String

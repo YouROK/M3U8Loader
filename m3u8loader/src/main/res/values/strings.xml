@@ -32,7 +32,7 @@
     <string name="set_def_settings">Set the default settings</string>
     <string name="dark_theme">Dark theme</string>
 
-    <string name="donation">Donation</string>
+    <string name="donation">Thank you for helping the project</string>
     <string name="donation_msg">If you like M3U8Loader we\'d be happy about a donation.\nOr you can make a beautiful photo and send the author to the email/telegram &#128522;</string>
 
     <string name="permission_storage_msg">Storage permission is needed to download and write files</string>
@@ -50,9 +50,12 @@
 
     <string name="check_update">Check update</string>
     <string name="no_updates">No updates found</string>
-    <string name="download_new_version">Released new version of me, do you want to download it?</string>
+    <string name="version">Version</string>
+    <string name="changelog">Изменения</string>
+    <string name="new_version">New version</string>
+    <string name="release_new_version">Released new version of me, do you want to download it?</string>
 
-    <string name="warn_install_convertor">This feature is not available now, expect updates</string>
+    <string name="warn_install_convertor">This feature is not available in this version of the application</string>
     <string name="warn_clean_message">Caution! During cleaning, all settings and the downloaded file are deleted.\nClean out?</string>
 
     <string name="error">Error</string>

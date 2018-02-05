@@ -9,14 +9,19 @@
     android:padding="8dp"
     tools:context="ru.yourok.m3u8loader.activitys.ACRActivity">
 
-    <EditText
-        android:id="@+id/editTextReport"
+    <ScrollView
         android:layout_weight="1"
-        android:inputType="textMultiLine"
-        android:singleLine="false"
-        android:selectAllOnFocus="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/editTextReport"
+            android:inputType="textMultiLine"
+            android:singleLine="false"
+            android:selectAllOnFocus="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </ScrollView>
 
     <Button
         android:id="@+id/buttonSendReport"

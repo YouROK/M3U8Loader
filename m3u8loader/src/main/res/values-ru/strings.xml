@@ -28,7 +28,7 @@
     <string name="set_def_settings">Установить настройки по умолчанию</string>
     <string name="dark_theme">Темная тема</string>
 
-    <string name="donation">Пожертвование</string>
+    <string name="donation">Спасибо за помощь проекту</string>
     <string name="donation_msg">Если вам нравится M3U8Loader, я буду рад пожертвованию.\nИли вы можете сделать красивое фото и прислать автору на почту/телеграм &#128522;</string>
 
     <string name="permission_storage_msg">Доступ к памяти требуется для загрузки и записи файлов</string>
@@ -46,9 +46,12 @@
 
     <string name="check_update">Проверить обновление</string>
     <string name="no_updates">Обновлений не найдено</string>
-    <string name="download_new_version">Вышла новая версия меня, хотите скачать её?</string>
+    <string name="version">Версия</string>
+    <string name="changelog">Изменения</string>
+    <string name="new_version">Новая версия</string>
+    <string name="release_new_version">Вышла новая версия меня, хотите скачать её?</string>
 
-    <string name="warn_install_convertor">Эта функция не доступна сейчас, ожидайте обновления</string>
+    <string name="warn_install_convertor">Эта функция не доступна в этой версии приложения</string>
     <string name="warn_clean_message">Внимание! Во время очистки все настройки и загруженный файл удаляются. Очистить?</string>
 
     <string name="error">Ошибка</string>

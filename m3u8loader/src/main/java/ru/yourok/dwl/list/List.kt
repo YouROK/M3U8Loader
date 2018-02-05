@@ -19,6 +19,7 @@ class List {
 class Item {
     var index: Int = -1
     var url: String = ""
+    var loaded: Long = 0
     var size: Long = 0
     var duration: Float = 0F
     var isLoad: Boolean = true

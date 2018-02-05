@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
@@ -5,12 +7,13 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.2"
+    def verPostfix = ""
     defaultConfig {
         applicationId "ru.yourok.m3u8loader"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 167
-        versionName "1.3.167"
+        versionCode 168
+        versionName "1.3.168"
     }
     buildTypes {
         release {
@@ -18,7 +21,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationVariants.all { variant ->
                 variant.outputs.all {
-                    outputFileName = "M3U8Loader-${variant.versionName}.apk"
+                    outputFileName = "M3U8Loader-${versionName}_${variant.flavorName}.apk"
                 }
             }
         }
@@ -40,17 +43,91 @@ android {
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
+
+    flavorDimensions 'main'
+    productFlavors {
+        lite {
+            dimension "main"
+        }
+        converter {
+            applicationId "ru.yourok.m3u8loader_converter"
+            dimension "main"
+            verPostfix = "_converter"
+            minSdkVersion 16
+        }
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    compile 'co.zsmb:materialdrawer-kt:1.2.1'
-    compile 'com.crystal:crystalrangeseekbar:1.1.3'
+    implementation 'co.zsmb:materialdrawer-kt:1.2.1'
+    implementation 'com.crystal:crystalrangeseekbar:1.1.3'
+    converterImplementation 'com.infullmobile.android:videokit-release:1.1.2'
 }
 
 repositories {
     mavenCentral()
     maven { url 'https://maven.google.com' }
+    maven { url 'https://maven.infullmobile.com/public' }
+}
+
+project.afterEvaluate {
+    android.applicationVariants.all { variant ->
+
+        if (!variant.buildType.isDebuggable()) {
+
+            def appID = variant.applicationId
+            def apkFileName = "${appID}-${variant.versionName}.apk".replace("ru.yourok.", "")
+
+            println "******* Create update *******"
+            println appID
+            println apkFileName
+            println variant.versionName
+            println variant.buildType.name
+            println ""
+
+            def jsonFile = rootProject.file('dist/changelog.json')
+            def chagelogJS = new groovy.json.JsonSlurper().parseText(jsonFile.text)
+            def changeLogVer = ""
+            if (chagelogJS.getAt("$variant.versionName") != null)
+                changeLogVer = chagelogJS.getAt("$variant.versionName").join("\n")
+            def gitLink = "https://raw.githubusercontent.com/YouROK/M3U8Loader/1.3.x/dist/${appID}/${apkFileName}"
+
+            rootProject.file("dist/$appID").mkdir()
+            rootProject.file("dist/$appID/version.json").createNewFile()
+            rootProject.file("dist/$appID/version.json").text = """
+{
+\t"update": {
+\t\t"app_id": "$appID",
+\t\t"version_code": "$variant.versionCode",
+\t\t"version_name": "$variant.versionName",
+\t\t"build_date": "${new SimpleDateFormat("dd.MM.yyyy").format(new Date())}",
+\t\t"link_github": "$gitLink",
+\t\t"changelog": "$changeLogVer"
+\t}
+}
+"""
+            // create file where to copy
+            def backupFolder = rootProject.file("dist/$appID")
+            def backupFile = new File(backupFolder, apkFileName)
+
+            variant.outputs.all { output ->
+                Task copyAndRenameAPKTask = project.task("copyAndRename${variant.name.capitalize()}APK", type: Copy) {
+                    from output.outputFile.getParent()
+                    into backupFolder
+                    include output.outputFileName
+                    rename(output.outputFileName, backupFile.getName())
+                }
+
+                // if copyAndRenameAPKTask needs to automatically execute assemble before
+                copyAndRenameAPKTask.dependsOn(variant.assemble)
+                copyAndRenameAPKTask.mustRunAfter(variant.assemble)
+
+                // if assemble needs to automatically execute copyAndRenameAPKTask after
+                variant.assemble.finalizedBy(copyAndRenameAPKTask)
+            }
+        }
+    }
 }

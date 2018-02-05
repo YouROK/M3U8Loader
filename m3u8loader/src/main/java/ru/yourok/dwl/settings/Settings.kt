@@ -8,10 +8,10 @@ import ru.yourok.m3u8loader.App
  * Created by yourok on 07.11.17.
  */
 object Settings {
-    var threads: Int = 20
+    var threads: Int = 10
     var errorRepeat: Int = 5
     var downloadPath: String = ""
-    var preloadSize: Boolean = false
+    var preloadSize: Boolean = true
     var convertVideo: Boolean = false
 
     var headers: MutableMap<String, String> = mutableMapOf()

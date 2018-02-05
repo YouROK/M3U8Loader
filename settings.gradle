@@ -1,1 +1,1 @@
-include ':m3u8loader', ':m3u8converter'
+include ':m3u8loader'

@@ -6,9 +6,11 @@ import ru.yourok.dwl.client.Client
 import ru.yourok.dwl.client.ClientBuilder
 import ru.yourok.dwl.list.List
 import ru.yourok.dwl.settings.Settings
+import ru.yourok.dwl.utils.Utils
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.IOException
+import java.nio.charset.Charset
 
 /**
  * Created by yourok on 07.11.17.
@@ -37,7 +39,14 @@ class Parser(val name: String, val url: String, val downloadPath: String) {
                     }
                 }
 
+            var chkBuf = ByteArray(40)
+            val chkSz = client.getInputStream()?.read(chkBuf) ?: 0
+            if (chkSz != 0 && !Utils.isTextBuffer(chkBuf))
+                throw java.text.ParseException("m3u8 list contains wrong characters: " + chkBuf.toString(Charset.defaultCharset()), 0)
+
             var listStr = client.getInputStream()?.bufferedReader()?.readText() ?: ""
+            if (listStr.isNotEmpty())
+                listStr = chkBuf.toString(Charset.defaultCharset()) + listStr
             client.close()
 
             listStr = listStr.split("\n").filter { it.isNotEmpty() }.joinToString("\n")

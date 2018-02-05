@@ -23,6 +23,7 @@ class LoaderService : Service() {
     override fun onDestroy() {
         isUpdates = false
         Notifyer.finishNotification()
+        Manager.saveLists()
         super.onDestroy()
     }
 
@@ -35,6 +36,7 @@ class LoaderService : Service() {
         thread {
             while (isUpdates && sendNotification()) {
                 Thread.sleep(100)
+                App.wakeLock(200)
             }
             stopSelf()
         }
@@ -52,7 +54,6 @@ class LoaderService : Service() {
             percent = (state.loadedFragments * 100 / state.fragments)
 
         val status = "%d/%d %s/sec %d%%".format(state.loadedFragments, state.fragments, Utils.byteFmt(state.speed), percent)
-
         return Notifyer.updateNotfication(state.name, status, percent)
     }
 

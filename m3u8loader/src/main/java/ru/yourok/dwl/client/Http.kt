@@ -22,6 +22,10 @@ class Http(url: Uri) : Client {
     private var inputStream: InputStream? = null
 
     override fun connect() {
+        connect(0)
+    }
+
+    override fun connect(pos: Long): Long {
         var responseCode: Int
         var redirCount = 0
         do {
@@ -35,6 +39,8 @@ class Http(url: Uri) : Client {
             connection!!.setRequestProperty("UserAgent", "DWL/1.1.0 (Android)")
             connection!!.setRequestProperty("Accept", "*/*")
             connection!!.setRequestProperty("Accept-Encoding", "gzip")
+            if (pos > 0)
+                connection!!.setRequestProperty("Range", "bytes=$pos-")
 
             if (Settings.headers.isNotEmpty()) {
                 Settings.headers.forEach { (k, v) ->
@@ -57,10 +63,13 @@ class Http(url: Uri) : Client {
         } while (redirected)
 
 
-        if (responseCode != HttpURLConnection.HTTP_OK) {
+        if (responseCode != HttpURLConnection.HTTP_OK && responseCode != HttpURLConnection.HTTP_PARTIAL) {
             throw IOException("Error connect to: " + currUrl + " " + connection!!.responseMessage)
         }
         isConn = true
+        if ((connection!!.getHeaderField("Accept-Ranges")?.toLowerCase() ?: "") == "none")
+            return -1
+        return getSize()
     }
 
     override fun isConnected(): Boolean {
@@ -71,20 +80,7 @@ class Http(url: Uri) : Client {
         if (!isConn)
             return 0
 
-
-        val size = connection!!.contentLength
-        if (size > 0)
-            return size.toLong()
-
-        var cl = connection!!.getHeaderField("Content-Length")
-        try {
-            if (!cl.isNullOrEmpty()) {
-                return cl.toLong()
-            }
-        } catch (e: Exception) {
-        }
-
-        cl = connection!!.getHeaderField("Content-Range")
+        var cl = connection!!.getHeaderField("Content-Range")
         try {
             if (!cl.isNullOrEmpty()) {
                 val cr = cl.split("/")
@@ -94,6 +90,15 @@ class Http(url: Uri) : Client {
             }
         } catch (e: Exception) {
         }
+
+        cl = connection!!.getHeaderField("Content-Length")
+        try {
+            if (!cl.isNullOrEmpty()) {
+                return cl.toLong()
+            }
+        } catch (e: Exception) {
+        }
+
         return 0
     }
 

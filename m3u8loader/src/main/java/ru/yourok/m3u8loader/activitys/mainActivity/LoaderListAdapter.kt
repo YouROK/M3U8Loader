@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import ru.yourok.dwl.converter.Converter
+import ru.yourok.converter.ConverterHelper
 import ru.yourok.dwl.downloader.LoadState
 import ru.yourok.dwl.manager.Manager
 import ru.yourok.m3u8loader.R
@@ -26,7 +26,8 @@ class LoaderListAdapter(val context: Context) : BaseAdapter() {
     }
 
     override fun getView(index: Int, convertView: View?, viewGroup: ViewGroup): View {
-        val vi: View = convertView ?: (context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.loader_list_adaptor, null)
+        val vi: View = convertView
+                ?: (context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.loader_list_adaptor, null)
         Manager.getLoader(index)?.let {
             vi.findViewById<TextView>(R.id.textViewNameItem).setText(it.list.title)
             val imgStatus = vi.findViewById<ImageView>(R.id.imageViewLoader)
@@ -48,12 +49,10 @@ class LoaderListAdapter(val context: Context) : BaseAdapter() {
                     imgStatus.setImageResource(R.drawable.ic_report_problem_black_24dp)
                 }
             }
-            if (Converter.installed()) {
-                val convList = Converter.stat()
-                if (convList.find { state.name + state.file == it }?.isEmpty() == false) {
-                    imgStatus.setImageResource(R.drawable.ic_convert_black)
-                }
+            if (ConverterHelper.isConvert(it.list)) {
+                imgStatus.setImageResource(R.drawable.ic_convert_black)
             }
+
             if (state.isPlayed)
                 vi.findViewById<View>(R.id.imageViewPlayed).visibility = View.VISIBLE
             else

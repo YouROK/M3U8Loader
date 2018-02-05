@@ -8,7 +8,8 @@ import kotlin.concurrent.thread
 
 class Pool(private val workers: List<Pair<Worker, DownloadStatus>>) {
 
-    @Volatile private var stop = true
+    @Volatile
+    private var stop = true
     private var currentWorker = 0
     private var thread: Thread? = null
     private var lock: Any = Any()
@@ -59,7 +60,8 @@ class Pool(private val workers: List<Pair<Worker, DownloadStatus>>) {
                             } catch (e: SocketException) {
                                 dstat.isError = true
                                 if (i == Settings.errorRepeat) {
-                                    error = (e.message ?: "Error, read or connect") + " " + wrk.item.url + " " + wrk.item.index
+                                    error = (e.message
+                                            ?: "Error, read or connect") + " " + wrk.item.url + " " + wrk.item.index
                                     onError?.invoke(error)
                                 }
                             } catch (e: SocketTimeoutException) {
@@ -69,8 +71,9 @@ class Pool(private val workers: List<Pair<Worker, DownloadStatus>>) {
                                     onError?.invoke(error)
                                 }
                             } catch (e: Exception) {
+                                e.printStackTrace()
                                 dstat.isError = true
-                                error = "Error: " + e.message
+                                error = "Error: " + e.message ?: "unknown error"
                                 onError?.invoke(error)
                             }
                         synchronized(lock) {

@@ -24,6 +24,7 @@ class ProgressView : View {
     private var toProg = 0
     private var isMoveProg = false
     private var fragmentWidth: Double = 0.0
+    var lastState: String = ""
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -41,10 +42,12 @@ class ProgressView : View {
             if (isUpdating)
                 return
 
-            invalidate()
             index?.let {
                 Manager.getLoader(it)?.let {
-                    if (it.getState().state != LoadState.ST_LOADING)
+                    val state = it.getState()
+                    if (state.toString() != lastState)
+                        invalidate()
+                    if (state.state != LoadState.ST_LOADING)
                         return
                 } ?: return
             } ?: return
@@ -129,6 +132,8 @@ class ProgressView : View {
     }
 
     override fun onDraw(canvas: Canvas?) {
+        val loader = Manager.getLoader(index!!)
+
         val width = getWidth()
         val height = getHeight()
 
@@ -146,100 +151,99 @@ class ProgressView : View {
             return
 
         val itmColor = ContextCompat.getColor(context, R.color.colorAccent)
-        val loader = Manager.getLoader(index!!)
         loader?.let {
             val state = loader.getState()
+
             state.let {
                 if (it.fragments == it.loadedFragments) {
                     paint.color = itmColor
                     canvas.drawRect(rect, paint)
-                    return@let
-                }
-                fragmentWidth = ((width.toDouble() / it.loadedItems.size))
+                } else {
+                    fragmentWidth = ((width.toDouble() / it.loadedItems.size))
 
-                var endItem = -1
-                var heightBottom = height / 10
-                if (heightBottom == 0)
-                    heightBottom = 1
+                    var endItem = -1
+                    var heightBottom = height / 10
+                    if (heightBottom == 0)
+                        heightBottom = 1
 
-                it.loadedItems.forEachIndexed { index, item ->
-                    if (endItem == -1 && !item.complete)
-                        endItem = index - 1
+                    it.loadedItems.forEachIndexed { index, item ->
+                        if (endItem == -1 && !item.complete)
+                            endItem = index - 1
 
-                    var prcItem = 0
-                    var color = itmColor
+                        var prcItem = 0
+                        var color = itmColor
 
-                    if (item.complete)
-                        prcItem = 255
-                    else if (item.size > 0)
-                        prcItem = (item.loaded * 255 / item.size).toInt()
-                    else if ((item.size == 0L) and (item.loaded > 0))
-                        prcItem = 127
+                        if (item.complete)
+                            prcItem = 255
+                        else if (item.size > 0)
+                            prcItem = (item.loaded * 255 / item.size).toInt()
+                        else if ((item.size == 0L) and (item.loaded > 0))
+                            prcItem = 127
 
-                    if (item.error)
-                        color = Color.RED
+                        if (item.error)
+                            color = Color.RED
 
-                    val bottom: Int
-                    if (prcItem > 0) {
-                        val hgh = height - heightBottom
-                        bottom = prcItem * hgh / 255
-                        paint.setARGB(prcItem, Color.red(color), Color.green(color), Color.blue(color))
-                        rect.left = (index * fragmentWidth + .5).toInt()
-                        rect.right = (index * fragmentWidth + fragmentWidth + .6).toInt()
-                        rect.bottom = bottom
+                        val bottom: Int
+                        if (prcItem > 0) {
+                            val hgh = height - heightBottom
+                            bottom = prcItem * hgh / 255
+                            paint.setARGB(prcItem, Color.red(color), Color.green(color), Color.blue(color))
+                            rect.left = (index * fragmentWidth + .5).toInt()
+                            rect.right = (index * fragmentWidth + fragmentWidth + .6).toInt()
+                            rect.bottom = bottom
+                            rect.top = 0
+                            canvas.drawRect(rect, paint)
+                        }
+                    }
+                    if (endItem > 0 || state.isComplete) {
+                        paint.color = itmColor
+                        rect.left = 0
                         rect.top = 0
+                        rect.bottom = height
+                        if (state.isComplete) {
+                            toProg = width
+                            currentProg = toProg
+                        } else
+                            toProg = (endItem * fragmentWidth + fragmentWidth + .5).toInt()
+                        rect.right = currentProg
                         canvas.drawRect(rect, paint)
+                        updateProg()
                     }
                 }
-                if (endItem > 0 || state.isComplete) {
-                    paint.color = itmColor
-                    rect.left = 0
-                    rect.top = 0
-                    rect.bottom = height
-                    if (state.isComplete) {
-                        toProg = width
-                        currentProg = toProg
-                    } else
-                        toProg = (endItem * fragmentWidth + fragmentWidth + .5).toInt()
-                    rect.right = currentProg
-                    canvas.drawRect(rect, paint)
-                    updateProg()
+
+                var frags = "%d/%d".format(it.loadedFragments, it.fragments)
+                if (it.threads > 0)
+                    frags = "%-3d: %s".format(it.threads, frags)
+                var speed = ""
+                var size = ""
+                if (it.speed > 0)
+                    speed = "  %s/sec ".format(Utils.byteFmt(it.speed))
+                if (it.size > 0 && it.isComplete)
+                    size = "  %s".format(Utils.byteFmt(it.size))
+                else
+                    size = "  %s/%s".format(Utils.byteFmt(it.loadedBytes), Utils.byteFmt(it.size))
+
+                paint.typeface = Typeface.DEFAULT
+                paint.setARGB(180, 255, 255, 255)
+                paint.textSize = height.toFloat() * 0.8F
+                paint.setShadowLayer(5.0F, 0.0F, 0.0F, Color.BLACK)
+
+                paint.getTextBounds(frags, 0, frags.length, rect)
+                val yPos = (canvas!!.height / 2 - (paint.descent() + paint.ascent()) / 2)
+                canvas.drawText(frags, 5.0F, yPos, paint)
+
+                if (!speed.isEmpty()) {
+                    paint.getTextBounds(speed, 0, speed.length, rect)
+                    val xPos = width.toFloat() / 2 - rect.centerX().toFloat()
+                    canvas.drawText(speed, xPos, yPos, paint)
                 }
-            }
-        }
+                if (!size.isEmpty()) {
+                    paint.getTextBounds(size, 0, size.length, rect)
+                    val xPos = width.toFloat() - rect.right.toFloat()
+                    canvas.drawText(size, xPos - 5.0F, yPos, paint)
+                }
 
-        val stat = Manager.getLoaderStat(index!!)
-        stat?.let {
-            var frags = "%d/%d".format(stat.loadedFragments, stat.fragments)
-            if (stat.threads > 0)
-                frags = "%-3d: %s".format(stat.threads, frags)
-            var speed = ""
-            var size = ""
-            if (stat.speed > 0)
-                speed = "  %s/sec ".format(Utils.byteFmt(stat.speed))
-            if (stat.size > 0)
-                size = "  %s/%s".format(Utils.byteFmt(stat.loadedBytes), Utils.byteFmt(stat.size))
-
-            val colorText = Color.CYAN
-
-            paint.typeface = Typeface.DEFAULT
-            paint.color = colorText
-            paint.textSize = height.toFloat() * 0.8F
-            paint.setShadowLayer(5.0F, 0.0F, 0.0F, Color.BLACK)
-
-            paint.getTextBounds(frags, 0, frags.length, rect)
-            val yPos = (canvas!!.height / 2 - (paint.descent() + paint.ascent()) / 2)
-            canvas.drawText(frags, 5.0F, yPos, paint)
-
-            if (!speed.isEmpty()) {
-                paint.getTextBounds(speed, 0, speed.length, rect)
-                val xPos = width.toFloat() / 2 - rect.centerX().toFloat()
-                canvas.drawText(speed, xPos, yPos, paint)
-            }
-            if (!size.isEmpty()) {
-                paint.getTextBounds(size, 0, size.length, rect)
-                val xPos = width.toFloat() - rect.right.toFloat()
-                canvas.drawText(size, xPos - 5.0F, yPos, paint)
+                lastState = it.toString()
             }
         }
     }

@@ -8,7 +8,6 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/m3u8converter" />
             <option value="$PROJECT_DIR$/m3u8loader" />
           </set>
         </option>

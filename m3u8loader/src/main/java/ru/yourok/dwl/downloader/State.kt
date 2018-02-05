@@ -27,7 +27,7 @@ class State {
     var loadedItems: MutableList<ItemState> = mutableListOf()
 
     override fun toString(): String {
-        return "State(name='$name', file='$file', threads=$threads, fragments=$fragments, loadedFragments=$loadedFragments, size=$size, loadedBytes=$loadedBytes)"
+        return "State(url='$url', name='$name', file='$file', threads=$threads, speed=$speed, isComplete=$isComplete, isPlayed=$isPlayed, error='$error', state=$state, fragments=$fragments, loadedFragments=$loadedFragments, size=$size, loadedBytes=$loadedBytes, loadedItems=${loadedItems.size})"
     }
 }
 

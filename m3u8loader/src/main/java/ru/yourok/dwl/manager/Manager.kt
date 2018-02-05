@@ -274,11 +274,13 @@ object Manager {
                         loading = false
                         queueList.clear()
                     }
+                    Saver.saveList(it.list)
                 }
             }
             loading = false
             currentLoader = -1
             LoaderService.stop()
+            saveLists()
         }
     }
 

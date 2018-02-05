@@ -19,6 +19,12 @@ class Content(val fileName: Uri) : Client {
         isOpen = true
     }
 
+    override fun connect(pos: Long): Long {
+        connect()
+        input!!.skip(pos)
+        return getSize()
+    }
+
     override fun isConnected(): Boolean {
         return isOpen
     }

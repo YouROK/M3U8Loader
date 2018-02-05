@@ -82,6 +82,7 @@ object Saver {
             val js = JSONObject()
             js.put("index", it.index)
             js.put("url", it.url)
+            js.put("loaded", it.loaded)
             js.put("size", it.size)
             js.put("duration", it.duration.toDouble())
             js.put("isLoad", it.isLoad)
