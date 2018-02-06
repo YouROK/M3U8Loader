@@ -75,63 +75,47 @@ repositories {
 
 project.afterEvaluate {
     android.applicationVariants.all { variant ->
-        if (!variant.buildType.isDebuggable()) {
-            def prefix = ""
-            if (variant.flavorName != "lite")
-                prefix = "_${variant.flavorName}"
+        variant.outputs.all { output ->
+            Task copyAndRenameAPKTask = project.task("copyAndRename${variant.name.capitalize()}APK", type: Copy) {
 
-            def appID = variant.applicationId
-            def apkFileName = "M3U8Loader${prefix}-${variant.versionName}.apk"
-            def path = "dist/$appID$prefix"
+                def directory = "dist/${variant.applicationId}_${variant.flavorName}"
+                def fileName = "M3U8Loader_${variant.flavorName}-${variant.versionName}.apk"
+                def filePath = "$directory/$fileName"
+                def gitLink = "https://raw.githubusercontent.com/YouROK/M3U8Loader/1.3.x/${filePath}"
 
-            println "******* Create update *******"
-            println appID
-            println apkFileName
-            println variant.versionName
-            println variant.buildType.name
-            println variant.flavorName
-            println ""
+                println "******* Create update *******"
+                println variant.applicationId
+                println filePath
+                println variant.versionName
+                println variant.buildType.name
+                println variant.flavorName
+                println ""
 
-            def jsonFile = rootProject.file('dist/changelog.json')
-            def chagelogJS = new groovy.json.JsonSlurper().parseText(jsonFile.text)
-            def changeLogVer = ""
-            if (chagelogJS.getAt("$variant.versionName") != null)
-                changeLogVer = chagelogJS.getAt("$variant.versionName").join("\n")
-            def gitLink = "https://raw.githubusercontent.com/YouROK/M3U8Loader/1.3.x/dist/${appID}/${apkFileName}"
-
-            rootProject.file("$path").mkdir()
-            rootProject.file("$path/version.json").createNewFile()
-            rootProject.file("$path/version.json").text = """
+                rootProject.file("$directory").mkdir()
+                rootProject.file("$directory/version.json").createNewFile()
+                rootProject.file("$directory/version.json").text = """
 {
 \t"update": {
-\t\t"app_id": "$appID",
+\t\t"app_id": "$variant.applicationId",
 \t\t"version_code": "$variant.versionCode",
 \t\t"version_name": "$variant.versionName",
 \t\t"build_date": "${new SimpleDateFormat("dd.MM.yyyy").format(new Date())}",
-\t\t"link_github": "$gitLink",
-\t\t"changelog": "$changeLogVer"
+\t\t"link_github": "$gitLink"
 \t}
 }
 """
-            // create file where to copy
-            def backupFolder = rootProject.file("$path")
-            def backupFile = new File(backupFolder, apkFileName)
-
-            variant.outputs.all { output ->
-                Task copyAndRenameAPKTask = project.task("copyAndRename${variant.name.capitalize()}APK", type: Copy) {
-                    from output.outputFile.getParent()
-                    into backupFolder
-                    include output.outputFileName
-                    rename(output.outputFileName, backupFile.getName())
-                }
-
-                // if copyAndRenameAPKTask needs to automatically execute assemble before
-                copyAndRenameAPKTask.dependsOn(variant.assemble)
-                copyAndRenameAPKTask.mustRunAfter(variant.assemble)
-
-                // if assemble needs to automatically execute copyAndRenameAPKTask after
-                variant.assemble.finalizedBy(copyAndRenameAPKTask)
+                from output.outputFile.getParent()
+                into directory
+                include output.outputFileName
+                rename(output.outputFileName, fileName)
             }
+
+            // if copyAndRenameAPKTask needs to automatically execute assemble before
+            copyAndRenameAPKTask.dependsOn(variant.assemble)
+            copyAndRenameAPKTask.mustRunAfter(variant.assemble)
+
+            // if assemble needs to automatically execute copyAndRenameAPKTask after
+            variant.assemble.finalizedBy(copyAndRenameAPKTask)
         }
     }
 }
