@@ -70,6 +70,7 @@
     <string name="error_fragment_not_binary">Error, fragment is html page</string>
     <string name="error_create_folder">Error create folder</string>
     <string name="error_same_url">Loading with the same url already exists</string>
+    <string name="error_update_parse">Error on update file parse</string>
 
     <string name="send">Send</string>
     <string name="crash_app">"Ooooops... I crashed, but don't worry you can send error report to my developer to help him fix the issue."</string>

@@ -40,30 +40,35 @@ class UpdaterActivity : AppCompatActivity() {
             Updater.getChangelogJS(true)
 
             if (Updater.hasNewUpdate()) {
-                val js = Updater.getVersionJS(false)
-                js?.let {
-                    it.getJSONObject("update")?.let {
-                        val packageName = it.getString("app_id")
-                        val versionName = it.getString("version_name")
-                        val buildDate = it.getString("build_date")
-                        var changelog = ""
-                        if (Updater.getChangelogJS(false)?.has(BuildConfig.VERSION_NAME)
-                                        ?: false) {
-                            val jsArr = Updater.getChangelogJS(false)!!.getJSONArray(BuildConfig.VERSION_NAME)
-                            for (i in 0 until jsArr.length())
-                                changelog += jsArr.getString(i) + "\n"
-                        }
-                        runOnUiThread {
-                            findViewById<Button>(R.id.update_button).visibility = View.VISIBLE
-                            findViewById<TextView>(R.id.update_info).setText("""
+                try {
+                    val js = Updater.getVersionJS(false)
+                    js?.let {
+                        it.getJSONObject("update")?.let {
+                            val packageName = it.getString("app_id")
+                            val versionName = it.getString("version_name")
+                            val buildDate = it.getString("build_date")
+                            var changelog = ""
+                            if (Updater.getChangelogJS(false)?.has(BuildConfig.VERSION_NAME)
+                                            ?: false) {
+                                val jsArr = Updater.getChangelogJS(false)!!.getJSONArray(BuildConfig.VERSION_NAME)
+                                for (i in 0 until jsArr.length())
+                                    changelog += jsArr.getString(i) + "\n"
+                            }
+                            runOnUiThread {
+                                findViewById<Button>(R.id.update_button).visibility = View.VISIBLE
+                                findViewById<TextView>(R.id.update_info).setText("""
 ${getString(R.string.new_version)}:
 $packageName
 $versionName
 $buildDate
 $changelog
 """)
+                            }
                         }
                     }
+                } catch (e: Exception) {
+                    findViewById<TextView>(R.id.update_info).setText(R.string.error_update_parse)
+                    findViewById<Button>(R.id.update_button).visibility = View.GONE
                 }
             } else {
                 runOnUiThread {
