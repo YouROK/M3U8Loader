@@ -12,8 +12,8 @@ android {
         applicationId "ru.yourok.m3u8loader"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 168
-        versionName "1.3.168"
+        versionCode 169
+        versionName "1.3.169"
     }
     buildTypes {
         release {
@@ -50,7 +50,7 @@ android {
             dimension "main"
         }
         converter {
-            applicationId "ru.yourok.m3u8loader_converter"
+//            applicationId "ru.yourok.m3u8loader_converter"
             dimension "main"
             verPostfix = "_converter"
             minSdkVersion 16
@@ -75,17 +75,21 @@ repositories {
 
 project.afterEvaluate {
     android.applicationVariants.all { variant ->
-
         if (!variant.buildType.isDebuggable()) {
+            def prefix = ""
+            if (variant.flavorName != "lite")
+                prefix = "_${variant.flavorName}"
 
             def appID = variant.applicationId
-            def apkFileName = "${appID}-${variant.versionName}.apk".replace("ru.yourok.", "")
+            def apkFileName = "M3U8Loader${prefix}-${variant.versionName}.apk"
+            def path = "dist/$appID$prefix"
 
             println "******* Create update *******"
             println appID
             println apkFileName
             println variant.versionName
             println variant.buildType.name
+            println variant.flavorName
             println ""
 
             def jsonFile = rootProject.file('dist/changelog.json')
@@ -95,9 +99,9 @@ project.afterEvaluate {
                 changeLogVer = chagelogJS.getAt("$variant.versionName").join("\n")
             def gitLink = "https://raw.githubusercontent.com/YouROK/M3U8Loader/1.3.x/dist/${appID}/${apkFileName}"
 
-            rootProject.file("dist/$appID").mkdir()
-            rootProject.file("dist/$appID/version.json").createNewFile()
-            rootProject.file("dist/$appID/version.json").text = """
+            rootProject.file("$path").mkdir()
+            rootProject.file("$path/version.json").createNewFile()
+            rootProject.file("$path/version.json").text = """
 {
 \t"update": {
 \t\t"app_id": "$appID",
@@ -110,7 +114,7 @@ project.afterEvaluate {
 }
 """
             // create file where to copy
-            def backupFolder = rootProject.file("dist/$appID")
+            def backupFolder = rootProject.file("$path")
             def backupFile = new File(backupFolder, apkFileName)
 
             variant.outputs.all { output ->

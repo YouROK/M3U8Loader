@@ -1,6 +1,7 @@
 package ru.yourok.dwl.downloader
 
 import android.net.Uri
+import android.support.v4.provider.DocumentFile
 import ru.yourok.dwl.list.Item
 import ru.yourok.dwl.storage.Storage
 import ru.yourok.dwl.writer.NativeFile
@@ -28,13 +29,13 @@ class FileWriter(fileName: String) {
             writer = NativeFile()
             writer.open(Uri.fromFile(File(fileName)))
         } else {
-            var doc = Storage.getDocument(fileName)
-            if (!doc.exists()) {
+            var doc: DocumentFile? = Storage.getDocument(fileName)
+            if (doc != null && !doc.exists()) {
                 doc = Storage.getDocument(File(fileName).parent)
-                doc = doc.createFile("*/*", File(fileName).name)
+                doc = doc?.createFile("*/*", File(fileName).name) ?: null
             }
             if (doc == null)
-                throw IOException("Error showSnackbar file: " + fileName)
+                throw IOException("Error open file: " + fileName)
             writer = UriFile()
             writer.open(doc.uri)
         }
