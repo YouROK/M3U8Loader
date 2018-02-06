@@ -15,7 +15,7 @@ class DonateActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_donate)
-        Preferences.set("LastViewDonate", 518400000L)//Через неделю
+        Preferences.set("LastViewDonate", System.currentTimeMillis() + 518400000L)//Через неделю
     }
 
     fun onDonPaypalClick(view: View) {

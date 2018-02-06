@@ -177,7 +177,7 @@ class MainActivity : AppCompatActivity() {
             val last: Long = Preferences.get("LastViewDonate", 0L) as Long
             if (last == -1L || System.currentTimeMillis() - last < 5 * 60 * 1000)
                 return@thread
-
+            
             Preferences.set("LastViewDonate", System.currentTimeMillis())
 
             val snackbar = Snackbar.make(findViewById(R.id.main_layout), R.string.donation, Snackbar.LENGTH_INDEFINITE)
