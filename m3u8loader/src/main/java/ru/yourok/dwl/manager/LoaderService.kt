@@ -36,7 +36,7 @@ class LoaderService : Service() {
         thread {
             while (isUpdates && sendNotification()) {
                 Thread.sleep(100)
-                App.wakeLock(200)
+                App.wakeLock(1000)
             }
             stopSelf()
         }

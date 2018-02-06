@@ -36,17 +36,23 @@ class UpdaterActivity : AppCompatActivity() {
         progress_bar.visibility = View.VISIBLE
         update_info.visibility = View.GONE
         thread {
-            Updater.getVersionJS()
-            Updater.getChangelogJS()
+            Updater.getVersionJS(true)
+            Updater.getChangelogJS(true)
 
             if (Updater.hasNewUpdate()) {
-                val js = Updater.getVersionJS()
+                val js = Updater.getVersionJS(false)
                 js?.let {
                     it.getJSONObject("update")?.let {
                         val packageName = it.getString("app_id")
                         val versionName = it.getString("version_name")
                         val buildDate = it.getString("build_date")
-                        val changelog = it.getString("changelog")
+                        var changelog = ""
+                        if (Updater.getChangelogJS(false)?.has(BuildConfig.VERSION_NAME)
+                                        ?: false) {
+                            val jsArr = Updater.getChangelogJS(false)!!.getJSONArray(BuildConfig.VERSION_NAME)
+                            for (i in 0 until jsArr.length())
+                                changelog += jsArr.getString(i) + "\n"
+                        }
                         runOnUiThread {
                             findViewById<Button>(R.id.update_button).visibility = View.VISIBLE
                             findViewById<TextView>(R.id.update_info).setText("""
@@ -66,10 +72,14 @@ $changelog
                 }
             }
 
-            Updater.getChangelogJS()?.let { jsChangelog ->
+            Updater.getChangelogJS(false)?.let { jsChangelog ->
                 var changeLog = ""
                 jsChangelog.keys().forEach {
-                    changeLog += it + ":\n" + jsChangelog.getJSONArray(it).join("\n") + "\n\n"
+                    changeLog += it + ":\n"
+                    val jsArr = jsChangelog.getJSONArray(it)
+                    for (i in 0 until jsArr.length())
+                        changeLog += jsArr.getString(i) + "\n"
+                    changeLog += "\n"
                 }
                 runOnUiThread {
                     findViewById<TextView>(R.id.change_log).setText(changeLog)

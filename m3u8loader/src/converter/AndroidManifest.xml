@@ -4,5 +4,5 @@
     android:installLocation="auto">
 
     <uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE" />
-
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 </manifest>

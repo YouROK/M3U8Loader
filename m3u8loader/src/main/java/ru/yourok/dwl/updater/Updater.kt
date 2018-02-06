@@ -21,11 +21,11 @@ object Updater {
     private var jsChangelog: JSONObject? = null
     private var lastCheck: Long = 0
 
-    private val updateVersionLink = "https://raw.githubusercontent.com/YouROK/M3U8Loader/1.3.x/dist/${App.getContext().packageName}/version.json"
+    private val updateVersionLink = "https://raw.githubusercontent.com/YouROK/M3U8Loader/1.3.x/dist/${BuildConfig.APPLICATION_ID}_${BuildConfig.FLAVOR}/version.json"
     private val changelogLink = "https://raw.githubusercontent.com/YouROK/M3U8Loader/1.3.x/dist/changelog.json"
 
-    fun getVersionJS(): JSONObject? {
-        if (System.currentTimeMillis() - lastCheck < 86400000)
+    fun getVersionJS(force: Boolean): JSONObject? {
+        if (System.currentTimeMillis() - lastCheck < 86400000 && !force)
             jsVerson?.let { return it }
 
         try {
@@ -50,8 +50,9 @@ object Updater {
         return null
     }
 
-    fun getChangelogJS(): JSONObject? {
-        jsChangelog?.let { return it }
+    fun getChangelogJS(force: Boolean): JSONObject? {
+        if (System.currentTimeMillis() - lastCheck < 86400000 && !force)
+            jsChangelog?.let { return it }
 
         try {
             val http = Http(Uri.parse(changelogLink))
@@ -72,7 +73,7 @@ object Updater {
 
     fun download() {
         try {
-            getVersionJS()?.let {
+            getVersionJS(false)?.let {
                 val js = it.getJSONObject("update")
                 val path = js.getString("link_github") ?: ""
                 if (path.isNotEmpty()) {
@@ -88,10 +89,18 @@ object Updater {
 
     fun hasNewUpdate(): Boolean {
         try {
-            getVersionJS()?.let {
+            getVersionJS(false)?.let {
                 val js = it.getJSONObject("update")
                 val ver = js?.getInt("version_code") ?: 0
-                if (BuildConfig.VERSION_CODE < ver) {
+                val path = js.getString("link_github") ?: ""
+                if (BuildConfig.VERSION_CODE < ver && path.isNotEmpty()) {
+                    try {
+                        val http = Http(Uri.parse(path))
+                        http.connect()
+                        http.close()
+                    } catch (e: Exception) {
+                        return false
+                    }
                     return true
                 }
             }

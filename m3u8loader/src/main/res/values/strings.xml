@@ -39,6 +39,9 @@
     <string name="permission_btn">GRANT</string>
     <string name="permission_request_access">Request write access</string>
 
+    <string name="doze_request_title">Open setting window?</string>
+    <string name="doze_request">To run the application in the background, you need to add the application to the whitelist</string>
+
     <string name="delete">Delete</string>
     <string name="delete_all_items">Delete all items</string>
     <string name="delete_with_files">Delete with files</string>

@@ -1,12 +1,15 @@
 package ru.yourok.m3u8loader.activitys.mainActivity
 
 import android.Manifest
+import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.net.Uri
+import android.os.*
+import android.provider.Settings
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.AdapterView
@@ -17,6 +20,7 @@ import ru.yourok.dwl.downloader.LoadState
 import ru.yourok.dwl.manager.Manager
 import ru.yourok.dwl.settings.Preferences
 import ru.yourok.dwl.updater.Updater
+import ru.yourok.m3u8loader.BuildConfig
 import ru.yourok.m3u8loader.R
 import ru.yourok.m3u8loader.activitys.DonateActivity
 import ru.yourok.m3u8loader.activitys.preferenceActivity.PreferenceActivity
@@ -142,6 +146,27 @@ class MainActivity : AppCompatActivity() {
                         .show()
             } else {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && BuildConfig.FLAVOR != "lite" && !(Preferences.get("DozeRequestCancel", false) as Boolean)) {
+                val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+                val inWhiteList = powerManager.isIgnoringBatteryOptimizations(packageName)
+                if (!inWhiteList) {
+                    runOnUiThread {
+                        AlertDialog.Builder(this)
+                                .setTitle(R.string.doze_request_title)
+                                .setMessage(R.string.doze_request)
+                                .setPositiveButton(android.R.string.yes, DialogInterface.OnClickListener { dialogInterface, i ->
+                                    val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:" + packageName))
+                                    startActivity(intent)
+                                })
+                                .setNeutralButton("", null)
+                                .setNegativeButton(android.R.string.no, DialogInterface.OnClickListener { dialogInterface, i ->
+                                    Preferences.set("DozeRequestCancel", true)
+                                })
+                                .show()
+                    }
+                }
             }
         }
     }

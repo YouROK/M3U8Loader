@@ -35,6 +35,9 @@
     <string name="permission_btn">РАЗРЕШИТЬ</string>
     <string name="permission_request_access">Запросить права на запись</string>
 
+    <string name="doze_request_title">Открыть окно настройки?</string>
+    <string name="doze_request">Для работы приложения в фоне нужно добавить приложение в белый список</string>
+
     <string name="delete">Удалить</string>
     <string name="delete_all_items">Удалить всё</string>
     <string name="delete_with_files">Удалить с файлами</string>
