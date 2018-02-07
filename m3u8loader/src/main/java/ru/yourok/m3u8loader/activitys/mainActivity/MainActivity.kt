@@ -87,10 +87,7 @@ class MainActivity : AppCompatActivity() {
         thread {
             while (isShow) {
                 runOnUiThread { (listViewLoader.adapter as LoaderListAdapter).notifyDataSetChanged() }
-                if (Manager.isLoading())
-                    Thread.sleep(500)
-                else
-                    Thread.sleep(3000)
+                Thread.sleep(500)
             }
         }
     }
@@ -171,14 +168,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @Volatile
+    private var showDonate = false
+
     private fun showDonate() {
         thread {
-
-            val last: Long = Preferences.get("LastViewDonate", 0L) as Long
-            if (last == -1L || System.currentTimeMillis() - last < 5 * 60 * 1000)
-                return@thread
-            
-            Preferences.set("LastViewDonate", System.currentTimeMillis())
+            synchronized(showDonate) {
+                val last: Long = Preferences.get("LastViewDonate", 0L) as Long
+                if (last == -1L || System.currentTimeMillis() < last || showDonate)
+                    return@thread
+                showDonate = true
+                Preferences.set("LastViewDonate", System.currentTimeMillis() + 5 * 60 * 1000)
+            }
 
             val snackbar = Snackbar.make(findViewById(R.id.main_layout), R.string.donation, Snackbar.LENGTH_INDEFINITE)
             Handler(Looper.getMainLooper()).postDelayed(Runnable {
@@ -192,6 +193,7 @@ class MainActivity : AppCompatActivity() {
             Handler(Looper.getMainLooper()).postDelayed(Runnable {
                 if (snackbar.isShown)
                     snackbar.dismiss()
+                showDonate = false
             }, 15000)
         }
     }

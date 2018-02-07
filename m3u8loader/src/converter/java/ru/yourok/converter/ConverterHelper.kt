@@ -14,6 +14,10 @@ object ConverterHelper {
         return true
     }
 
+    fun getCurrentConvert(): List? {
+        return Manager.getCurrent()
+    }
+
     fun isConvert(list: List): Boolean {
         return Manager.contain(list)
     }

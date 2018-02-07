@@ -173,7 +173,8 @@ class AddListActivity : AppCompatActivity() {
                     for (i in start until Manager.getLoadersSize())
                         Manager.load(i)
                 } else {
-                    Notifyer.addNotify(this, Name)
+                    val names = lists.joinToString { it.title }
+                    Notifyer.sendNotification(this, Notifyer.TYPE_NOTIFYLOAD, getString(R.string.added), names)
                 }
                 this.setResult(RESULT_OK)
                 this.finish()

@@ -12,8 +12,10 @@
     <string name="added">Added</string>
     <string name="play">Play</string>
     <string name="convert">Convert</string>
+    <string name="converting">Converting</string>
     <string name="edit">Edit</string>
     <string name="download">Download</string>
+    <string name="downloading">Downloading</string>
     <string name="load_all">Load all</string>
     <string name="stop_all">Pause all</string>
     <string name="remove_all">Remove all</string>
@@ -22,7 +24,9 @@
     <string name="clear">Clear</string>
     <string name="complete">Complete</string>
     <string name="loading_complete">Loading finished</string>
+    <string name="converting_complete">Converting finished</string>
     <string name="loading_error">Loading error</string>
+    <string name="converting_error">Error converting video</string>
 
     <string name="download_path">Download path</string>
     <string name="threads">Threads</string>
@@ -32,7 +36,7 @@
     <string name="set_def_settings">Set the default settings</string>
     <string name="dark_theme">Dark theme</string>
 
-    <string name="donation">Thank you for helping the project</string>
+    <string name="donation">Donation</string>
     <string name="donation_msg">If you like M3U8Loader we\'d be happy about a donation.\nOr you can make a beautiful photo and send the author to the email/telegram &#128522;</string>
 
     <string name="permission_storage_msg">Storage permission is needed to download and write files</string>

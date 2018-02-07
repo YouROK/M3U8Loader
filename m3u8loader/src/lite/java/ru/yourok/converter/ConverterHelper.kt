@@ -1,6 +1,5 @@
 package ru.yourok.converter
 
-import android.content.Context
 import ru.yourok.dwl.list.List
 
 /**
@@ -13,6 +12,10 @@ object ConverterHelper {
         return false
     }
 
+    fun isConverting(): Boolean {
+        return false
+    }
+
     fun isConvert(list: List): Boolean {
         return false
     }
@@ -21,8 +24,5 @@ object ConverterHelper {
     }
 
     fun startConvert() {
-    }
-
-    fun startActivity(context: Context) {
     }
 }

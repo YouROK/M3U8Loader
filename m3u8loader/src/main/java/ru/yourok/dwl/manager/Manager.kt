@@ -17,8 +17,10 @@ import kotlin.concurrent.thread
 
 
 object Manager {
-    @Volatile private var loaderList: MutableList<Downloader> = mutableListOf()
-    @Volatile private var queueList: MutableList<Int> = mutableListOf()
+    @Volatile
+    private var loaderList: MutableList<Downloader> = mutableListOf()
+    @Volatile
+    private var queueList: MutableList<Int> = mutableListOf()
 
     init {
         val list = Loader.loadLists()

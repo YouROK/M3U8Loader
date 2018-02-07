@@ -8,7 +8,9 @@
     <string name="added">Добавлено</string>
     <string name="play">Проиграть</string>
     <string name="convert">Конвертировать</string>
+    <string name="converting">Конвертирование</string>
     <string name="download">Скачать</string>
+    <string name="downloading">Загрузка</string>
     <string name="edit">Изменить</string>
     <string name="load_all">Скачать всё</string>
     <string name="stop_all">Остановить всё</string>
@@ -18,7 +20,9 @@
     <string name="clear">Очистить</string>
     <string name="complete">Завершено</string>
     <string name="loading_complete">Загрузка завершена</string>
+    <string name="converting_complete">Конвертирование завершено</string>
     <string name="loading_error">Ошибка загрузки</string>
+    <string name="converting_error">Ошибка конвертирования видео</string>
 
     <string name="download_path">Путь для загрузок</string>
     <string name="threads">Потоки</string>
@@ -28,7 +32,7 @@
     <string name="set_def_settings">Установить настройки по умолчанию</string>
     <string name="dark_theme">Темная тема</string>
 
-    <string name="donation">Спасибо за помощь проекту</string>
+    <string name="donation">Пожертвование</string>
     <string name="donation_msg">Если вам нравится M3U8Loader, я буду рад пожертвованию.\nИли вы можете сделать красивое фото и прислать автору на почту/телеграм &#128522;</string>
 
     <string name="permission_storage_msg">Доступ к памяти требуется для загрузки и записи файлов</string>

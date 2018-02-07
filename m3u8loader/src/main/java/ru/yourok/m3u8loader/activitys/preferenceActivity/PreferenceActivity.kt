@@ -14,6 +14,7 @@ import ru.yourok.dwl.settings.Preferences
 import ru.yourok.dwl.settings.Settings
 import ru.yourok.dwl.storage.RequestStoragePermissionActivity
 import ru.yourok.dwl.utils.Saver
+import ru.yourok.m3u8loader.BuildConfig
 import ru.yourok.m3u8loader.R
 import ru.yourok.m3u8loader.theme.Theme
 
@@ -50,8 +51,7 @@ class PreferenceActivity : AppCompatActivity() {
         }
 
         try {
-            val pInfo = packageManager!!.getPackageInfo(packageName, 0)
-            val version = "YouROK " + getText(R.string.app_name) + " " + pInfo.versionName
+            val version = "YouROK " + getText(R.string.app_name) + " ${BuildConfig.FLAVOR} ${BuildConfig.VERSION_NAME}"
             (findViewById<TextView>(R.id.textViewVersion)).text = version
         } catch (e: Exception) {
             e.printStackTrace()

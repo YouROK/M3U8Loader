@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.IBinder
 import ru.yourok.dwl.utils.Utils
 import ru.yourok.m3u8loader.App
+import ru.yourok.m3u8loader.R
 import kotlin.concurrent.thread
 
 
@@ -15,14 +16,16 @@ class LoaderService : Service() {
     override fun onBind(p0: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Notifyer.createNotification(this)
         startUpdate()
         return START_STICKY
     }
 
     override fun onDestroy() {
         isUpdates = false
-        Notifyer.finishNotification()
+        if (Notifyer.error.isNotEmpty())
+            Notifyer.sendNotification(this, Notifyer.TYPE_NOTIFYLOAD, getString(R.string.loading_error), Notifyer.error)
+        else
+            Notifyer.sendNotification(this, Notifyer.TYPE_NOTIFYLOAD, getString(R.string.loading_complete))
         Manager.saveLists()
         super.onDestroy()
     }
@@ -36,8 +39,8 @@ class LoaderService : Service() {
         thread {
             while (isUpdates && sendNotification()) {
                 Thread.sleep(100)
-                App.wakeLock(1000)
             }
+            stop()
             stopSelf()
         }
     }
@@ -54,7 +57,8 @@ class LoaderService : Service() {
             percent = (state.loadedFragments * 100 / state.fragments)
 
         val status = "%d/%d %s/sec %d%%".format(state.loadedFragments, state.fragments, Utils.byteFmt(state.speed), percent)
-        return Notifyer.updateNotfication(state.name, status, percent)
+        Notifyer.sendNotification(this, Notifyer.TYPE_NOTIFYLOAD, state.name, status, percent)
+        return true
     }
 
     companion object {

@@ -92,13 +92,72 @@
 
             <TextView
                 android:id="@+id/textViewForum"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:singleLine="true"
+                android:text="http://4pda.ru/forum/index.php?showtopic=785223" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:background="@android:color/transparent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GitHub: " />
+
+            <TextView
+                android:id="@+id/textViewGithub"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:singleLine="true"
+                android:text="https://github.com/YouROK/M3U8Loader" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Converter: " />
+
+            <TextView
+                android:id="@+id/textViewGithubConverter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:singleLine="true"
+                android:text="https://github.com/YouROK/M3U8Loader/tree/1.3.x/dist/ru.yourok.m3u8loader_converter" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lite: " />
+
+            <TextView
+                android:id="@+id/textViewGithubList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:autoLink="web"
-                android:ellipsize="end"
-                android:lines="1"
-                android:text="http://4pda.ru/forum/index.php?showtopic=785223" />
+                android:singleLine="true"
+                android:text="https://github.com/YouROK/M3U8Loader/tree/1.3.x/dist/ru.yourok.m3u8loader_lite" />
         </LinearLayout>
+
     </LinearLayout>
 
 
@@ -145,6 +204,7 @@
                 android:layout_weight="1"
                 android:onClick="onDonUSDClick"
                 android:text="USD" />
+
             <Button
                 android:id="@+id/buttonDonEUR"
                 android:layout_width="match_parent"
@@ -152,6 +212,7 @@
                 android:layout_weight="1"
                 android:onClick="onDonEURClick"
                 android:text="EUR" />
+
             <Button
                 android:id="@+id/buttonDonRUB"
                 android:layout_width="match_parent"
