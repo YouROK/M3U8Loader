@@ -68,7 +68,7 @@ class Downloader(val list: List) {
                     isLoading = false
                     return@synchronized
                 }
-                preloadSize()
+                preloadSize(file)
                 val tmpWorkers = mutableListOf<Pair<Worker, DownloadStatus>>()
                 list.items.forEach {
                     if (it.isLoad) {
@@ -249,7 +249,7 @@ class Downloader(val list: List) {
         }
     }
 
-    private fun preloadSize() {
+    private fun preloadSize(file: FileWriter) {
         if (Settings.preloadSize) {
             executor = Executors.newFixedThreadPool(20)
             list.items.forEach {

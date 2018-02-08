@@ -45,6 +45,25 @@ class FileWriter(fileName: String) {
         writer.truncate(len)
     }
 
+//    fun setSizeForce(len: Long) {
+//        if (writer.size() < len) {
+//            val writesize = len - writer.size()
+//            var pos = writer.size()
+//            val bufferLength = 65536
+//            val writes = writesize / bufferLength
+//            var buffer = ByteArray(bufferLength)
+//            for (i in 0 until writes) {
+//                writer.write(buffer, pos)
+//                pos += bufferLength
+//            }
+//            if (pos < len) {
+//                buffer = ByteArray((len - pos).toInt())
+//                writer.write(buffer, pos)
+//            }
+//        } else
+//            resize(len)
+//    }
+
     fun close() {
         writer.close()
     }

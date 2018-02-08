@@ -11,10 +11,6 @@ import java.io.IOException
  * Created by yourok on 10.11.17.
  */
 class Worker(val item: Item, private val stat: DownloadStatus, private val file: FileWriter) : Runnable {
-    companion object {
-        val lockConnection = Any()
-    }
-
     private var stop = false
 
     override fun run() {
@@ -50,14 +46,20 @@ class Worker(val item: Item, private val stat: DownloadStatus, private val file:
                 speed.measure(readCount)
                 accumBuffer.write(buffer, 0, readCount)
                 if (!isMemWrite) {
-                    if (file.write(item, accumBuffer)) {
-                        item.loaded += accumBuffer.size()
+                    if (accumBuffer.size() > 65536 && file.write(item, accumBuffer)) {
+                        item.loaded += accumBuffer.size().toLong()
                         accumBuffer.reset()
                     }
                 } else
                     item.loaded = accumBuffer.size().toLong()
             }
             speed.stopRead()
+            if (!isMemWrite && accumBuffer.size() > 0) {
+                if (file.write(item, accumBuffer)) {
+                    item.loaded += accumBuffer.size()
+                    accumBuffer.reset()
+                }
+            }
         } catch (e: Exception) {
             client.close()
             if (isMemWrite)
@@ -91,7 +93,7 @@ class Worker(val item: Item, private val stat: DownloadStatus, private val file:
                             writeOk = true
                         } else {
                             errs++
-                            if (errs > 10)
+                            if (errs > 60)
                                 break
                             Thread.sleep(1000)
                         }

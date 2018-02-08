@@ -29,7 +29,7 @@ object Notifyer {
         val channelName = getChannelName(type)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
+            val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_LOW)
             context.getSystemService<NotificationManager>(NotificationManager::class.java)!!.createNotificationChannel(channel)
         }
 

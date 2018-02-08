@@ -11,6 +11,7 @@ import ru.yourok.m3u8loader.App
 import ru.yourok.m3u8loader.BuildConfig
 import ru.yourok.m3u8loader.R
 import ru.yourok.m3u8loader.activitys.updaterActivity.UpdaterActivity
+import java.util.*
 
 
 /**
@@ -23,6 +24,7 @@ object Updater {
 
     private val updateVersionLink = "https://raw.githubusercontent.com/YouROK/M3U8Loader/1.3.x/dist/${BuildConfig.APPLICATION_ID}_${BuildConfig.FLAVOR}/version.json"
     private val changelogLink = "https://raw.githubusercontent.com/YouROK/M3U8Loader/1.3.x/dist/changelog.json"
+    private val changelogLinkEng = "https://raw.githubusercontent.com/YouROK/M3U8Loader/1.3.x/dist/changelog_eng.json"
 
     fun getVersionJS(force: Boolean): JSONObject? {
         if (System.currentTimeMillis() - lastCheck < 86400000 && !force)
@@ -55,7 +57,11 @@ object Updater {
             jsChangelog?.let { return it }
 
         try {
-            val http = Http(Uri.parse(changelogLink))
+            var link = changelogLink
+            if (Locale.getDefault().getLanguage() != "ru")
+                link = changelogLinkEng
+
+            val http = Http(Uri.parse(link))
             http.connect()
             val strJS = http.getInputStream()?.bufferedReader()?.readText() ?: ""
             http.close()

@@ -1,0 +1,37 @@
+{
+	"1.3.172": [
+		"- Fixed notifications on Android O",
+		"- Added english change log",
+		"- Optimizing download speed"
+	],
+	"1.3.171": [
+		"- Remade notices",
+		"- Small optimization",
+		"- A small rework interface"
+	],
+	"1.3.170": [
+		"- Changed the branches and the upgrade system",
+		"- Try not to sleep in the background",
+		"- Added disabling the doze mode in the version with the converter (lite version will be laid out in the play market, and there it is forbidden to disable doze)"
+	],
+	"1.3.169": [
+		"- Made the same package name, now one program replaces another",
+		"- Fixed one non-critical error"
+	],
+	"1.3.168": [
+		"****** The download list can be deleted ******",
+		"- The program will be issued in two versions with/without converter",
+		"- OutOfMemoryError bug fixed if the traffic is encrypted or the server does not send the file size, an error may appear. It is necessary to reduce the number of threads when an error occurs.",
+		"- Fixed download subtitles",
+		"- Correction of other errors",
+		"- Improved software updates",
+		"- Performance optimization",
+		"- Added reminders for Donate, to disable open the donate window"
+	],
+	"1.3.ххх": [
+		"- Previous versions of the application"
+	],
+	"1.2.ххх": [
+		"- Old version on golang"
+	]
+}

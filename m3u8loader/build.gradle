@@ -12,8 +12,8 @@ android {
         applicationId "ru.yourok.m3u8loader"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 171
-        versionName "1.3.171"
+        versionCode 172
+        versionName "1.3.172"
     }
     buildTypes {
         release {
@@ -77,23 +77,23 @@ project.afterEvaluate {
     android.applicationVariants.all { variant ->
         variant.outputs.all { output ->
             Task copyAndRenameAPKTask = project.task("copyAndRename${variant.name.capitalize()}APK", type: Copy) {
+                if (variant.buildType.name == "release") {
+                    def directory = "dist/${variant.applicationId}_${variant.flavorName}"
+                    def fileName = "M3U8Loader_${variant.flavorName}-${variant.versionName}.apk"
+                    def filePath = "$directory/$fileName"
+                    def gitLink = "https://raw.githubusercontent.com/YouROK/M3U8Loader/1.3.x/${filePath}"
 
-                def directory = "dist/${variant.applicationId}_${variant.flavorName}"
-                def fileName = "M3U8Loader_${variant.flavorName}-${variant.versionName}.apk"
-                def filePath = "$directory/$fileName"
-                def gitLink = "https://raw.githubusercontent.com/YouROK/M3U8Loader/1.3.x/${filePath}"
+                    println "******* Create update *******"
+                    println variant.applicationId
+                    println filePath
+                    println variant.versionName
+                    println variant.buildType.name
+                    println variant.flavorName
+                    println ""
 
-                println "******* Create update *******"
-                println variant.applicationId
-                println filePath
-                println variant.versionName
-                println variant.buildType.name
-                println variant.flavorName
-                println ""
-
-                rootProject.file("$directory").mkdir()
-                rootProject.file("$directory/version.json").createNewFile()
-                rootProject.file("$directory/version.json").text = """
+                    rootProject.file("$directory").mkdir()
+                    rootProject.file("$directory/version.json").createNewFile()
+                    rootProject.file("$directory/version.json").text = """
 {
 \t"update": {
 \t\t"app_id": "$variant.applicationId ${variant.flavorName}",
@@ -104,10 +104,11 @@ project.afterEvaluate {
 \t}
 }
 """
-                from output.outputFile.getParent()
-                into rootProject.file(directory)
-                include output.outputFileName
-                rename(output.outputFileName, fileName)
+                    from output.outputFile.getParent()
+                    into rootProject.file(directory)
+                    include output.outputFileName
+                    rename(output.outputFileName, fileName)
+                }
             }
 
             // if copyAndRenameAPKTask needs to automatically execute assemble before
