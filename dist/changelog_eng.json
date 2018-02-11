@@ -1,4 +1,7 @@
 {
+	"1.3.173": [
+		"- Added application selection window if the format video is incorrect"
+	],
 	"1.3.172": [
 		"- Fixed notifications on Android O",
 		"- Added english change log",

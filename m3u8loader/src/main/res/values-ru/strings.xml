@@ -60,6 +60,7 @@
 
     <string name="warn_install_convertor">Эта функция не доступна в этой версии приложения</string>
     <string name="warn_clean_message">Внимание! Во время очистки все настройки и загруженный файл удаляются. Очистить?</string>
+    <string name="warn_wrong_format">Формат файла не поддерживается, открыть ссылку в другой программе?</string>
 
     <string name="error">Ошибка</string>
     <string name="error_load_subs">Ошибка при загрузки субтитров</string>
@@ -71,6 +72,7 @@
     <string name="error_create_folder">Ошибка при создании папки</string>
     <string name="error_same_url">Загрузка с такой ссылкой уже существует</string>
     <string name="error_update_parse">Ошибка при анализе файла обновления</string>
+    <string name="error_wrong_format">Неверный формат файла</string>
 
     <string name="send">Отправить</string>
     <string name="crash_app">"Ой... Во мне случилась ошибка,\nНо не волнуйтесь, Вы можете отправить отчет об ошибке разработчику, чтобы он её поскорее исправил."</string>

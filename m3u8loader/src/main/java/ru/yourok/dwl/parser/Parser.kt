@@ -39,10 +39,10 @@ class Parser(val name: String, val url: String, val downloadPath: String) {
                     }
                 }
 
-            var chkBuf = ByteArray(40)
+            val chkBuf = ByteArray(40)
             val chkSz = client.getInputStream()?.read(chkBuf) ?: 0
             if (chkSz != 0 && !Utils.isTextBuffer(chkBuf))
-                throw java.text.ParseException("m3u8 list contains wrong characters: " + chkBuf.toString(Charset.defaultCharset()), 0)
+                throw java.text.ParseException("m3u8 list contains wrong characters: " + chkBuf.toString(Charset.defaultCharset()), -1)
 
             var listStr = client.getInputStream()?.bufferedReader()?.readText() ?: ""
             if (listStr.isNotEmpty())
@@ -82,6 +82,9 @@ class Parser(val name: String, val url: String, val downloadPath: String) {
             }
             return retList
 
+        } catch (e: java.text.ParseException) {
+            e.printStackTrace()
+            throw java.text.ParseException("Wrong format: " + clientEx?.getUrl() + " " + e.message, e.errorOffset)
         } catch (e: ParseException) {
             e.printStackTrace()
             throw java.text.ParseException("Error parse list: " + clientEx?.getUrl() + " " + e.message, 0)

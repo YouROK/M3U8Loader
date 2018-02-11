@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
@@ -45,14 +46,12 @@ class AddListActivity : AppCompatActivity() {
                         val value = bundle.get(key)
                         if (value != null) {
                             val name = cleanFileName(value.toString().trim { it <= ' ' })
-                            if (!name.isEmpty())
-                                editTextFileName.setText(name)
+                            if (!name.isEmpty()) editTextFileName.setText(name)
                         }
                     }
                     if (key.toLowerCase().contains("subs") || key.toLowerCase().contains("subtitles")) {
                         val value = bundle.get(key)
-                        if (value != null)
-                            editTextSubtitles.setText(value.toString().trim { it <= ' ' })
+                        if (value != null) editTextSubtitles.setText(value.toString().trim { it <= ' ' })
                     }
                     if (key.toLowerCase().contains("download")) {
                         download = true
@@ -120,8 +119,7 @@ class AddListActivity : AppCompatActivity() {
             startActivityForResult(intent, 1202)
         }
 
-        if (download)
-            downloadBtnClick(buttonDownload)
+        if (download) downloadBtnClick(buttonDownload)
     }
 
     fun updateDownloadPath() {
@@ -165,24 +163,39 @@ class AddListActivity : AppCompatActivity() {
                 val lists = Parser(Name, Url, downloadPath).parse()
                 lists.forEach {
                     it.subsUrl = SubsUrl
-                    it.isConvert = checkboxConvertAdd?.isChecked ?: Settings.convertVideo && ConverterHelper.isSupport()
+                    it.isConvert = (checkboxConvertAdd?.isChecked ?: Settings.convertVideo) && ConverterHelper.isSupport()
                 }
                 Manager.addList(lists)
                 if (download) {
                     val start = Manager.getLoadersSize() - lists.size
-                    for (i in start until Manager.getLoadersSize())
-                        Manager.load(i)
+                    for (i in start until Manager.getLoadersSize()) Manager.load(i)
                 } else {
                     val names = lists.joinToString { it.title }
                     Notifyer.sendNotification(this, Notifyer.TYPE_NOTIFYLOAD, getString(R.string.added), names)
                 }
                 this.setResult(RESULT_OK)
                 this.finish()
+            } catch (e: java.text.ParseException) {
+                if (e.errorOffset == -1) {
+                    runOnUiThread {
+                        AlertDialog.Builder(this).setTitle(R.string.error_wrong_format).setMessage(R.string.warn_wrong_format).setPositiveButton(android.R.string.yes) { p0, p1 ->
+                            val intent = Intent(Intent.ACTION_VIEW)
+                            intent.setDataAndType(Uri.parse(Url), "video/*")
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            intent.putExtra("title", Name)
+                            val chooser = Intent.createChooser(intent, "")
+                            chooser.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(chooser)
+                            finish()
+                        }.setNegativeButton(android.R.string.no) { p0, p1 ->
+                                    if (e.message != null) toastErr(e.message!!)
+                                }.setNeutralButton("", null).show()
+                    }
+                } else if (e.message != null) toastErr(e.message!!)
             } catch (e: Exception) {
-                if (e.message != null)
-                    toastErr(e.message!!)
-                waitView(false)
+                if (e.message != null) toastErr(e.message!!)
             }
+            waitView(false)
         }
     }
 
@@ -194,11 +207,10 @@ class AddListActivity : AppCompatActivity() {
     }
 
     private fun toastErr(msg: String) {
-        if (msg.isNotEmpty())
-            runOnUiThread {
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-                textViewError.setText(msg)
-            }
+        if (msg.isNotEmpty()) runOnUiThread {
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+            textViewError.setText(msg)
+        }
     }
 
     private fun toastErr(msg: Int) {
@@ -213,8 +225,7 @@ class AddListActivity : AppCompatActivity() {
             if (set) {
                 findViewById<View>(R.id.progressBar).visibility = View.VISIBLE
                 textViewError.text = ""
-            } else
-                findViewById<View>(R.id.progressBar).visibility = View.GONE
+            } else findViewById<View>(R.id.progressBar).visibility = View.GONE
             findViewById<View>(R.id.buttonAdd).isEnabled = !set
             findViewById<View>(R.id.buttonDownload).isEnabled = !set
             findViewById<View>(R.id.buttonCancel).isEnabled = !set

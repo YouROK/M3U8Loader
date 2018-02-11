@@ -167,7 +167,7 @@ class ProgressView : View {
                         heightBottom = 1
 
                     it.loadedItems.forEachIndexed { index, item ->
-                        if (endItem == -1 && !item.complete)
+                        if (!item.complete && endItem == -1)
                             endItem = index - 1
 
                         var prcItem = 0

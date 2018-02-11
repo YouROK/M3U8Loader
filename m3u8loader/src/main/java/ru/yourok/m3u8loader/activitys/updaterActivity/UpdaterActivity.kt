@@ -7,7 +7,6 @@ import android.widget.Button
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_updater.*
 import ru.yourok.dwl.updater.Updater
-import ru.yourok.m3u8loader.App
 import ru.yourok.m3u8loader.BuildConfig
 import ru.yourok.m3u8loader.R
 import ru.yourok.m3u8loader.theme.Theme
@@ -20,7 +19,7 @@ class UpdaterActivity : AppCompatActivity() {
         Theme.set(this)
         setContentView(R.layout.activity_updater)
 
-        current_info.text = "${getString(R.string.version)}: ${App.getContext().packageName} ${BuildConfig.VERSION_NAME}"
+        current_info.text = "${getString(R.string.version)}: ${getString(R.string.app_name)} ${BuildConfig.FLAVOR} ${BuildConfig.VERSION_NAME}"
         buttonCheckUpdate.setOnClickListener {
             checkUpdate()
         }
