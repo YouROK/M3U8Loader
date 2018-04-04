@@ -47,9 +47,9 @@ class UpdaterActivity : AppCompatActivity() {
                             val versionName = it.getString("version_name")
                             val buildDate = it.getString("build_date")
                             var changelog = ""
-                            if (Updater.getChangelogJS(false)?.has(BuildConfig.VERSION_NAME)
+                            if (Updater.getChangelogJS(false)?.has(versionName)
                                             ?: false) {
-                                val jsArr = Updater.getChangelogJS(false)!!.getJSONArray(BuildConfig.VERSION_NAME)
+                                val jsArr = Updater.getChangelogJS(false)!!.getJSONArray(versionName)
                                 for (i in 0 until jsArr.length())
                                     changelog += jsArr.getString(i) + "\n"
                             }
