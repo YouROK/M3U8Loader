@@ -98,6 +98,7 @@ class PreferenceActivity : AppCompatActivity() {
             findViewById<CheckBox>(R.id.checkboxConvert)?.setChecked(Settings.convertVideo)
             findViewById<CheckBox>(R.id.checkboxLoadItemsSize)?.setChecked(Settings.preloadSize)
             findViewById<CheckBox>(R.id.checkBoxChooseTheme)?.setChecked(Preferences.get("ThemeDark", true) as Boolean)
+            findViewById<CheckBox>(R.id.checkBoxSimpleProgress)?.setChecked(Preferences.get("SimpleProgress", false) as Boolean)
             findViewById<Spinner>(R.id.spinnerChoosePlayer)?.setSelection(Preferences.get("Player", 0) as Int)
         } catch (e: Exception) {
             defSettings()
@@ -112,8 +113,13 @@ class PreferenceActivity : AppCompatActivity() {
         Settings.headers["User-Agent"] = editTextUseragent.text.toString()
         Settings.convertVideo = checkboxConvert.isChecked
         Settings.preloadSize = checkboxLoadItemsSize.isChecked
+
         val ch = checkBoxChooseTheme.isChecked
         Preferences.set("ThemeDark", ch)
+
+        val sp = checkBoxSimpleProgress.isChecked
+        Preferences.set("SimpleProgress", sp)
+
         val sel = spinnerChoosePlayer.selectedItemPosition
         Preferences.set("Player", sel)
 
@@ -129,6 +135,7 @@ class PreferenceActivity : AppCompatActivity() {
         findViewById<CheckBox>(R.id.checkboxConvert)?.setChecked(false)
         findViewById<CheckBox>(R.id.checkboxLoadItemsSize)?.setChecked(false)
         findViewById<CheckBox>(R.id.checkBoxChooseTheme)?.setChecked(true)
+        findViewById<CheckBox>(R.id.checkBoxSimpleProgress)?.setChecked(false)
         findViewById<Spinner>(R.id.spinnerChoosePlayer)?.setSelection(0)
     }
 

@@ -17,6 +17,7 @@ import ru.yourok.dwl.parser.Parser
 import ru.yourok.dwl.settings.Settings
 import ru.yourok.dwl.storage.Storage
 import ru.yourok.dwl.utils.Utils
+import ru.yourok.dwl.utils.Utils.cleanFileName
 import ru.yourok.m3u8loader.R
 import ru.yourok.m3u8loader.activitys.preferenceActivity.DirectoryActivity
 import ru.yourok.m3u8loader.theme.Theme
@@ -188,8 +189,8 @@ class AddListActivity : AppCompatActivity() {
                             startActivity(chooser)
                             finish()
                         }.setNegativeButton(android.R.string.no) { p0, p1 ->
-                                    if (e.message != null) toastErr(e.message!!)
-                                }.setNeutralButton("", null).show()
+                            if (e.message != null) toastErr(e.message!!)
+                        }.setNeutralButton("", null).show()
                     }
                 } else if (e.message != null) toastErr(e.message!!)
             } catch (e: Exception) {
@@ -197,13 +198,6 @@ class AddListActivity : AppCompatActivity() {
             }
             waitView(false)
         }
-    }
-
-    private fun cleanFileName(file: String): String {
-        val ReservedCharsReg = "[|\\\\?*<\\\":>+/']"
-        var ret = file.replace(ReservedCharsReg.toRegex(), "_").replace("_+".toRegex(), "_")
-        ret = ret.trim { it <= ' ' }
-        return ret
     }
 
     private fun toastErr(msg: String) {

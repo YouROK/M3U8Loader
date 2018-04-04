@@ -37,4 +37,11 @@ object Utils {
         val clnStr = chkStr.replace("\\p{C}".toRegex(), "")
         return clnStr == chkStr
     }
+
+    fun cleanFileName(file: String): String {
+        val ReservedCharsReg = "[|\\\\?*<\\\":>+/']"
+        var ret = file.replace(ReservedCharsReg.toRegex(), "_").replace("_+".toRegex(), "_")
+        ret = ret.trim { it <= ' ' }
+        return ret
+    }
 }

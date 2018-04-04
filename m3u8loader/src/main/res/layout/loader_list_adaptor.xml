@@ -32,7 +32,6 @@
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/imageViewLoader"
         android:layout_toRightOf="@+id/imageViewLoader"
-        android:maxLines="4"
         android:text="Name"
         android:textAppearance="@android:style/TextAppearance.Medium" />
 
@@ -44,6 +43,57 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/textViewError" />
+
+    <LinearLayout
+        android:layout_below="@+id/li_progress"
+        android:orientation="vertical"
+        android:id="@+id/simpleProgress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:id="@+id/li_s_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:progress="50"
+            android:indeterminate="false" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:id="@+id/textViewFragmentsStat"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Frags" />
+
+            <TextView
+                android:gravity="center"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:id="@+id/textViewSpeedStat"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Speed" />
+
+            <TextView
+                android:layout_weight="1.5"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:id="@+id/textViewSizeStat"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Size"
+                android:gravity="end" />
+        </LinearLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textViewError"

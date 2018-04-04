@@ -144,6 +144,12 @@
                 android:layout_height="wrap_content"
                 android:text="@string/dark_theme" />
 
+            <CheckBox
+                android:id="@+id/checkBoxSimpleProgress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/simple_progress" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="15dp"

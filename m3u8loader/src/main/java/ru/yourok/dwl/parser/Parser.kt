@@ -72,7 +72,7 @@ class Parser(val name: String, val url: String, val downloadPath: String) {
                         band = i
                     list.title = name + "_" + band
                 }
-                list.filePath = File(downloadPath, list.title + ".mp4").canonicalPath
+                list.filePath = File(downloadPath, Utils.cleanFileName(list.title) + ".mp4").canonicalPath
                 parseMedia = ParseMedia(downloadPath)
                 retList.addAll(parseMedia!!.parse(list))
                 if (list.items.size == 0) {

@@ -72,13 +72,38 @@ class FileWriter(fileName: String) {
         this.workers = workers
     }
 
+    private fun getRangeStart(): Int {
+        workers.forEach {
+            if (it.first.item.isLoad)
+                return it.first.item.index
+        }
+        return 0
+    }
+
+    private fun getRangeEnd(): Int {
+        workers.asReversed().forEach {
+            if (it.first.item.isLoad)
+                return it.first.item.index
+        }
+        return workers.size
+    }
+
+    private fun getWorkerSize(i: Int): Long {
+        workers.forEach {
+            if (it.first.item.index == i)
+                return it.first.item.size
+        }
+        return -1
+    }
+
     fun write(item: Item, buf: ByteArrayOutputStream): Boolean {
         synchronized(lock) {
             var off = 0L
-
-            for (i in 0 until item.index) {
-                val sz = workers[i].first.item.size
-                if (sz == 0L)
+            val start = getRangeStart()
+            val end = item.index
+            for (i in start until end) {
+                val sz = getWorkerSize(i)
+                if (sz <= 0L)
                     return false
                 off += sz
             }

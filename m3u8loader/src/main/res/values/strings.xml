@@ -35,6 +35,7 @@
     <string name="convert_on_load_end">Convert on load end</string>
     <string name="set_def_settings">Set the default settings</string>
     <string name="dark_theme">Dark theme</string>
+    <string name="simple_progress">Simple progress (if the interface is slow)</string>
 
     <string name="donation">Donation</string>
     <string name="donation_msg">If you like M3U8Loader we\'d be happy about a donation.\nOr you can make a beautiful photo and send the author to the email/telegram &#128522;</string>

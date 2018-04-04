@@ -1,6 +1,7 @@
 package ru.yourok.dwl.client
 
 import android.net.Uri
+import java.net.URLDecoder
 
 /**
  * Created by yourok on 07.11.17.
@@ -27,6 +28,6 @@ object Util {
     private fun copyArguments(argUrl: Uri, path: String): String {
         val builder = argUrl.buildUpon()
         builder.path(path)
-        return builder.build().toString()
+        return URLDecoder.decode(builder.build().toString(), "UTF-8")
     }
 }

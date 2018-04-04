@@ -71,10 +71,12 @@ class Pool(private val workers: List<Pair<Worker, DownloadStatus>>) {
                                     onError?.invoke(error)
                                 }
                             } catch (e: Exception) {
-                                e.printStackTrace()
                                 dstat.isError = true
-                                error = "Error: " + e.message ?: "unknown error"
-                                onError?.invoke(error)
+                                if (i == Settings.errorRepeat) {
+                                    e.printStackTrace()
+                                    error = "Error: " + e.message ?: "unknown error"
+                                    onError?.invoke(error)
+                                }
                             }
                         synchronized(lock) {
                             currentWorker--

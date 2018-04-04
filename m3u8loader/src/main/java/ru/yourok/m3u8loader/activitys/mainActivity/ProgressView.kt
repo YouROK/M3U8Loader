@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 import ru.yourok.dwl.downloader.LoadState
 import ru.yourok.dwl.manager.Manager
+import ru.yourok.dwl.settings.Preferences
 import ru.yourok.dwl.utils.Utils
 import ru.yourok.m3u8loader.R
 import kotlin.concurrent.thread
@@ -57,17 +58,24 @@ class ProgressView : View {
         }
 
         thread {
-            while (isUpdating) {
-                postInvalidate()
+            while (isUpdating && !(Preferences.get("SimpleProgress", false) as Boolean)) {
                 val rect = Rect()
                 getGlobalVisibleRect(rect)
                 isUpdating = getLocalVisibleRect(rect)
-                index?.let {
-                    Manager.getLoader(it)?.let {
-                        if (it.getState().state == LoadState.ST_LOADING)
-                            Thread.sleep(30)
-                        else
-                            isUpdating = false
+                if (isUpdating) {
+                    try {
+                        postInvalidate()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        isUpdating = false
+                    }
+                    index?.let {
+                        Manager.getLoader(it)?.let {
+                            if (it.getState().state == LoadState.ST_LOADING)
+                                Thread.sleep(30)
+                            else
+                                isUpdating = false
+                        }
                     }
                 }
             }

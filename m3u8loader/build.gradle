@@ -14,14 +14,14 @@ convertProperties.load(new FileInputStream(convertKeystorePropertiesFile))
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    buildToolsVersion '27.0.3'
     def verPostfix = ""
     defaultConfig {
         applicationId "ru.yourok.m3u8loader"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 173
-        versionName "1.3.173"
+        versionCode 174
+        versionName "1.3.174"
     }
 
     signingConfigs {

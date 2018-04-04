@@ -6,10 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import ru.yourok.converter.ConverterHelper
 import ru.yourok.dwl.downloader.LoadState
 import ru.yourok.dwl.manager.Manager
+import ru.yourok.dwl.settings.Preferences
+import ru.yourok.dwl.utils.Utils
 import ru.yourok.m3u8loader.R
 
 class LoaderListAdapter(val context: Context) : BaseAdapter() {
@@ -64,8 +67,36 @@ class LoaderListAdapter(val context: Context) : BaseAdapter() {
             else
                 vi.findViewById<TextView>(R.id.textViewError).setText("")
 
-            val progress = vi.findViewById<ProgressView>(R.id.li_progress)
-            progress.setIndexList(index)
+
+            val progress_f = vi.findViewById<ProgressView>(R.id.li_progress)
+            val progress_s = vi.findViewById<View>(R.id.simpleProgress)
+
+            if (Preferences.get("SimpleProgress", false) as Boolean) {
+                progress_f.visibility = View.GONE
+                progress_s.visibility = View.VISIBLE
+
+                var frags = "%d/%d".format(state.loadedFragments, state.fragments)
+                if (state.threads > 0)
+                    frags = "%-3d: %s".format(state.threads, frags)
+                var speed = ""
+                var size = ""
+                if (state.speed > 0)
+                    speed = "  %s/sec ".format(Utils.byteFmt(state.speed))
+                if (state.size > 0 && state.isComplete)
+                    size = "  %s".format(Utils.byteFmt(state.size))
+                else
+                    size = "  %s/%s".format(Utils.byteFmt(state.loadedBytes), Utils.byteFmt(state.size))
+
+                vi.findViewById<ProgressBar>(R.id.li_s_progress).progress = state.loadedFragments * 100 / state.fragments
+                vi.findViewById<TextView>(R.id.textViewFragmentsStat).text = frags
+                vi.findViewById<TextView>(R.id.textViewSpeedStat).text = speed
+                vi.findViewById<TextView>(R.id.textViewSizeStat).text = size
+
+            } else {
+                progress_f.visibility = View.VISIBLE
+                progress_s.visibility = View.GONE
+                progress_f.setIndexList(index)
+            }
         }
         return vi
     }
