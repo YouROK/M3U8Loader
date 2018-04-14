@@ -79,6 +79,7 @@ class ProgressView : View {
                     }
                 }
             }
+            isUpdating = false
         }
     }
 

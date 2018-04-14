@@ -63,9 +63,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         listViewLoader.setOnItemLongClickListener { adapterView, view, i, l ->
-            listViewLoader.choiceMode = ListView.CHOICE_MODE_MULTIPLE_MODAL
-            listViewLoader.setItemChecked(i, true)
-            true
+            try {
+                listViewLoader.choiceMode = ListView.CHOICE_MODE_MULTIPLE_MODAL
+                listViewLoader.setItemChecked(i, true)
+                true
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
+            }
         }
 
         update()

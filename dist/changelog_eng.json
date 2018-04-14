@@ -1,4 +1,8 @@
 {
+	"1.3.175": [
+		"- Optimized download",
+		"- Some corrections"
+	],
 	"1.3.174": [
 		"- Corrected an error when selecting a range",
 		"- Corrected an error if the file name with slash is in the list",

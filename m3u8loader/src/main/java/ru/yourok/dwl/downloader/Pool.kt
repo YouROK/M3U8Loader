@@ -40,6 +40,8 @@ class Pool(private val workers: List<Pair<Worker, DownloadStatus>>) {
                 var priorityIndex = -1
                 workers.forEach { item ->
                     val wrk = item.first
+                    if (wrk.item.isComplete)
+                        return@forEach
                     val dstat = item.second
                     if (stop || !error.isEmpty())
                         return@forEach
