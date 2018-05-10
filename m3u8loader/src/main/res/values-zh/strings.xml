@@ -1,92 +1,92 @@
 <resources>
-    <string name="app_name" translatable="false">M3U8Loader</string>
+    <string name="app_name" translatable="false">M3U8 Loader</string>
 
-    <string name="name">Name</string>
-    <string name="url_link">Url link</string>
-    <string name="settings">Settings</string>
-    <string name="subtitles_url">Subtitles url</string>
+    <string name="name">命名为</string>
+    <string name="url_link">链接地址</string>
+    <string name="settings">设置</string>
+    <string name="subtitles_url">字幕链接</string>
     <string name="useragent" translatable="false">User agent</string>
     <string name="cookies" translatable="false">Cookies</string>
 
-    <string name="add">Add</string>
-    <string name="added">Added</string>
-    <string name="play">Play</string>
-    <string name="convert">Convert</string>
-    <string name="converting">Converting</string>
-    <string name="edit">Edit</string>
-    <string name="download">Download</string>
-    <string name="downloading">Downloading</string>
-    <string name="load_all">Load all</string>
-    <string name="stop_all">Pause all</string>
-    <string name="remove_all">Remove all</string>
-    <string name="stop">Pause</string>
-    <string name="remove">Remove</string>
-    <string name="clear">Clear</string>
-    <string name="complete">Complete</string>
-    <string name="loading_complete">Loading finished</string>
-    <string name="converting_complete">Converting finished</string>
-    <string name="loading_error">Loading error</string>
-    <string name="converting_error">Error converting video</string>
+    <string name="add">添加</string>
+    <string name="added">添加成功</string>
+    <string name="play">播放</string>
+    <string name="convert">格式转换</string>
+    <string name="converting">格式转换中</string>
+    <string name="edit">编辑</string>
+    <string name="download">下载</string>
+    <string name="downloading">下载中...</string>
+    <string name="load_all">开始所有任务</string>
+    <string name="stop_all">暂停所有任务</string>
+    <string name="remove_all">移除所有任务</string>
+    <string name="stop">暂停</string>
+    <string name="remove">移除</string>
+    <string name="clear">清理</string>
+    <string name="complete">完成</string>
+    <string name="loading_complete">下载完成</string>
+    <string name="converting_complete">格式转换完成</string>
+    <string name="loading_error">下载错误</string>
+    <string name="converting_error">格式转换错误</string>
 
-    <string name="download_path">Download path</string>
-    <string name="threads">Threads</string>
-    <string name="repeat_error">Repeat on error</string>
-    <string name="preload_fragments_size">Preload fragments size</string>
-    <string name="convert_on_load_end">Convert on load end</string>
-    <string name="set_def_settings">Set the default settings</string>
-    <string name="dark_theme">Dark theme</string>
-    <string name="simple_progress">Simple progress (if the interface is slow)</string>
+    <string name="download_path">下载路径</string>
+    <string name="threads">最大线程数</string>
+    <string name="repeat_error">错误后重试次数</string>
+    <string name="preload_fragments_size">预加载大小</string>
+    <string name="convert_on_load_end">下载完成后自动开始转换格式</string>
+    <string name="set_def_settings">恢复默认设置</string>
+    <string name="dark_theme">深色主题</string>
+    <string name="simple_progress">减少过渡动画</string>
 
-    <string name="donation">Donation</string>
-    <string name="donation_msg">If you like M3U8Loader we\'d be happy about a donation.\nOr you can make a beautiful photo and send the author to the email/telegram &#128522;</string>
+    <string name="donation">捐赠</string>
+    <string name="donation_msg">我们很乐意接受捐赠，当然，前提是如果你喜欢M3U8 Loader。\n又或者，你也可以发一些好看的照片到我的 邮箱 或者 Telegram。&#128522;</string>
 
-    <string name="permission_storage_msg">Storage permission is needed to download and write files</string>
+    <string name="permission_storage_msg">应用需要 存储读写权限 才能正常运行</string>
     <string name="permission_btn">GRANT</string>
-    <string name="permission_request_access">Request write access</string>
+    <string name="permission_request_access">申请获取 存储读写权限</string>
 
-    <string name="doze_request_title">Open setting window?</string>
-    <string name="doze_request">To run the application in the background, you need to add the application to the whitelist</string>
+    <string name="doze_request_title">打开相对应设置界面？</string>
+    <string name="doze_request">您需要将本应用加入白名单才能确保应用后台时不被系统杀掉</string>
 
-    <string name="delete">Delete</string>
-    <string name="delete_all_items">Delete all items</string>
-    <string name="delete_with_files">Delete with files</string>
-    <string name="remove_from_list">Remove from list</string>
+    <string name="delete">删除</string>
+    <string name="delete_all_items">删除所有项目</string>
+    <string name="delete_with_files">同时删除文件</string>
+    <string name="remove_from_list">仅从列表移除</string>
 
-    <string name="selected_folder_label">Selected folder</string>
-    <string name="new_directory_title">Create new folder</string>
-    <string name="new_directory_name_label">Name of new folder</string>
+    <string name="selected_folder_label">选择文件夹</string>
+    <string name="new_directory_title">创建新文件夹</string>
+    <string name="new_directory_name_label">命名新文件夹</string>
 
-    <string name="check_update">Check update</string>
-    <string name="no_updates">No updates found</string>
-    <string name="version">Version</string>
-    <string name="changelog">Изменения</string>
-    <string name="new_version">New version</string>
-    <string name="release_new_version">Released new version of me, do you want to download it?</string>
+    <string name="check_update">检查更新</string>
+    <string name="no_updates">已是最新版本</string>
+    <string name="version">版本</string>
+    <string name="changelog">更新日志</string>
+    <string name="new_version">检测到新版本！</string>
+    <string name="release_new_version">检测到有新的版本，是否开始下载？</string>
 
-    <string name="warn_install_convertor">This feature is not available in this version of the application</string>
-    <string name="warn_clean_message">Caution! During cleaning, all settings and the downloaded file are deleted.\nClean out?</string>
-    <string name="warn_wrong_format">File format not supported, open the link in another program?</string>
+    <string name="warn_install_convertor">该功能在该版本下无法使用</string>
+    <string name="warn_clean_message">注意！此项操作将会清理M3U8 Loader所产生的所有文件及其设置文件。\n确定继续？</string>
+    <string name="warn_wrong_format">本应用不支持该格式，是否使用其他方式打开？</string>
 
-    <string name="error">Error</string>
-    <string name="error_load_subs">Error load subtitles</string>
-    <string name="error_empty_url">Error empty url</string>
-    <string name="error_empty_name">Error empty name</string>
-    <string name="error_directory_permission">Directory permission denied</string>
-    <string name="error_directory_not_found">Directory not found</string>
-    <string name="error_fragment_not_binary">Error, fragment is html page</string>
-    <string name="error_create_folder">Error create folder</string>
-    <string name="error_same_url">Loading with the same url already exists</string>
-    <string name="error_update_parse">Error on update file parse</string>
-    <string name="error_wrong_format">Wrong file format</string>
+    <string name="error">错误</string>
+    <string name="error_load_subs">字幕加载错误</string>
+    <string name="error_empty_url">链接不能为空</string>
+    <string name="error_empty_name">命名不能为空</string>
+    <string name="error_directory_permission">存储权限获取失败</string>
+    <string name="error_directory_not_found">文件未找到</string>
+    <string name="error_fragment_not_binary">错误，该链接不能为HTML</string>
+    <string name="error_create_folder">文件夹创建失败</string>
+    <string name="error_same_url">列表中已有相同项目存在</string>
+    <string name="error_update_parse">文件解析失败</string>
+    <string name="error_wrong_format">文件格式错误</string>
 
-    <string name="send">Send</string>
-    <string name="crash_app">"Ooooops... I crashed, but don't worry you can send error report to my developer to help him fix the issue."</string>
+    <string name="send">发送</string>
+    <string name="crash_app">啊哦...应用崩溃了，请把崩溃日志发送给我以便帮助我修复Bug</string>
 
-    <string name="choose_player">Choose player</string>
+    <string name="choose_player">选择播放器</string>
     <string-array name="players_names" translatable="false">
-        <item>Choose player</item>
-        <item>Default player</item>
+        <item>选择播放器</item>
+        <item>系统默认</item>
         <item>MX Player</item>
-        <item>Kodi player</item>
+        <item>Kodi Player</item>
     </string-array>
 </resources>
