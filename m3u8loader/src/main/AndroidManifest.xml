@@ -163,7 +163,8 @@
             android:excludeFromRecents="true"
             android:launchMode="singleTop"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".activitys.updaterActivity.UpdaterActivity"></activity>
+        <activity android:name=".activitys.updaterActivity.UpdaterActivity" />
+        <activity android:name=".activitys.about.AboutActivity" />
     </application>
 
 </manifest>

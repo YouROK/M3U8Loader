@@ -12,6 +12,7 @@ import ru.yourok.dwl.manager.Manager
 import ru.yourok.m3u8loader.R
 import ru.yourok.m3u8loader.activitys.AddListActivity
 import ru.yourok.m3u8loader.activitys.DonateActivity
+import ru.yourok.m3u8loader.activitys.about.AboutActivity
 import ru.yourok.m3u8loader.activitys.mainActivity.LoaderListAdapter
 import ru.yourok.m3u8loader.activitys.preferenceActivity.PreferenceActivity
 import ru.yourok.m3u8loader.activitys.updaterActivity.UpdaterActivity
@@ -56,6 +57,15 @@ object NavigationBar {
                     onClick { _ ->
                         Manager.removeAll(this@with)
                         adapter.notifyDataSetChanged()
+                        false
+                    }
+                }
+
+                primaryItem(R.string.about) {
+                    icon = R.drawable.ic_info_outline_black_24dp
+                    selectable = false
+                    onClick { _ ->
+                        activity.startActivity(Intent(activity, AboutActivity::class.java))
                         false
                     }
                 }

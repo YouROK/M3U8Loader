@@ -59,8 +59,7 @@ class ProgressView : View {
 
         thread {
             while (isUpdating && !(Preferences.get("SimpleProgress", false) as Boolean)) {
-                val rect = Rect()
-                getGlobalVisibleRect(rect)
+                val rect: Rect? = Rect()
                 isUpdating = getLocalVisibleRect(rect)
                 if (isUpdating) {
                     try {

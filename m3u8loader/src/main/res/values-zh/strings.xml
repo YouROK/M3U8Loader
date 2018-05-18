@@ -1,12 +1,8 @@
 <resources>
-    <string name="app_name" translatable="false">M3U8 Loader</string>
-
     <string name="name">命名为</string>
     <string name="url_link">链接地址</string>
     <string name="settings">设置</string>
     <string name="subtitles_url">字幕链接</string>
-    <string name="useragent" translatable="false">User agent</string>
-    <string name="cookies" translatable="false">Cookies</string>
 
     <string name="add">添加</string>
     <string name="added">添加成功</string>
@@ -19,6 +15,7 @@
     <string name="load_all">开始所有任务</string>
     <string name="stop_all">暂停所有任务</string>
     <string name="remove_all">移除所有任务</string>
+    <string name="about">关于</string>
     <string name="stop">暂停</string>
     <string name="remove">移除</string>
     <string name="clear">清理</string>
@@ -36,6 +33,9 @@
     <string name="set_def_settings">恢复默认设置</string>
     <string name="dark_theme">深色主题</string>
     <string name="simple_progress">减少过渡动画</string>
+
+    <string name="author">作者</string>
+    <string name="translators">译者</string>
 
     <string name="donation">捐赠</string>
     <string name="donation_msg">我们很乐意接受捐赠，当然，前提是如果你喜欢M3U8 Loader。\n又或者，你也可以发一些好看的照片到我的 邮箱 或者 Telegram。&#128522;</string>
@@ -83,10 +83,4 @@
     <string name="crash_app">啊哦...应用崩溃了，请把崩溃日志发送给我以便帮助我修复Bug</string>
 
     <string name="choose_player">选择播放器</string>
-    <string-array name="players_names" translatable="false">
-        <item>选择播放器</item>
-        <item>系统默认</item>
-        <item>MX Player</item>
-        <item>Kodi Player</item>
-    </string-array>
 </resources>

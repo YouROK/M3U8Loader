@@ -19,6 +19,7 @@
     <string name="load_all">Load all</string>
     <string name="stop_all">Pause all</string>
     <string name="remove_all">Remove all</string>
+    <string name="about">About</string>
     <string name="stop">Pause</string>
     <string name="remove">Remove</string>
     <string name="clear">Clear</string>
@@ -36,6 +37,9 @@
     <string name="set_def_settings">Set the default settings</string>
     <string name="dark_theme">Dark theme</string>
     <string name="simple_progress">Simple progress (if the interface is slow)</string>
+
+    <string name="author">Author</string>
+    <string name="translators">Translators</string>
 
     <string name="donation">Donation</string>
     <string name="donation_msg">If you like M3U8Loader we\'d be happy about a donation.\nOr you can make a beautiful photo and send the author to the email/telegram &#128522;</string>
