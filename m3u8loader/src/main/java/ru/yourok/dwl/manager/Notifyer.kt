@@ -36,18 +36,32 @@ object Notifyer {
         val builder: NotificationCompat.Builder
         builder = NotificationCompat.Builder(context)
 
-        builder.setSmallIcon(createIcon())
-
         builder.setContentTitle(title)
         builder.setContentText(text)
         builder.setChannelId(channelId)
         builder.setAutoCancel(true)
 
+        var typeIcon = 0
+
         when (progress) {
-            in 0..100 -> builder.setProgress(100, progress, false)
-            -1 -> builder.setProgress(100, 0, true)
-            else -> builder.setProgress(0, 0, false)
+            in 0..100 -> {
+                builder.setProgress(100, progress, false)
+                typeIcon = 1
+            }
+            -1 -> {
+                builder.setProgress(100, 0, true)
+                typeIcon = 2
+            }
+            else -> {
+                typeIcon = 0
+                builder.setProgress(0, 0, false)
+            }
         }
+
+        if (error.isNotEmpty())
+            typeIcon = 3
+
+        builder.setSmallIcon(createIcon(typeIcon))
 
         val intent = Intent(context, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -81,14 +95,21 @@ object Notifyer {
         }
     }
 
-    private fun createIcon(): Int {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (Notifyer.error.isEmpty())
-                return R.drawable.ic_check_black_24dp
-            else
-                return R.drawable.ic_report_problem_black_24dp
-        } else
-            return R.mipmap.ic_launcher
+    private fun createIcon(type: Int): Int {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            if (Notifyer.error.isEmpty())
+//                return R.drawable.ic_check_black_24dp
+//            else
+//                return R.drawable.ic_report_problem_black_24dp
+//        } else {
+        if (type == 1)
+            return android.R.drawable.stat_sys_download
+        if (type == 2)
+            return android.R.drawable.stat_notify_sync_noanim
+        if (type == 3)
+            return android.R.drawable.stat_notify_error
+        return R.mipmap.ic_launcher
+//        }
     }
 
     private fun getManager(): NotificationManager {
