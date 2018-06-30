@@ -1,0 +1,86 @@
+<resources>
+    <string name="name">檔名</string>
+    <string name="url_link">網址</string>
+    <string name="settings">設定</string>
+    <string name="subtitles_url">字幕網址</string>
+
+    <string name="add">新增</string>
+    <string name="added">新增成功</string>
+    <string name="play">播放</string>
+    <string name="convert">格式轉換</string>
+    <string name="converting">格式轉換中</string>
+    <string name="edit">編輯</string>
+    <string name="download">下載</string>
+    <string name="downloading">下載中...</string>
+    <string name="load_all">開始所有任務</string>
+    <string name="stop_all">暫停所有任務</string>
+    <string name="remove_all">移除所有任務</string>
+    <string name="about">關於</string>
+    <string name="stop">暫停</string>
+    <string name="remove">移除</string>
+    <string name="clear">清理</string>
+    <string name="complete">完成</string>
+    <string name="loading_complete">下載完成</string>
+    <string name="converting_complete">格式轉換完成</string>
+    <string name="loading_error">下載錯誤</string>
+    <string name="converting_error">格式轉換錯誤</string>
+
+    <string name="download_path">下載路徑</string>
+    <string name="threads">最大執行數</string>
+    <string name="repeat_error">錯誤後重試次數</string>
+    <string name="preload_fragments_size">預載入大小</string>
+    <string name="convert_on_load_end">下載完成後自動開始轉換格式</string>
+    <string name="set_def_settings">恢復預設設定</string>
+    <string name="dark_theme">深色主題</string>
+    <string name="simple_progress">減少過渡動畫</string>
+
+    <string name="author">作者</string>
+    <string name="translators">譯者</string>
+
+    <string name="donation">捐贈</string>
+    <string name="donation_msg">我們很樂意接受捐贈，當然，前提是如果你喜歡M3U8 Loader。\n又或者，你也可以發一些好看的照片到我的 信箱 或者 Telegram。&#128522;</string>
+
+    <string name="permission_storage_msg">程式需要 儲存讀寫權限 才能正常執行</string>
+    <string name="permission_btn">GRANT</string>
+    <string name="permission_request_access">申請取得 儲存讀寫權限</string>
+
+    <string name="doze_request_title">開啟設定介面？</string>
+    <string name="doze_request">您需要將本程式加入白名單才能確保程式背景執行時不被系統殺掉</string>
+
+    <string name="delete">刪除</string>
+    <string name="delete_all_items">刪除所有項目</string>
+    <string name="delete_with_files">同時刪除檔案</string>
+    <string name="remove_from_list">僅從列表移除</string>
+
+    <string name="selected_folder_label">選擇資料夾</string>
+    <string name="new_directory_title">建立新資料夾</string>
+    <string name="new_directory_name_label">輸入名稱</string>
+
+    <string name="check_update">檢查更新</string>
+    <string name="no_updates">已是最新版本</string>
+    <string name="version">版本</string>
+    <string name="changelog">更新日誌</string>
+    <string name="new_version">檢測到新版本！</string>
+    <string name="release_new_version">檢測到有新的版本，是否開始下載？</string>
+
+    <string name="warn_install_convertor">該功能在該版本下無法使用</string>
+    <string name="warn_clean_message">注意！此項操作將會清理M3U8 Loader所產生的所有檔案及其設定檔案。\n確定繼續？</string>
+    <string name="warn_wrong_format">本程式不支援該格式，是否使用其他方式打開？</string>
+
+    <string name="error">錯誤</string>
+    <string name="error_load_subs">字幕載入錯誤</string>
+    <string name="error_empty_url">連結不能為空</string>
+    <string name="error_empty_name">命名不能為空</string>
+    <string name="error_directory_permission">儲存權限獲取失敗</string>
+    <string name="error_directory_not_found">檔案未找到</string>
+    <string name="error_fragment_not_binary">錯誤，該連結不能為HTML</string>
+    <string name="error_create_folder">資料夾建立失敗</string>
+    <string name="error_same_url">列表中已有相同項目存在</string>
+    <string name="error_update_parse">檔案解析失敗</string>
+    <string name="error_wrong_format">檔案格式錯誤</string>
+
+    <string name="send">發送</string>
+    <string name="crash_app">哎呀...程式崩潰了，請把崩潰日誌發送給我以便幫助我修復Bug</string>
+
+    <string name="choose_player">選擇播放器</string>
+</resources>
