@@ -41,7 +41,7 @@
     <string name="donation_msg">我們很樂意接受捐贈，當然，前提是如果你喜歡M3U8 Loader。\n又或者，你也可以發一些好看的照片到我的 信箱 或者 Telegram。&#128522;</string>
 
     <string name="permission_storage_msg">程式需要 儲存讀寫權限 才能正常執行</string>
-    <string name="permission_btn">GRANT</string>
+    <string name="permission_btn">授權</string>
     <string name="permission_request_access">申請取得 儲存讀寫權限</string>
 
     <string name="doze_request_title">開啟設定介面？</string>
